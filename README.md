@@ -1,117 +1,64 @@
-# OpenEnergyCoop
+# DataProvider API
 
-**OpenEnergyCoop** es un proyecto de software libre desarrollado en Laravel para apoyar a cooperativas energéticas. Proporciona una API robusta, un dashboard moderno, una web pública y una app móvil para gestionar comunidades de autoconsumo energético.
+**DataProvider** es una API modular construida con Laravel 12. Está diseñada para proporcionar datos reutilizables a otras aplicaciones y sitios web, como clima, efemérides, citas, municipios y más.
 
----
+## Características
 
-## Presentación general
+- API RESTful con Laravel 12
+- Sistema de autenticación con Sanctum (tokens de API)
+- Panel de administración con Filament
+- Arquitectura modular y escalable
+- Preparada para integración con múltiples fuentes de datos
 
-OpenEnergyCoop está pensado para:
+## Requisitos
 
--   Cooperativas energéticas que necesitan herramientas digitales modernas, libres y adaptables.
--   Personas desarrolladoras interesadas en colaborar y ampliar funcionalidades.
--   Ciudadanos interesados en cooperativas energéticas y comunidades de autoconsumo compartido.
+- PHP 8.2+
+- Composer
+- MySQL o MariaDB
+- Node.js y NPM (opcional, si se usa frontend o panel con Vite)
 
----
+## Instalación
 
-## Tecnologías principales
+```bash
+git clone https://github.com/hackdevmariana/dataprovider.git
+cd dataprovider
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+```
 
--   **Backend:** Laravel con Filament, Sanctum, Spatie Permissions, Laravel Localization, MeiliSearch, Laravel Excel, Spatie Media Library, Fortify (2FA), y más.
--   **Frontend web:** Nuxt con TailwindCSS, Axios, Vue I18n, Matomo para analítica, Chart.js/ApexCharts.
--   **Dashboard:** Nuxt + Material Design + Laravel Echo para notificaciones en tiempo real.
--   **App móvil:** React Native + Expo + EAS con autenticación Sanctum/JWT, notificaciones push y más.
+## Autenticación
+La API usa Laravel Sanctum para gestionar tokens de acceso. Los endpoints protegidos requieren el header:
 
----
+```
+Authorization: Bearer {TOKEN}
+```
 
-## Estructura del proyecto
+## Estructura (modular en desarrollo)
 
-### Backend Laravel (openenergycoop-api)
+```
+app/
+├── Models/
+├── Http/
+│   ├── Controllers/
+│   └── Middleware/
+├── Providers/
+routes/
+├── api.php
+├── web.php
+config/
+database/
+```
 
--   Modular y organizado en carpetas bajo `app/Models`:
+## Tests
 
-    -   `Core/`: Usuarios, Organizaciones, Roles
-    -   `Web/`: Páginas, Menús, SEO
-    -   `Energy/`: Instalaciones, Consumos, Producción
-    -   `Economy/`: Wallets y transacciones
-    -   `Community/`: Eventos, Mensajes, Notificaciones
-    -   `Gamification/`: Retos y logros
-    -   `Personalization/`: Dashboards y widgets
+Los tests se gestionan con PHPUnit.
 
--   APIs versionadas bajo `routes/api.php` (`/api/v1/*`).
+```
+php artisan test
+```
 
----
+## Licencia de datos
 
-### Frontend web (Nuxt)
-
--   Rutas dinámicas por cooperativa (`/[cooperativa]/...`).
--   Componentes organizados para reutilización y escalabilidad.
--   Internacionalización con Vue I18n.
--   Integración con la API backend y Matomo para analítica.
-
----
-
-### App móvil (React Native + Expo)
-
--   Estructura basada en Expo Router.
--   Autenticación integrada con backend.
--   Notificaciones push.
--   Conexión a APIs para consumo y producción energética, comunidad, wallet, etc.
-
----
-
-## Roadmap de desarrollo
-
-### Fase 1 – Usuarios, roles y cooperativas
-
--   Modelos: User, UserProfile, Organization, Roles, ConsentLog, AuditLog, UserDevice, Image
--   Autenticación con Google/Apple y sistema granular de permisos.
-
-### Fase 2 – Contenido y sitio web básico
-
--   Modelos: AppSettings, Page, PageComponent, Hero, TextContent, Banner, Menu, FAQ, SocialLink, Contact, SEO, Collaborators.
-
-### Fase 3 – Noticias, artículos y documentos
-
--   Modelos: Article, Comment, Tags, Document, Category.
-
-### Fase 4 – Instalaciones, consumo y producción
-
--   Modelos: EnergyInstallation, ConsumptionPoint, Municipality, Province, Region, ProductionProject, EnergyMeter, EnergyReading, WeatherSnapshots.
-
-### Fase 5 – Wallet y transacciones
-
--   Modelos: Wallet, WalletTransaction, WalletConversion, WalletTransfer, ProductionParticipations.
-
-### Fase 6 – Eventos y comunidad
-
--   Modelos: Event, EventAttendance, Message, FormSubmission, NewsletterSubscription, Notification, NotificationSetting.
-
-### Fase 7 – Impacto ambiental y gamificación
-
--   Modelos: Plant, PlantGroup, CooperativePlantConfig, ImpactMetrics, CommunityMetrics, EnergyChallenge, UserChallengeProgress, Achievement, UserAchievement.
-
-### Fase 8 – Dashboard personal y widgets
-
--   Modelos: DashboardWidget, UserWidgetPreference, DashboardView, UserSettings, Surveys, SurveyResponses.
-
-### Fase 9 – Integraciones externas
-
--   Festivalprogram API (eventos), SpaNewsAPI (noticias), SpaWeather/OpenWeatherMap (clima), REE API (precios energía), Coinbase/CoinGecko (cambios), Odoo, Mautic, Twilio, Nexmo, IPinfo, Matomo.
-
-### Fase 10 – Foro (opcional)
-
--   Modelos: Forum, Thread, Post, Reaction.
-
----
-
-## Licencia
-
-OpenEnergyCoop está licenciado bajo **GPLv3** para garantizar que las cooperativas puedan usar, modificar y compartir el software de manera libre y ética.
-
----
-
-## Contribuir
-
-¡Las contribuciones son bienvenidas! Por favor, revisa las [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles sobre el proceso.
-
----
+Los datos servidos por esta API están liberados bajo la licencia [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/). Puedes copiarlos, modificarlos y reutilizarlos sin restricciones ni atribución.
