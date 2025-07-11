@@ -20,8 +20,8 @@ use Filament\Tables\Columns\TextColumn;
 class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
+    protected static ?string $navigationIcon = 'heroicon-o-globe-europe-africa';
 
-    protected static ?string $navigationIcon = 'heroicon-o-flag';
     protected static ?string $navigationGroup = 'Ubicaciones';
 
     public static function form(Form $form): Form
