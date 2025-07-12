@@ -18,8 +18,8 @@ class AliasResource extends Resource
     protected static ?string $model = Alias::class;
 
     protected static ?string $navigationGroup = 'People';
-    // protected static ?string $navigationIcon = 'heroicon-o-pencil-alt';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-pencil';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
