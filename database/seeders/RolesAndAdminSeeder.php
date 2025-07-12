@@ -2,6 +2,11 @@
 
 namespace Database\Seeders;
 
+
+/* USAGE:
+php artisan db:seed --class=RolesAndAdminSeeder
+*/
+
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
