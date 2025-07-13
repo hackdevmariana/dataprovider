@@ -51,16 +51,13 @@ class VenueResource extends Resource
 
                 Forms\Components\Textarea::make('description')->nullable(),
 
-                Forms\Components\Select::make('venue_type')
-                    ->required()
-                    ->options([
-                        'auditorium' => 'Auditorium',
-                        'park' => 'Park',
-                        'square' => 'Square',
-                        'club' => 'Club',
-                        'online' => 'Online',
-                        'other' => 'Other',
-                    ]),
+                Forms\Components\Select::make('venue_type_id')
+                    ->label('Venue Type')
+                    ->relationship('venueType', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+
 
                 Forms\Components\Select::make('venue_status')
                     ->required()
