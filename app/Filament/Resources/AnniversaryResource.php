@@ -17,7 +17,7 @@ class AnniversaryResource extends Resource
 {
     protected static ?string $model = Anniversary::class;
 
-    protected static ?string $navigationGroup = 'People';
+    protected static ?string $navigationGroup = 'Calendar & Dates';
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     public static function form(Form $form): Form
     {

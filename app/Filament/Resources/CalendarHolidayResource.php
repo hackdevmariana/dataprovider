@@ -35,7 +35,7 @@ class CalendarHolidayResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255),
-                
+
                 Forms\Components\Select::make('municipality_id')
                     ->relationship('municipality', 'name')
                     ->searchable()
@@ -61,9 +61,10 @@ class CalendarHolidayResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CalendarHolidayLocationRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {
