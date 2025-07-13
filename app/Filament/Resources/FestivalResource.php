@@ -53,9 +53,10 @@ class FestivalResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\FestivalResource\RelationManagers\EventRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {
