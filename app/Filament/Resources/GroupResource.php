@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\GroupResource\RelationManagers\GroupArtistRelationManager;
+
 
 class GroupResource extends Resource
 {
@@ -39,9 +41,10 @@ class GroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            GroupArtistRelationManager::class,
         ];
     }
+
 
     public static function getPages(): array
     {
