@@ -34,4 +34,6 @@ class EnergyCompany extends Model
     {
         return $this->belongsTo(Image::class);
     }
+
+
 }
