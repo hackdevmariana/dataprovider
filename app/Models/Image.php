@@ -13,4 +13,8 @@ class Image extends Model
         'width',
         'height',
     ];
+    public function related()
+    {
+        return $this->morphTo();
+    }
 }
