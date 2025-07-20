@@ -47,4 +47,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function cooperativeMemberships()
+    {
+        return $this->hasMany(\App\Models\CooperativeUserMember::class);
+    }
+
+    public function cooperatives()
+    {
+        return $this->belongsToMany(\App\Models\Cooperative::class, 'cooperative_user_members')
+            ->withPivot(['role', 'joined_at', 'is_active'])
+            ->withTimestamps();
+    }
 }
