@@ -59,4 +59,18 @@ class Cooperative extends Model
     {
         return $this->belongsTo(DataSource::class);
     }
+
+
+
+    public function userMemberships()
+    {
+        return $this->hasMany(\App\Models\CooperativeUserMember::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'cooperative_user_members')
+            ->withPivot(['role', 'joined_at', 'is_active'])
+            ->withTimestamps();
+    }
 }
