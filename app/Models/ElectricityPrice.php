@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -26,5 +27,10 @@ class ElectricityPrice extends Model
     public function priceUnit()
     {
         return $this->belongsTo(PriceUnit::class);
+    }
+
+    public function intervals()
+    {
+        return $this->hasMany(ElectricityPriceInterval::class);
     }
 }
