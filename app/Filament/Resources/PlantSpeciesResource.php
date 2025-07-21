@@ -25,7 +25,19 @@ class PlantSpeciesResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('common_name')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('scientific_name')
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('co2_absorption_kg_per_year')
+                    ->label('CO₂ Absorción kg/año')
+                    ->numeric()
+                    ->suffix('kg')
+                    ->step(0.01)
+                    ->required(),
             ]);
     }
 
@@ -33,19 +45,16 @@ class PlantSpeciesResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('common_name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('scientific_name')->sortable(),
+                Tables\Columns\TextColumn::make('co2_absorption_kg_per_year')
+                    ->label('CO₂ (kg/año)')
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => number_format($state, 2) . ' kg'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('d M Y')->label('Creado'),
             ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->defaultSort('common_name');
     }
 
     public static function getRelations(): array
