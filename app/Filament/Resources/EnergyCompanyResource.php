@@ -19,7 +19,7 @@ class EnergyCompanyResource extends Resource
     protected static ?string $model = EnergyCompany::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'Empresas y cooperativas';
+    protected static ?string $navigationGroup = 'Sociedades';
 
 
 
