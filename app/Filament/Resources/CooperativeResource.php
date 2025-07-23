@@ -19,6 +19,7 @@ class CooperativeResource extends Resource
     protected static ?string $model = Cooperative::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationGroup = 'Sociedades';
 
     public static function form(Form $form): Form
     {

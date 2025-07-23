@@ -20,7 +20,7 @@ class CooperativeUserMemberResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Cooperativas';
+    protected static ?string $navigationGroup = 'Sociedades';
 
     public static function form(Form $form): Form
     {

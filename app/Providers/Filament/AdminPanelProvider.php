@@ -66,6 +66,8 @@ class AdminPanelProvider extends PanelProvider
                 'Personas',
                 'Lugares',
                 'Calendario y eventos',
+                'Identidad visual',
+                'Empresas y cooperativas energéticas',
             ]);;
     }
 }

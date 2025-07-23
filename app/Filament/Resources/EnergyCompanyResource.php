@@ -19,7 +19,8 @@ class EnergyCompanyResource extends Resource
     protected static ?string $model = EnergyCompany::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'Mercado energético';
+    protected static ?string $navigationGroup = 'Empresas y cooperativas';
+
 
 
     public static function form(Form $form): Form
