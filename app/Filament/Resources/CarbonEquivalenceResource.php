@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CarbonEquivalenceResource extends Resource
 {
     protected static ?string $model = CarbonEquivalence::class;
+    protected static ?string $navigationGroup = 'Economía medioambiental';
 
     protected static ?string $navigationIcon = 'heroicon-o-scale';
     public static function form(Form $form): Form
