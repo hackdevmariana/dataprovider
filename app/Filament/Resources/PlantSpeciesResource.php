@@ -18,7 +18,7 @@ class PlantSpeciesResource extends Resource
     protected static ?string $model = PlantSpecies::class;
 
     protected static ?string $navigationIcon = 'phosphor-plant-bold';
-    protected static ?string $navigationGroup = 'Medio ambiente';
+    protected static ?string $navigationGroup = 'Economía medioambiental';
 
 
     public static function form(Form $form): Form

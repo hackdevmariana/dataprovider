@@ -63,11 +63,14 @@ class AdminPanelProvider extends PanelProvider
                 'General',
                 'Usuarios',
                 'Contenido',
+                'Identidad visual',
                 'Personas',
                 'Lugares',
                 'Calendario y eventos',
-                'Identidad visual',
-                'Empresas y cooperativas energéticas',
+                'Noticias y medios',
+                'Sociedades',
+                'Mercado energético',
+                'Economía medioambiental',
             ]);;
     }
 }
