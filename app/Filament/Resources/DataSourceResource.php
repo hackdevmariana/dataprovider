@@ -20,7 +20,7 @@ class DataSourceResource extends Resource
     protected static ?string $model = DataSource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rss';
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationGroup = 'General';
     protected static ?int $navigationSort = 20;
     public static function form(Form $form): Form
     {
