@@ -20,7 +20,8 @@ class ArtistResource extends Resource
     protected static ?string $model = Artist::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Eventos culturales';
+    protected static ?string $navigationGroup = 'Calendario y eventos';
+
 
     public static function form(Form $form): Form
     {
