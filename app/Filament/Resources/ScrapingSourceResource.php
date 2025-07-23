@@ -24,7 +24,7 @@ class ScrapingSourceResource extends Resource
     protected static ?string $model = ScrapingSource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cloud';
-    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $navigationGroup = 'General';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
