@@ -20,6 +20,7 @@ use Filament\Forms\Components\Toggle;
 class ApiKeyResource extends Resource
 {
     protected static ?string $model = ApiKey::class;
+    protected static ?string $navigationGroup = 'Admin';
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
 
