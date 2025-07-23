@@ -18,7 +18,7 @@ class VisualIdentityResource extends Resource
     protected static ?string $model = VisualIdentity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-swatch';
-    protected static ?string $navigationGroup = 'Design';
+    protected static ?string $navigationGroup = 'Identidad visual';
     public static function form(Form $form): Form
     {
         return $form->schema([

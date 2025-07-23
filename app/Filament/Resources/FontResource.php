@@ -18,7 +18,7 @@ class FontResource extends Resource
     protected static ?string $model = Font::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-at-symbol';
-    protected static ?string $navigationGroup = 'Design';
+    protected static ?string $navigationGroup = 'Identidad visual';
 
     public static function form(Form $form): Form
     {

@@ -18,7 +18,7 @@ class ColorResource extends Resource
     protected static ?string $model = Color::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
-    protected static ?string $navigationGroup = 'Design';
+    protected static ?string $navigationGroup = 'Identidad visual';
     public static function form(Form $form): Form
     {
         return $form->schema([
