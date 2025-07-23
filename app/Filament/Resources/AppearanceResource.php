@@ -18,6 +18,7 @@ use Filament\Forms\Components\TextInput;
 class AppearanceResource extends Resource
 {
     protected static ?string $model = Appearance::class;
+    protected static ?string $navigationGroup = 'Personas';
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
 

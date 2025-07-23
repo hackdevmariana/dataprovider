@@ -18,7 +18,8 @@ class FamilyMemberResource extends Resource
     protected static ?string $model = FamilyMember::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'People';
+    protected static ?string $navigationGroup = 'Personas';
+
     public static function form(Form $form): Form
     {
         return $form
