@@ -65,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 'Contenido',
                 'Personas',
                 'Lugares',
+                'Calendario y eventos',
             ]);;
     }
 }

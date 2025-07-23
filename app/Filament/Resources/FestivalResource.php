@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class FestivalResource extends Resource
 {
     protected static ?string $model = Festival::class;
-    protected static ?string $navigationGroup = 'Eventos culturales';
+    protected static ?string $navigationGroup = 'Calendario y eventos';
+
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
