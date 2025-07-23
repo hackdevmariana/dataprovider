@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ElectricityOfferResource extends Resource
 {
     protected static ?string $model = ElectricityOffer::class;
+    protected static ?string $navigationGroup = 'Mercado energético';
 
     protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
 
