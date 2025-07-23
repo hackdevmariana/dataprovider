@@ -18,7 +18,8 @@ class VenueResource extends Resource
     protected static ?string $model = Venue::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
-    protected static ?string $navigationGroup = 'Eventos culturales';
+    protected static ?string $navigationGroup = 'Calendario y eventos';
+
 
     protected static ?string $label = 'Venue';
     protected static ?string $pluralLabel = 'Venues';

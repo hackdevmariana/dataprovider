@@ -18,7 +18,8 @@ class CalendarHolidayResource extends Resource
     protected static ?string $model = CalendarHoliday::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationGroup = 'Calendar & Dates';
+    protected static ?string $navigationGroup = 'Calendario y eventos';
+
     protected static ?string $label = 'Holiday';
     protected static ?string $pluralLabel = 'Holidays';
     public static function form(Form $form): Form
