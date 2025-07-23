@@ -57,6 +57,14 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 \Filament\Http\Middleware\Authenticate::class,
-            ]);
+            ])
+            ->navigationGroups([
+                'Admin',
+                'General',
+                'Usuarios',
+                'Contenido',
+                'Personas',
+                'Lugares',
+            ]);;
     }
 }
