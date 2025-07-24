@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndAdminSeeder::class,
             AppSettingSeeder::class,
+            TimezoneSeeder::class,
+            CountrySeeder::class,
         ]);
     }
 }
