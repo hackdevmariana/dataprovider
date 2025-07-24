@@ -86,7 +86,7 @@ class LanguageSeeder extends Seeder
                 'language' => 'Náhuatl',
                 'slug' => 'nahuatl',
                 'native_name' => 'Nāhuatl',
-                'iso_639_1' => 'nah', // No ISO 639-1 code, but we can use 'nah' as slug
+                'iso_639_1' => '', 
                 'iso_639_2' => 'nah',
                 'rtl' => false,
             ],
