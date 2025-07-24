@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             AutonomousCommunitySeeder::class,
             ProvinceSeeder::class,
+
+            \Database\Seeders\Municipality\MadridMunicipalitiesSeeder::class,
         ]);
     }
 }
