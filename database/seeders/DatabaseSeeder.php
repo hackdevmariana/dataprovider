@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AppSettingSeeder::class,
             TimezoneSeeder::class,
             CountrySeeder::class,
+            LanguageSeeder::class,
         ]);
     }
 }
