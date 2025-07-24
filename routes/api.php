@@ -7,8 +7,7 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\TimezoneController;
-
-
+use App\Http\Controllers\Api\MunicipalityController;
 
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
@@ -24,6 +23,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/languages/{idOrSlug}', [LanguageController::class, 'show']);
     Route::get('/timezones', [TimezoneController::class, 'index']);
     Route::get('/timezones/{idOrName}', [TimezoneController::class, 'show']);
+    Route::get('/municipalities', [MunicipalityController::class, 'index']);
+    Route::get('/municipalities/province/{slug}', [MunicipalityController::class, 'byProvince']);
+    Route::get('/municipalities/country/{slug}', [MunicipalityController::class, 'byCountry']);
+    Route::get('/municipalities/{idOrSlug}', [MunicipalityController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
