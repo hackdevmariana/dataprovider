@@ -45,6 +45,11 @@ class TimezoneSeeder extends Seeder
                 'offset' => '-04:00',
                 'dst_offset' => '-04:00',
             ],
+            [
+                'name' => 'Europe/Madrid',
+                'offset' => '+01:00',
+                'dst_offset' => '+02:00',
+            ],
         ];
 
         foreach ($timezones as $tz) {
