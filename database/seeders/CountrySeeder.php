@@ -71,6 +71,27 @@ class CountrySeeder extends Seeder
                 'altitude_m' => 2640,
                 'timezone_name' => 'America/Bogota',
             ],
+            [
+                'name' => 'España',
+                'slug' => 'espana',
+                'iso_alpha2' => 'ES',
+                'iso_alpha3' => 'ESP',
+                'iso_numeric' => '724',
+                'demonym' => 'español',
+                'official_language' => 'es',
+                'currency_code' => 'EUR',
+                'phone_code' => '+34',
+                'latitude' => 40.4168,
+                'longitude' => -3.7038,
+                'flag_url' => 'https://flagcdn.com/es.svg',
+                'population' => 47450795,
+                'gdp_usd' => 1600000000000,
+                'region_group' => 'Europa',
+                'area_km2' => 505944,
+                'altitude_m' => 650, // promedio aproximado
+                'timezone_name' => 'Europe/Madrid',
+            ],
+
         ];
 
         foreach ($countries as $data) {
