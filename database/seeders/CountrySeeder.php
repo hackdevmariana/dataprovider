@@ -91,6 +91,47 @@ class CountrySeeder extends Seeder
                 'altitude_m' => 650, // promedio aproximado
                 'timezone_name' => 'Europe/Madrid',
             ],
+            [
+                'name' => 'Andorra',
+                'slug' => 'andorra',
+                'iso_alpha2' => 'AD',
+                'iso_alpha3' => 'AND',
+                'iso_numeric' => '020',
+                'demonym' => 'andorrano',
+                'official_language' => 'ca, es',
+                'currency_code' => 'EUR',
+                'phone_code' => '+376',
+                'latitude' => 42.5078,
+                'longitude' => 1.5211,
+                'flag_url' => 'https://flagcdn.com/ad.svg',
+                'population' => 79824,
+                'gdp_usd' => 3150000000,
+                'region_group' => 'Europa',
+                'area_km2' => 468,
+                'altitude_m' => 1996, // promedio montañoso
+                'timezone_name' => 'Europe/Andorra',
+            ],
+            [
+                'name' => 'Guinea Ecuatorial',
+                'slug' => 'guinea-ecuatorial',
+                'iso_alpha2' => 'GQ',
+                'iso_alpha3' => 'GNQ',
+                'iso_numeric' => '226',
+                'demonym' => 'ecuatoguineano',
+                'official_language' => 'es, fr, pt',
+                'currency_code' => 'XAF',
+                'phone_code' => '+240',
+                'latitude' => 1.6508,
+                'longitude' => 10.2679,
+                'flag_url' => 'https://flagcdn.com/gq.svg',
+                'population' => 1590000,
+                'gdp_usd' => 10400000000,
+                'region_group' => 'África',
+                'area_km2' => 28051,
+                'altitude_m' => 577,
+                'timezone_name' => 'Africa/Malabo',
+            ],
+
 
         ];
 

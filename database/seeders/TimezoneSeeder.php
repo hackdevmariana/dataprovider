@@ -50,6 +50,17 @@ class TimezoneSeeder extends Seeder
                 'offset' => '+01:00',
                 'dst_offset' => '+02:00',
             ],
+            [
+                'name' => 'Europe/Andorra',
+                'offset' => '+01:00',
+                'dst_offset' => '+02:00',
+            ],
+            [
+                'name' => 'Africa/Malabo',
+                'offset' => '+01:00',
+                'dst_offset' => '+01:00',
+            ],
+
         ];
 
         foreach ($timezones as $tz) {
