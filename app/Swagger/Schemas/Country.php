@@ -1,3 +1,5 @@
+<?php
+
 /**
  * @OA\Schema(
  *     schema="Country",

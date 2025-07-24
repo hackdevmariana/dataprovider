@@ -1,3 +1,6 @@
+<?php
+
+
 /**
  * @OA\Schema(
  *     schema="Province",
