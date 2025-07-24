@@ -44,12 +44,72 @@ class CountrySeeder extends Seeder
                 'latitude' => 19.4326,
                 'longitude' => -99.1332,
                 'flag_url' => 'https://flagcdn.com/mx.svg',
-                'population' => 126014024,
-                'gdp_usd' => 1270000000000,
+                'population' => 128932753,
+                'gdp_usd' => 1200000000000,
                 'region_group' => 'Norteamérica',
                 'area_km2' => 1964375,
                 'altitude_m' => 2250,
                 'timezone_name' => 'America/Mexico_City',
+            ],
+            [
+                'name' => 'Chile',
+                'slug' => 'chile',
+                'iso_alpha2' => 'CL',
+                'iso_alpha3' => 'CHL',
+                'iso_numeric' => '152',
+                'demonym' => 'chileno',
+                'official_language' => 'es',
+                'currency_code' => 'CLP',
+                'phone_code' => '+56',
+                'latitude' => -33.4489,
+                'longitude' => -70.6693,
+                'flag_url' => 'https://flagcdn.com/cl.svg',
+                'population' => 19116209,
+                'gdp_usd' => 282000000000,
+                'region_group' => 'Sudamérica',
+                'area_km2' => 756102,
+                'altitude_m' => 520,
+                'timezone_name' => 'America/Santiago',
+            ],
+            [
+                'name' => 'Perú',
+                'slug' => 'peru',
+                'iso_alpha2' => 'PE',
+                'iso_alpha3' => 'PER',
+                'iso_numeric' => '604',
+                'demonym' => 'peruano',
+                'official_language' => 'es',
+                'currency_code' => 'PEN',
+                'phone_code' => '+51',
+                'latitude' => -12.0464,
+                'longitude' => -77.0428,
+                'flag_url' => 'https://flagcdn.com/pe.svg',
+                'population' => 32971846,
+                'gdp_usd' => 225000000000,
+                'region_group' => 'Sudamérica',
+                'area_km2' => 1285216,
+                'altitude_m' => 154,
+                'timezone_name' => 'America/Lima',
+            ],
+            [
+                'name' => 'Venezuela',
+                'slug' => 'venezuela',
+                'iso_alpha2' => 'VE',
+                'iso_alpha3' => 'VEN',
+                'iso_numeric' => '862',
+                'demonym' => 'venezolano',
+                'official_language' => 'es',
+                'currency_code' => 'VES',
+                'phone_code' => '+58',
+                'latitude' => 10.4806,
+                'longitude' => -66.9036,
+                'flag_url' => 'https://flagcdn.com/ve.svg',
+                'population' => 28435943,
+                'gdp_usd' => 48200000000,
+                'region_group' => 'Sudamérica',
+                'area_km2' => 916445,
+                'altitude_m' => 900,
+                'timezone_name' => 'America/Caracas',
             ],
             [
                 'name' => 'Colombia',
@@ -131,8 +191,6 @@ class CountrySeeder extends Seeder
                 'altitude_m' => 577,
                 'timezone_name' => 'Africa/Malabo',
             ],
-
-
         ];
 
         foreach ($countries as $data) {
@@ -144,10 +202,15 @@ class CountrySeeder extends Seeder
             }
 
             $data['timezone_id'] = $timezone->id;
-            unset($data['timezone_name']); // ya no se necesita
+            unset($data['timezone_name']);
 
-            Country::create($data);
-            echo "País creado: {$data['name']}\n";
+            // Evita crear duplicados con updateOrCreate
+            Country::updateOrCreate(
+                ['slug' => $data['slug']],
+                $data
+            );
+
+            echo "País creado o actualizado: {$data['name']}\n";
         }
     }
 }

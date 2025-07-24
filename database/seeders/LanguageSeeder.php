@@ -58,6 +58,38 @@ class LanguageSeeder extends Seeder
                 'iso_639_2' => 'por',
                 'rtl' => false,
             ],
+            [
+                'language' => 'Quechua',
+                'slug' => 'quechua',
+                'native_name' => 'Runa Simi',
+                'iso_639_1' => 'qu',
+                'iso_639_2' => 'que',
+                'rtl' => false,
+            ],
+            [
+                'language' => 'Guaraní',
+                'slug' => 'guarani',
+                'native_name' => 'Avañe\'ẽ',
+                'iso_639_1' => 'gn',
+                'iso_639_2' => 'grn',
+                'rtl' => false,
+            ],
+            [
+                'language' => 'Aymara',
+                'slug' => 'aymara',
+                'native_name' => 'Aymar aru',
+                'iso_639_1' => 'ay',
+                'iso_639_2' => 'aym',
+                'rtl' => false,
+            ],
+            [
+                'language' => 'Náhuatl',
+                'slug' => 'nahuatl',
+                'native_name' => 'Nāhuatl',
+                'iso_639_1' => 'nah', // No ISO 639-1 code, but we can use 'nah' as slug
+                'iso_639_2' => 'nah',
+                'rtl' => false,
+            ],
         ];
 
         foreach ($languages as $lang) {

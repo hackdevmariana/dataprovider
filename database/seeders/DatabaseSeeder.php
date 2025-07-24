@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             RolesAndAdminSeeder::class,
             AppSettingSeeder::class,
             TimezoneSeeder::class,
-            CountrySeeder::class,
             LanguageSeeder::class,
+            CountrySeeder::class,
         ]);
     }
 }
