@@ -188,6 +188,36 @@ class PointOfInterestController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/points-of-interest/tag/{tagSlug}",
+     *     summary="Listar puntos de interés por etiqueta (tag)",
+     *     tags={"Points of Interest"},
+     *     @OA\Parameter(
+     *         name="tagSlug",
+     *         in="path",
+     *         required=true,
+     *         description="Slug de la etiqueta (tag)",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Puntos encontrados", @OA\JsonContent(type="array", @OA\Items())),
+     *     @OA\Response(response=404, description="Etiqueta no encontrada")
+     * )
+     */
+    public function byTag($tagSlug)
+    {
+        $tag = \App\Models\Tag::where('slug', $tagSlug)->first();
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
+        $points = $tag->pointsOfInterest()->with(['municipality', 'tags'])->get();
+
+        return response()->json($points);
+    }
+
+
+    /**
      * @OA\Delete(
      *     path="/api/v1/points-of-interest/{id}",
      *     summary="Eliminar un punto de interés",
