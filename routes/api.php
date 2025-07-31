@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\TimezoneController;
 use App\Http\Controllers\Api\MunicipalityController;
-
+use App\Http\Controllers\Api\PointOfInterestController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -27,6 +27,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/municipalities/province/{slug}', [MunicipalityController::class, 'byProvince']);
     Route::get('/municipalities/country/{slug}', [MunicipalityController::class, 'byCountry']);
     Route::get('/municipalities/{idOrSlug}', [MunicipalityController::class, 'show']);
+    Route::get('/points-of-interest', [PointOfInterestController::class, 'index']);
+    Route::get('/points-of-interest/{idOrSlug}', [PointOfInterestController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
