@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/municipalities/{idOrSlug}', [MunicipalityController::class, 'show']);
     Route::get('/points-of-interest', [PointOfInterestController::class, 'index']);
     Route::get('/points-of-interest/{idOrSlug}', [PointOfInterestController::class, 'show']);
+    Route::get('/points-of-interest/municipality/{slug}', [PointOfInterestController::class, 'byMunicipality']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

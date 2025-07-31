@@ -138,6 +138,34 @@ class PointOfInterestController extends Controller
 
         return response()->json($poi);
     }
+    /**
+     * @OA\Get(
+     *     path="/api/v1/points-of-interest/municipality/{slug}",
+     *     summary="Listar puntos de interés por municipio",
+     *     tags={"Points of Interest"},
+     *     @OA\Parameter(
+     *         name="slug",
+     *         in="path",
+     *         required=true,
+     *         description="Slug del municipio",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Lista de puntos de interés", @OA\JsonContent(type="array", @OA\Items())),
+     *     @OA\Response(response=404, description="Municipio no encontrado")
+     * )
+     */
+    public function byMunicipality($slug)
+    {
+        $municipality = \App\Models\Municipality::where('slug', $slug)->first();
+
+        if (!$municipality) {
+            return response()->json(['message' => 'Municipio no encontrado'], 404);
+        }
+
+        $points = $municipality->pointsOfInterest()->with('tags')->get();
+
+        return response()->json($points);
+    }
 
     /**
      * @OA\Delete(
@@ -154,6 +182,9 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
+
+
+
     public function destroy($id)
     {
         $poi = PointOfInterest::find($id);
