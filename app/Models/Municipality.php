@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -52,5 +53,10 @@ class Municipality extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function pointsOfInterest()
+    {
+        return $this->hasMany(PointOfInterest::class);
     }
 }
