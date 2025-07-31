@@ -166,6 +166,26 @@ class PointOfInterestController extends Controller
 
         return response()->json($points);
     }
+    /**
+     * @OA\Get(
+     *     path="/api/v1/points-of-interest/type/{type}",
+     *     summary="Listar puntos de interés por tipo",
+     *     tags={"Points of Interest"},
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="path",
+     *         required=true,
+     *         description="Tipo de punto de interés (ej: centro_energia)",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Puntos encontrados", @OA\JsonContent(type="array", @OA\Items()))
+     * )
+     */
+    public function byType($type)
+    {
+        $points = PointOfInterest::where('type', $type)->with(['municipality', 'tags'])->get();
+        return response()->json($points);
+    }
 
     /**
      * @OA\Delete(
