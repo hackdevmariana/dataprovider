@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -37,5 +38,10 @@ class Country extends Model
     public function languages()
     {
         return $this->belongsToMany(Language::class)->withPivot('is_official');
+    }
+
+    public function regions()
+    {
+        return $this->hasMany(Region::class);
     }
 }
