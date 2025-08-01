@@ -12,6 +12,9 @@ use App\Http\Controllers\Api\PointOfInterestController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
+    Route::post('/points-of-interest', [PointOfInterestController::class, 'store']);
+    Route::put('/points-of-interest/{id}', [PointOfInterestController::class, 'update']);
+    // Route::delete('/points-of-interest/{id}', [PointOfInterestController::class, 'destroy']);
 });
 
 // Rutas públicas sin autenticación
