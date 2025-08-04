@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\TimezoneController;
 use App\Http\Controllers\Api\MunicipalityController;
 use App\Http\Controllers\Api\PointOfInterestController;
 use App\Http\Controllers\Api\AutonomousCommunityController;
+use App\Http\Controllers\Api\PersonController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -40,6 +41,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/autonomous-communities/{slug}', [AutonomousCommunityController::class, 'show']);
     Route::get('/autonomous-communities-with-provinces', [AutonomousCommunityController::class, 'withProvinces']);
     Route::get('/autonomous-communities-with-provinces-and-municipalities', [AutonomousCommunityController::class, 'withProvincesAndMunicipalities']);
+    Route::get('/persons', [PersonController::class, 'index']);
+    Route::get('/persons/{idOrSlug}', [PersonController::class, 'show']);
+
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
