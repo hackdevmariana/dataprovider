@@ -60,4 +60,8 @@ class Person extends Model
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
+    public function appearance()
+    {
+        return $this->hasOne(Appearance::class, 'person_id');
+    }
 }
