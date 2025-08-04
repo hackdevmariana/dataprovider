@@ -40,4 +40,9 @@ class Tag extends Model
     {
         return $this->morphedByMany(Anniversary::class, 'taggable');
     }
+
+    public function images()
+    {
+        return $this->morphedByMany(Image::class, 'taggable');
+    }
 }
