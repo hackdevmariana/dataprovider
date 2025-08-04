@@ -9,15 +9,15 @@ return new class extends Migration {
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('url'); // URL completa o path relativo
-            $table->string('alt_text')->nullable(); // Texto alternativo
-            $table->string('source')->nullable(); // Fuente original (ej. Wikimedia, Unsplash...)
+            $table->string('slug')->unique()->nullable();
+            $table->string('url');
+            $table->string('alt_text')->nullable();
+            $table->string('source')->nullable();
             $table->unsignedInteger('width')->nullable();
             $table->unsignedInteger('height')->nullable();
             $table->timestamps();
         });
     }
-
     public function down(): void
     {
         Schema::dropIfExists('images');
