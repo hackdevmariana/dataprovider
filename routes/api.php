@@ -11,12 +11,16 @@ use App\Http\Controllers\Api\MunicipalityController;
 use App\Http\Controllers\Api\PointOfInterestController;
 use App\Http\Controllers\Api\AutonomousCommunityController;
 use App\Http\Controllers\Api\PersonController;
+use App\Http\Controllers\Api\ImageController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
     Route::post('/points-of-interest', [PointOfInterestController::class, 'store']);
     Route::put('/points-of-interest/{id}', [PointOfInterestController::class, 'update']);
     // Route::delete('/points-of-interest/{id}', [PointOfInterestController::class, 'destroy']);
+    Route::post('/images', [ImageController::class, 'store']);
+    Route::put('/images/{id}', [ImageController::class, 'update']);
+    Route::delete('/images/{id}', [ImageController::class, 'destroy']);
 });
 
 // Rutas públicas sin autenticación
@@ -43,6 +47,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/autonomous-communities-with-provinces-and-municipalities', [AutonomousCommunityController::class, 'withProvincesAndMunicipalities']);
     Route::get('/persons', [PersonController::class, 'index']);
     Route::get('/persons/{idOrSlug}', [PersonController::class, 'show']);
+    Route::get('/images', [ImageController::class, 'index']);
+    Route::get('/images/{id}', [ImageController::class, 'show']);
 
 });
 
