@@ -7,10 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'description', 'start_datetime', 'end_datetime',
-        'venue_id', 'event_type_id', 'festival_id', 'language_id', 'timezone_id',
-        'municipality_id', 'point_of_interest_id', 'work_id',
-        'price', 'is_free', 'audience_size_estimate', 'source_url',
+        'title',
+        'slug',
+        'description',
+        'start_datetime',
+        'end_datetime',
+        'venue_id',
+        'event_type_id',
+        'festival_id',
+        'language_id',
+        'timezone_id',
+        'municipality_id',
+        'point_of_interest_id',
+        'work_id',
+        'price',
+        'is_free',
+        'audience_size_estimate',
+        'source_url',
     ];
 
     protected $casts = [
@@ -62,13 +75,15 @@ class Event extends Model
         return $this->belongsTo(Work::class);
     }
 
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }
+
 
     public function artists()
     {
         return $this->belongsToMany(Artist::class, 'artist_event')->withPivot('role')->withTimestamps();
+    }
+
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }

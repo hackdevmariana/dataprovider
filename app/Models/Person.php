@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -40,15 +41,23 @@ class Person extends Model
         'last_updated_from_source' => 'datetime',
     ];
 
-    public function nationality(): BelongsTo {
+    public function nationality(): BelongsTo
+    {
         return $this->belongsTo(Country::class, 'nationality_id');
     }
 
-    public function language(): BelongsTo {
+    public function language(): BelongsTo
+    {
         return $this->belongsTo(Language::class);
     }
 
-    public function image(): BelongsTo {
+    public function image(): BelongsTo
+    {
         return $this->belongsTo(Image::class);
+    }
+
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }
