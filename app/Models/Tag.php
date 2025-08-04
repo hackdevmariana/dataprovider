@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,12 +16,17 @@ class Tag extends Model
         'is_searchable',
     ];
 
+    /**
+     * Relación específica con PointOfInterest (no polimórfica)
+     */
     public function pointOfInterests()
     {
         return $this->belongsToMany(PointOfInterest::class, 'point_of_interest_tag');
     }
 
-    // Relaciones morphToMany futuras (por ejemplo con Event, Person, etc.)
+    /**
+     * Relaciones polimórficas con otros modelos
+     */
     public function events()
     {
         return $this->morphedByMany(Event::class, 'taggable');
