@@ -45,6 +45,10 @@ class Person extends Model
     {
         return $this->belongsTo(Country::class, 'nationality_id');
     }
+    public function aliases()
+    {
+        return $this->hasMany(Alias::class);
+    }
 
     public function language(): BelongsTo
     {
