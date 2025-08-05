@@ -65,6 +65,7 @@ class PersonResource extends JsonResource
             }),
 
             'appearance' => new AppearanceResource($this->whenLoaded('appearance')),
+            'aliases' => AliasResource::collection($this->whenLoaded('aliases')),
 
 
         ];
