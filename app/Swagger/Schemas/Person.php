@@ -32,6 +32,13 @@
  *     @OA\Property(property="last_updated_from_source", type="string", format="date-time", example="2024-05-01T12:00:00Z"),
  *     @OA\Property(property="nationality", ref="#/components/schemas/Country"),
  *     @OA\Property(property="language", ref="#/components/schemas/Language"),
- *     @OA\Property(property="image", ref="#/components/schemas/Image")
+ *     @OA\Property(property="image", ref="#/components/schemas/Image"),
+
+ * 
+ * @OA\Property(
+ *         property="aliases",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Alias")
+ *     ),
  * )
  */

@@ -27,7 +27,7 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $persons = Person::with(['nationality', 'language', 'image'])->get();
+        $persons = Person::with(['nationality', 'language', 'image', 'aliases'])->get();
         return PersonResource::collection($persons);
     }
 
@@ -53,10 +53,14 @@ class PersonController extends Controller
      */
     public function show($idOrSlug)
     {
-        $person = Person::with(['nationality', 'language', 'image'])
-                        ->where('slug', $idOrSlug)
-                        ->orWhere('id', $idOrSlug)
-                        ->firstOrFail();
+        $person = Person::with([
+            'nationality',
+            'language',
+            'image',
+            'aliases'
+        ])->where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
+            ->firstOrFail();
 
         return new PersonResource($person);
     }
