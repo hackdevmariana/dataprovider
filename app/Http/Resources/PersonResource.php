@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AppearanceResource;
 
 class PersonResource extends JsonResource
 {
@@ -62,6 +63,10 @@ class PersonResource extends JsonResource
                     'alt' => $this->image->alt ?? null,
                 ];
             }),
+
+            'appearance' => new AppearanceResource($this->whenLoaded('appearance')),
+
+
         ];
     }
 }
