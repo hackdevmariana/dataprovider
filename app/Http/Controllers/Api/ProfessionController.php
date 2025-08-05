@@ -58,4 +58,44 @@ class ProfessionController extends Controller
 
         return new ProfessionResource($profession);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/v1/professions",
+     *     summary="Crear una nueva profesión",
+     *     tags={"Professions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "slug", "category", "is_public_facing"},
+     *             @OA\Property(property="name", type="string", example="Ingeniero de Software"),
+     *             @OA\Property(property="slug", type="string", example="ingeniero-de-software"),
+     *             @OA\Property(property="category", type="string", example="Tecnología"),
+     *             @OA\Property(property="is_public_facing", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Profesión creada exitosamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Profession")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
+     *     )
+     * )
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:professions,slug'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'is_public_facing' => ['required', 'boolean'],
+        ]);
+
+        $profession = Profession::create($validated);
+
+        return new ProfessionResource($profession);
+    }
 }
