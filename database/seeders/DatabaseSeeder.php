@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             ProvinceSeeder::class,
 
             \Database\Seeders\Municipality\MadridMunicipalitiesSeeder::class,
+            ProfessionSeeder::class,
         ]);
     }
 }
