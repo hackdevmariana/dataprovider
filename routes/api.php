@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\AutonomousCommunityController;
 use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\ProfessionController;
+use App\Http\Controllers\Api\WorkController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -53,6 +54,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/images/{id}', [ImageController::class, 'show']);
     Route::get('/professions', [ProfessionController::class, 'index']);
     Route::get('/professions/{idOrSlug}', [ProfessionController::class, 'show']);
+    Route::get('/works', [WorkController::class, 'index']);
+    Route::get('/works/{idOrSlug}', [WorkController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
