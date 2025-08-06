@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Timezone;
+use App\Http\Resources\TimezoneResource;
 
 /**
  * @OA\Tag(
@@ -30,10 +31,9 @@ class TimezoneController extends Controller
      */
     public function index()
     {
-        $timezones = Timezone::with(['countries'])->get();
-        return response()->json($timezones);
+        $timezones = Timezone::with('countries')->get();
+        return TimezoneResource::collection($timezones);
     }
-
     /**
      * @OA\Get(
      *     path="/api/v1/timezones/{idOrName}",
@@ -56,15 +56,11 @@ class TimezoneController extends Controller
      */
     public function show($idOrName)
     {
-        $timezone = Timezone::with(['countries'])
+        $timezone = Timezone::with('countries')
             ->where('id', $idOrName)
             ->orWhere('name', $idOrName)
-            ->first();
+            ->firstOrFail();
 
-        if (!$timezone) {
-            return response()->json(['message' => 'Zona horaria no encontrada'], 404);
-        }
-
-        return response()->json($timezone);
+        return new TimezoneResource($timezone);
     }
 }
