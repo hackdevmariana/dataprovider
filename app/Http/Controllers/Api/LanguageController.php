@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Language;
+use App\Http\Resources\LanguageResource;
 
 /**
  * @OA\Tag(
@@ -31,7 +32,7 @@ class LanguageController extends Controller
     public function index()
     {
         $languages = Language::with('countries')->get();
-        return response()->json($languages);
+        return LanguageResource::collection($languages);
     }
 
     /**
@@ -59,12 +60,8 @@ class LanguageController extends Controller
         $language = Language::with('countries')
             ->where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
-            ->first();
+            ->firstOrFail();
 
-        if (!$language) {
-            return response()->json(['message' => 'Idioma no encontrado'], 404);
-        }
-
-        return response()->json($language);
+        return new LanguageResource($language);
     }
 }
