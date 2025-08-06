@@ -24,6 +24,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::put('/images/{id}', [ImageController::class, 'update']);
     Route::delete('/images/{id}', [ImageController::class, 'destroy']);
     Route::post('/professions', [ProfessionController::class, 'store']);
+    Route::post('/works', [WorkController::class, 'store']);
 });
 
 // Rutas públicas sin autenticación
