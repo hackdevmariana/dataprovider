@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Http\Resources\CountryResource;
 
 /**
  * @OA\Tag(
@@ -31,7 +32,7 @@ class CountryController extends Controller
     public function index()
     {
         $countries = Country::with(['timezone', 'languages'])->get();
-        return response()->json($countries);
+        return CountryResource::collection($countries);
     }
 
     /**
@@ -59,12 +60,8 @@ class CountryController extends Controller
         $country = Country::with(['timezone', 'languages'])
             ->where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
-            ->first();
+            ->firstOrFail();
 
-        if (!$country) {
-            return response()->json(['message' => 'País no encontrado'], 404);
-        }
-
-        return response()->json($country);
+        return new CountryResource($country);
     }
 }
