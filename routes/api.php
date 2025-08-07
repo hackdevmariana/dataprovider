@@ -28,6 +28,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/professions', [ProfessionController::class, 'store']);
     Route::post('/works', [WorkController::class, 'store']);
     Route::post('/links', [LinkController::class, 'store']);
+    Route::post('/awards', [AwardController::class, 'store']);
 });
 
 // Rutas públicas sin autenticación
