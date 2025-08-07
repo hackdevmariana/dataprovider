@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ProfessionController;
 use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\AwardController;
+use App\Http\Controllers\Api\AwardWinnerController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -29,6 +30,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/works', [WorkController::class, 'store']);
     Route::post('/links', [LinkController::class, 'store']);
     Route::post('/awards', [AwardController::class, 'store']);
+    Route::post('/award-winners', [AwardWinnerController::class, 'store']);
 });
 
 // Rutas públicas sin autenticación
@@ -65,6 +67,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/links/{id}', [LinkController::class, 'show']);
     Route::get('/awards', [AwardController::class, 'index']);
     Route::get('/awards/{idOrSlug}', [AwardController::class, 'show']);
+    Route::get('/award-winners', [AwardWinnerController::class, 'index']);
+    Route::get('/award-winners/{id}', [AwardWinnerController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
