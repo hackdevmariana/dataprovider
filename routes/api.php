@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\ProfessionController;
 use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\LinkController;
+use App\Http\Controllers\Api\AwardController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -61,6 +62,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/works/{idOrSlug}', [WorkController::class, 'show']);
     Route::get('/links', [LinkController::class, 'index']);
     Route::get('/links/{id}', [LinkController::class, 'show']);
+    Route::get('/awards', [AwardController::class, 'index']);
+    Route::get('/awards/{idOrSlug}', [AwardController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
