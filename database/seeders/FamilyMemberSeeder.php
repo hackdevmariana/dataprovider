@@ -18,12 +18,22 @@ class FamilyMemberSeeder extends Seeder
         }
 
         $relationshipTypes = [
-            'father',
-            'mother',
-            'sibling',
-            'spouse',
-            'child',
+            'padre',
+            'madre',
+            'hermano',
+            'hermana',
+            'pareja',
+            'hijo',
+            'hija',
+            'marido',
+            'esposa',
+            'abuelo',
+            'abuela',
+            'tío',
+            'tía',
+
         ];
+
 
         // Creamos entre 1 y 3 relaciones por persona
         foreach ($people as $person) {
