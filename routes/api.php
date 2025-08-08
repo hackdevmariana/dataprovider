@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\AwardController;
 use App\Http\Controllers\Api\AwardWinnerController;
+use App\Http\Controllers\Api\FamilyMemberController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -69,6 +70,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/awards/{idOrSlug}', [AwardController::class, 'show']);
     Route::get('/award-winners', [AwardWinnerController::class, 'index']);
     Route::get('/award-winners/{id}', [AwardWinnerController::class, 'show']);
+    Route::get('/family-members', [FamilyMemberController::class, 'index']);
+    Route::get('/family-members/{id}', [FamilyMemberController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
