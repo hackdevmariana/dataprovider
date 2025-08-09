@@ -7,6 +7,10 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+if (! in_array('sqlite', PDO::getAvailableDrivers())) {
+    test('sqlite driver not available for award winners tests')->markTestSkipped('PDO sqlite driver not available');
+    return;
+}
 
 test('POST /api/v1/award-winners returns 201 with valid payload', function () {
     Sanctum::actingAs(User::factory()->create());

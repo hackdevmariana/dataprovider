@@ -44,3 +44,5 @@ class MediaContactsRelationManager extends RelationManager
         ->bulkActions([Tables\Actions\DeleteBulkAction::make()]);
     }
 }
+
+

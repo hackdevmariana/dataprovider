@@ -1,3 +1,7 @@
+if (! in_array('sqlite', PDO::getAvailableDrivers())) {
+    test('sqlite driver not available for awards tests')->markTestSkipped('PDO sqlite driver not available');
+    return;
+}
 <?php
 
 use App\Models\User;
