@@ -58,6 +58,7 @@ class ProfessionController extends Controller
 
         return new ProfessionResource($profession);
     }
+
     /**
      * @OA\Post(
      *     path="/api/v1/professions",
@@ -99,3 +100,5 @@ class ProfessionController extends Controller
         return new ProfessionResource($profession);
     }
 }
+
+

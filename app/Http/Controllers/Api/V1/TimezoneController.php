@@ -64,3 +64,5 @@ class TimezoneController extends Controller
         return new TimezoneResource($timezone);
     }
 }
+
+

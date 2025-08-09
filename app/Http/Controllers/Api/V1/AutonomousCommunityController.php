@@ -99,3 +99,5 @@ class AutonomousCommunityController extends Controller
         return AutonomousCommunityResource::collection($communities);
     }
 }
+
+

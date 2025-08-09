@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Work;
 use Illuminate\Http\Request;
-use App\Http\Resources\WorkResource;
+use App\Http\Resources\V1\WorkResource;
 use App\Http\Requests\StoreWorkRequest;
 
 /**

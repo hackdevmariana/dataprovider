@@ -3,20 +3,20 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AppSettingController;
-use App\Http\Controllers\Api\ProvinceController;
-use App\Http\Controllers\Api\CountryController;
-use App\Http\Controllers\Api\LanguageController;
-use App\Http\Controllers\Api\TimezoneController;
-use App\Http\Controllers\Api\MunicipalityController;
-use App\Http\Controllers\Api\PointOfInterestController;
-use App\Http\Controllers\Api\AutonomousCommunityController;
-use App\Http\Controllers\Api\PersonController;
-use App\Http\Controllers\Api\ImageController;
-use App\Http\Controllers\Api\ProfessionController;
-use App\Http\Controllers\Api\WorkController;
-use App\Http\Controllers\Api\LinkController;
-use App\Http\Controllers\Api\AwardController;
-use App\Http\Controllers\Api\AwardWinnerController;
+use App\Http\Controllers\Api\V1\ProvinceController;
+use App\Http\Controllers\Api\V1\CountryController;
+use App\Http\Controllers\Api\V1\LanguageController;
+use App\Http\Controllers\Api\V1\TimezoneController;
+use App\Http\Controllers\Api\V1\MunicipalityController;
+use App\Http\Controllers\Api\V1\PointOfInterestController;
+use App\Http\Controllers\Api\V1\AutonomousCommunityController;
+use App\Http\Controllers\Api\V1\PersonController;
+use App\Http\Controllers\Api\V1\ImageController;
+use App\Http\Controllers\Api\V1\ProfessionController;
+use App\Http\Controllers\Api\V1\WorkController;
+use App\Http\Controllers\Api\V1\LinkController;
+use App\Http\Controllers\Api\V1\AwardController;
+use App\Http\Controllers\Api\V1\AwardWinnerController;
 use App\Http\Controllers\Api\FamilyMemberController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {

@@ -97,3 +97,5 @@ class ProvinceController extends Controller
         return response()->json($province);
     }
 }
+
+

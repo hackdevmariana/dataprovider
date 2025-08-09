@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -65,3 +64,5 @@ class PersonController extends Controller
         return new PersonResource($person);
     }
 }
+
+
