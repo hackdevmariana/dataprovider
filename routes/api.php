@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\V1\WorkController;
 use App\Http\Controllers\Api\V1\LinkController;
 use App\Http\Controllers\Api\V1\AwardController;
 use App\Http\Controllers\Api\V1\AwardWinnerController;
-use App\Http\Controllers\Api\FamilyMemberController;
+use App\Http\Controllers\Api\V1\FamilyMemberController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
