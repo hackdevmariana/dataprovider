@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Award;
 use App\Http\Resources\V1\AwardResource;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\StoreAwardRequest;
 
 /**
  * @OA\Tag(
@@ -93,18 +92,9 @@ class AwardController extends Controller
      *     @OA\Response(response=422, description="Datos inválidos")
      * )
      */
-    public function store(Request $request)
+    public function store(StoreAwardRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:awards,slug',
-            'description' => 'nullable|string',
-            'awarded_by' => 'nullable|string|max:255',
-            'first_year_awarded' => 'nullable|integer|min:1800|max:' . date('Y'),
-            'category' => 'nullable|string|max:255',
-        ]);
-
-        $award = Award::create($validated);
+        $award = Award::create($request->validated());
 
         return new AwardResource($award);
     }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\AwardWinner;
 use App\Http\Resources\V1\AwardWinnerResource;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreAwardWinnerRequest;
 
 /**
  * @OA\Tag(
@@ -88,18 +88,9 @@ class AwardWinnerController extends Controller
      *     @OA\Response(response=422, description="Datos inválidos")
      * )
      */
-    public function store(Request $request)
+    public function store(StoreAwardWinnerRequest $request)
     {
-        $validated = $request->validate([
-            'person_id' => 'required|exists:people,id',
-            'award_id' => 'required|exists:awards,id',
-            'year' => 'required|integer|min:1800|max:' . date('Y'),
-            'classification' => 'nullable|string|max:255',
-            'work_id' => 'nullable|exists:works,id',
-            'municipality_id' => 'nullable|exists:municipalities,id',
-        ]);
-
-        $awardWinner = AwardWinner::create($validated);
+        $awardWinner = AwardWinner::create($request->validated());
 
         return new AwardWinnerResource($awardWinner);
     }

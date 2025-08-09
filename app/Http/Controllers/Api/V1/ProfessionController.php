@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profession;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProfessionRequest;
 use App\Http\Resources\V1\ProfessionResource;
 
 class ProfessionController extends Controller
@@ -86,16 +86,9 @@ class ProfessionController extends Controller
      *     )
      * )
      */
-    public function store(Request $request)
+    public function store(StoreProfessionRequest $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:professions,slug'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'is_public_facing' => ['required', 'boolean'],
-        ]);
-
-        $profession = Profession::create($validated);
+        $profession = Profession::create($request->validated());
 
         return new ProfessionResource($profession);
     }

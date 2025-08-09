@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Http\Resources\V1\ImageResource;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\StoreImageRequest;
+use App\Http\Requests\UpdateImageRequest;
 
 /**
  * @OA\Tag(
@@ -95,18 +95,9 @@ class ImageController extends Controller
      *     @OA\Response(response=422, description="Error de validación")
      * )
      */
-    public function store(Request $request)
+    public function store(StoreImageRequest $request)
     {
-        $validated = $request->validate([
-            'slug' => ['nullable', 'string', 'unique:images,slug'],
-            'url' => ['required', 'url'],
-            'alt_text' => ['nullable', 'string'],
-            'source' => ['nullable', 'string'],
-            'width' => ['nullable', 'integer', 'min:0'],
-            'height' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $image = Image::create($validated);
+        $image = Image::create($request->validated());
 
         return (new ImageResource($image))->response()->setStatusCode(201);
     }
@@ -144,20 +135,10 @@ class ImageController extends Controller
      *     @OA\Response(response=422, description="Error de validación")
      * )
      */
-    public function update(Request $request, $id)
+    public function update(UpdateImageRequest $request, $id)
     {
         $image = Image::findOrFail($id);
-
-        $validated = $request->validate([
-            'slug' => ['nullable', 'string', Rule::unique('images', 'slug')->ignore($image->id)],
-            'url' => ['sometimes', 'url'],
-            'alt_text' => ['nullable', 'string'],
-            'source' => ['nullable', 'string'],
-            'width' => ['nullable', 'integer', 'min:0'],
-            'height' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $image->update($validated);
+        $image->update($request->validated());
 
         return new ImageResource($image);
     }

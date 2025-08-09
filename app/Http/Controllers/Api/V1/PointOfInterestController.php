@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\PointOfInterest;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePointOfInterestRequest;
+use App\Http\Requests\UpdatePointOfInterestRequest;
 
 class PointOfInterestController extends Controller
 {
@@ -69,25 +70,9 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=400, description="Datos inválidos")
      * )
      */
-    public function store(Request $request)
+    public function store(StorePointOfInterestRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:point_of_interests,slug',
-            'address' => 'nullable|string',
-            'type' => 'nullable|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'municipality_id' => 'required|exists:municipalities,id',
-            'source' => 'nullable|string',
-            'description' => 'nullable|string',
-            'is_cultural_center' => 'boolean',
-            'is_energy_installation' => 'boolean',
-            'is_cooperative_office' => 'boolean',
-            'opening_hours' => 'nullable|array',
-        ]);
-
-        $poi = PointOfInterest::create($data);
+        $poi = PointOfInterest::create($request->validated());
 
         return response()->json($poi, 201);
     }
@@ -111,30 +96,14 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePointOfInterestRequest $request, $id)
     {
         $poi = PointOfInterest::find($id);
         if (!$poi) {
             return response()->json(['message' => 'Punto de interés no encontrado'], 404);
         }
 
-        $data = $request->validate([
-            'name' => 'string',
-            'slug' => "string|unique:point_of_interests,slug,$id",
-            'address' => 'nullable|string',
-            'type' => 'nullable|string',
-            'latitude' => 'numeric',
-            'longitude' => 'numeric',
-            'municipality_id' => 'exists:municipalities,id',
-            'source' => 'nullable|string',
-            'description' => 'nullable|string',
-            'is_cultural_center' => 'boolean',
-            'is_energy_installation' => 'boolean',
-            'is_cooperative_office' => 'boolean',
-            'opening_hours' => 'nullable|array',
-        ]);
-
-        $poi->update($data);
+        $poi->update($request->validated());
 
         return response()->json($poi);
     }
