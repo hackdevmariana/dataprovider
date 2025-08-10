@@ -228,6 +228,8 @@ namespace App\Models{
  * @property-read \App\Models\Country $country
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Province> $provinces
  * @property-read int|null $provinces_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Region> $regions
+ * @property-read int|null $regions_count
  * @property-read \App\Models\Timezone|null $timezone
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AutonomousCommunity newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AutonomousCommunity newQuery()
@@ -263,6 +265,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AwardWinner> $awardWinners
  * @property-read int|null $award_winners_count
+ * @method static \Database\Factories\AwardFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Award newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Award newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Award query()
@@ -613,6 +616,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Language> $languages
  * @property-read int|null $languages_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Region> $regions
+ * @property-read int|null $regions_count
  * @property-read \App\Models\Timezone|null $timezone
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Country newQuery()
@@ -1246,6 +1251,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string|null $slug
  * @property string $url
  * @property string|null $alt_text
  * @property string|null $source
@@ -1253,7 +1259,9 @@ namespace App\Models{
  * @property int|null $height
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $imageable
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
+ * @property-read int|null $tags_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image query()
@@ -1261,6 +1269,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereHeight($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Image whereUrl($value)
@@ -1427,9 +1436,12 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\AutonomousCommunity $autonomousCommunity
  * @property-read \App\Models\Country $country
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointOfInterest> $pointsOfInterest
+ * @property-read int|null $points_of_interest_count
  * @property-read \App\Models\Province $province
  * @property-read \App\Models\Region|null $region
  * @property-read \App\Models\Timezone|null $timezone
+ * @method static \Database\Factories\MunicipalityFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Municipality query()
@@ -1653,9 +1665,14 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $last_updated_from_source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Alias> $aliases
+ * @property-read int|null $aliases_count
+ * @property-read \App\Models\Appearance|null $appearance
  * @property-read \App\Models\Image|null $image
  * @property-read \App\Models\Language|null $language
  * @property-read \App\Models\Country|null $nationality
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
+ * @property-read int|null $tags_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Person query()
@@ -1829,6 +1846,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\AutonomousCommunity $autonomousCommunity
  * @property-read \App\Models\Country $country
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Municipality> $municipalities
+ * @property-read int|null $municipalities_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Region> $regions
  * @property-read int|null $regions_count
  * @property-read \App\Models\Timezone|null $timezone
@@ -2071,6 +2090,8 @@ namespace App\Models{
  * @property-read int|null $anniversaries_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Event> $events
  * @property-read int|null $events_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Image> $images
+ * @property-read int|null $images_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Person> $people
  * @property-read int|null $people_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointOfInterest> $pointOfInterests
@@ -2166,6 +2187,8 @@ namespace App\Models{
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
