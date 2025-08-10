@@ -12,7 +12,12 @@ uses(RefreshDatabase::class);
 test('POST /api/v1/points-of-interest returns 201 with valid payload', function () {
     Sanctum::actingAs(User::factory()->create());
 
-    $country = Country::query()->create(['name' => 'Spain', 'slug' => 'spain', 'iso_code' => 'ES']);
+    $country = Country::query()->create([
+        'name' => 'Spain',
+        'slug' => 'spain',
+        'iso_alpha2' => 'ES',
+        'iso_alpha3' => 'ESP',
+    ]);
     $province = Province::query()->create([
         'name' => 'Madrid',
         'slug' => 'madrid',
