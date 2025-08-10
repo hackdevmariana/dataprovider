@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Award;
 use App\Http\Resources\V1\AwardResource;
 use App\Http\Requests\StoreAwardRequest;
+use App\Services\AwardsService;
 
 /**
  * @OA\Tag(
@@ -30,9 +30,9 @@ class AwardController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(AwardsService $awardsService)
     {
-        $awards = Award::with('awardWinners')->get();
+        $awards = $awardsService->listAwards();
         return AwardResource::collection($awards);
     }
 
@@ -56,12 +56,9 @@ class AwardController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug, AwardsService $awardsService)
     {
-        $award = Award::with('awardWinners')
-            ->where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
-            ->firstOrFail();
+        $award = $awardsService->getAwardByIdOrSlug($idOrSlug);
 
         return new AwardResource($award);
     }
@@ -92,9 +89,9 @@ class AwardController extends Controller
      *     @OA\Response(response=422, description="Datos inválidos")
      * )
      */
-    public function store(StoreAwardRequest $request)
+    public function store(StoreAwardRequest $request, AwardsService $awardsService)
     {
-        $award = Award::create($request->validated());
+        $award = $awardsService->createAward($request->validated());
 
         return new AwardResource($award);
     }

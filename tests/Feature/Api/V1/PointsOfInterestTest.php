@@ -6,10 +6,6 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-if (! in_array('sqlite', PDO::getAvailableDrivers())) {
-    test('sqlite driver not available for POI tests')->markTestSkipped('PDO sqlite driver not available');
-    return;
-}
 
 test('POST /api/v1/points-of-interest returns 201 with valid payload', function () {
     Sanctum::actingAs(User::factory()->create());
@@ -24,7 +20,7 @@ test('POST /api/v1/points-of-interest returns 201 with valid payload', function 
         'municipality_id' => $municipality->id,
     ];
 
-    $response = postJson('/api/v1/points-of-interest', $payload);
+    $response = $this->postJson('/api/v1/points-of-interest', $payload);
 
     $response->assertStatus(201)
         ->assertJsonPath('slug', 'centro-cultural');
@@ -33,7 +29,7 @@ test('POST /api/v1/points-of-interest returns 201 with valid payload', function 
 test('POST /api/v1/points-of-interest returns 422 with invalid payload', function () {
     Sanctum::actingAs(User::factory()->create());
 
-    $response = postJson('/api/v1/points-of-interest', []);
+    $response = $this->postJson('/api/v1/points-of-interest', []);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'slug', 'latitude', 'longitude', 'municipality_id']);

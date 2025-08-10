@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Profession;
 use App\Http\Requests\StoreProfessionRequest;
 use App\Http\Resources\V1\ProfessionResource;
+use App\Services\ProfessionsService;
 
 class ProfessionController extends Controller
 {
@@ -24,9 +25,9 @@ class ProfessionController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(ProfessionsService $service)
     {
-        $professions = Profession::all();
+        $professions = $service->list();
         return ProfessionResource::collection($professions);
     }
 
@@ -50,11 +51,9 @@ class ProfessionController extends Controller
      *     @OA\Response(response=404, description="Profesión no encontrada")
      * )
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug, ProfessionsService $service)
     {
-        $profession = Profession::where('slug', $idOrSlug)
-            ->orWhere('id', $idOrSlug)
-            ->firstOrFail();
+        $profession = $service->findByIdOrSlug($idOrSlug);
 
         return new ProfessionResource($profession);
     }
@@ -86,9 +85,9 @@ class ProfessionController extends Controller
      *     )
      * )
      */
-    public function store(StoreProfessionRequest $request)
+    public function store(StoreProfessionRequest $request, ProfessionsService $service)
     {
-        $profession = Profession::create($request->validated());
+        $profession = $service->create($request->validated());
 
         return new ProfessionResource($profession);
     }

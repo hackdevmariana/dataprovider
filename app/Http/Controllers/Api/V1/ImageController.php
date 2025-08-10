@@ -7,6 +7,7 @@ use App\Models\Image;
 use App\Http\Resources\V1\ImageResource;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
+use App\Services\ImagesService;
 
 /**
  * @OA\Tag(
@@ -36,9 +37,9 @@ class ImageController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(ImagesService $service)
     {
-        $images = Image::paginate(20);
+        $images = $service->paginate(20);
         return ImageResource::collection($images);
     }
 
@@ -63,9 +64,9 @@ class ImageController extends Controller
      *     @OA\Response(response=404, description="Imagen no encontrada")
      * )
      */
-    public function show($id)
+    public function show($id, ImagesService $service)
     {
-        $image = Image::findOrFail($id);
+        $image = $service->findById((int) $id);
         return new ImageResource($image);
     }
 
@@ -95,9 +96,9 @@ class ImageController extends Controller
      *     @OA\Response(response=422, description="Error de validación")
      * )
      */
-    public function store(StoreImageRequest $request)
+    public function store(StoreImageRequest $request, ImagesService $service)
     {
-        $image = Image::create($request->validated());
+        $image = $service->create($request->validated());
 
         return (new ImageResource($image))->response()->setStatusCode(201);
     }
@@ -135,10 +136,10 @@ class ImageController extends Controller
      *     @OA\Response(response=422, description="Error de validación")
      * )
      */
-    public function update(UpdateImageRequest $request, $id)
+    public function update(UpdateImageRequest $request, $id, ImagesService $service)
     {
-        $image = Image::findOrFail($id);
-        $image->update($request->validated());
+        $image = $service->findById((int) $id);
+        $image = $service->update($image, $request->validated());
 
         return new ImageResource($image);
     }
@@ -160,10 +161,10 @@ class ImageController extends Controller
      *     @OA\Response(response=404, description="Imagen no encontrada")
      * )
      */
-    public function destroy($id)
+    public function destroy($id, ImagesService $service)
     {
-        $image = Image::findOrFail($id);
-        $image->delete();
+        $image = $service->findById((int) $id);
+        $service->delete($image);
 
         return response()->json(null, 204);
     }

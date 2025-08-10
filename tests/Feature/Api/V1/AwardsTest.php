@@ -1,7 +1,3 @@
-if (! in_array('sqlite', PDO::getAvailableDrivers())) {
-    test('sqlite driver not available for awards tests')->markTestSkipped('PDO sqlite driver not available');
-    return;
-}
 <?php
 
 use App\Models\User;
@@ -22,7 +18,7 @@ test('POST /api/v1/awards returns 201 with valid payload', function () {
         'category' => 'Cultura',
     ];
 
-    $response = postJson('/api/v1/awards', $payload);
+    $response = $this->postJson('/api/v1/awards', $payload);
 
     $response->assertStatus(201)
         ->assertJsonPath('data.slug', 'premio-ejemplo');
@@ -31,7 +27,7 @@ test('POST /api/v1/awards returns 201 with valid payload', function () {
 test('POST /api/v1/awards returns 422 with invalid payload', function () {
     Sanctum::actingAs(User::factory()->create());
 
-    $response = postJson('/api/v1/awards', []);
+    $response = $this->postJson('/api/v1/awards', []);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'slug']);

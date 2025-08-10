@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\AwardWinner;
 use App\Http\Resources\V1\AwardWinnerResource;
 use App\Http\Requests\StoreAwardWinnerRequest;
+use App\Services\AwardWinnersService;
 
 /**
  * @OA\Tag(
@@ -30,9 +30,9 @@ class AwardWinnerController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(AwardWinnersService $service)
     {
-        $winners = AwardWinner::with(['person', 'award', 'work', 'municipality'])->get();
+        $winners = $service->listWinners();
         return AwardWinnerResource::collection($winners);
     }
 
@@ -56,9 +56,9 @@ class AwardWinnerController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function show($id)
+    public function show($id, AwardWinnersService $service)
     {
-        $winner = AwardWinner::with(['person', 'award', 'work', 'municipality'])->findOrFail($id);
+        $winner = $service->getWinnerById((int) $id);
         return new AwardWinnerResource($winner);
     }
 
@@ -88,9 +88,9 @@ class AwardWinnerController extends Controller
      *     @OA\Response(response=422, description="Datos inválidos")
      * )
      */
-    public function store(StoreAwardWinnerRequest $request)
+    public function store(StoreAwardWinnerRequest $request, AwardWinnersService $service)
     {
-        $awardWinner = AwardWinner::create($request->validated());
+        $awardWinner = $service->createWinner($request->validated());
 
         return new AwardWinnerResource($awardWinner);
     }

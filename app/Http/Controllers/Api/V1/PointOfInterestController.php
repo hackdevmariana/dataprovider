@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PointOfInterest;
 use App\Http\Requests\StorePointOfInterestRequest;
 use App\Http\Requests\UpdatePointOfInterestRequest;
+use App\Services\PointsOfInterestService;
 
 class PointOfInterestController extends Controller
 {
@@ -21,9 +22,9 @@ class PointOfInterestController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(PointsOfInterestService $service)
     {
-        $points = PointOfInterest::with(['municipality', 'tags'])->paginate(50);
+        $points = $service->paginate(50);
         return response()->json($points);
     }
 
@@ -43,12 +44,9 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug, PointsOfInterestService $service)
     {
-        $poi = PointOfInterest::with(['municipality', 'tags'])
-            ->where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
-            ->first();
+        $poi = $service->findByIdOrSlug($idOrSlug);
 
         if (!$poi) {
             return response()->json(['message' => 'Punto de interés no encontrado'], 404);
@@ -70,9 +68,9 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=400, description="Datos inválidos")
      * )
      */
-    public function store(StorePointOfInterestRequest $request)
+    public function store(StorePointOfInterestRequest $request, PointsOfInterestService $service)
     {
-        $poi = PointOfInterest::create($request->validated());
+        $poi = $service->create($request->validated());
 
         return response()->json($poi, 201);
     }
@@ -96,14 +94,14 @@ class PointOfInterestController extends Controller
      *     @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function update(UpdatePointOfInterestRequest $request, $id)
+    public function update(UpdatePointOfInterestRequest $request, $id, PointsOfInterestService $service)
     {
         $poi = PointOfInterest::find($id);
         if (!$poi) {
             return response()->json(['message' => 'Punto de interés no encontrado'], 404);
         }
 
-        $poi->update($request->validated());
+        $poi = $service->update($poi, $request->validated());
 
         return response()->json($poi);
     }
