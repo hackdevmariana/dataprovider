@@ -72,6 +72,11 @@ Route::prefix('v1')->group(function () {
     Route::get('/award-winners/{id}', [AwardWinnerController::class, 'show']);
     Route::get('/family-members', [FamilyMemberController::class, 'index']);
     Route::get('/family-members/{id}', [FamilyMemberController::class, 'show']);
+    Route::get('/regions', [\App\Http\Controllers\Api\V1\RegionController::class, 'index']);
+    Route::get('/regions/{idOrSlug}', [\App\Http\Controllers\Api\V1\RegionController::class, 'show']);
+    Route::get('/provinces/{slug}/regions', [\App\Http\Controllers\Api\V1\RegionController::class, 'byProvince']);
+    Route::get('/autonomous-communities/{slug}/regions', [\App\Http\Controllers\Api\V1\RegionController::class, 'byAutonomousCommunity']);
+    Route::get('/countries/{slug}/regions', [\App\Http\Controllers\Api\V1\RegionController::class, 'byCountry']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
