@@ -83,6 +83,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/calendar-holidays', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'index']);
     Route::get('/calendar-holidays/{idOrSlug}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'show']);
     Route::get('/calendar-holidays/date/{date}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'byDate']);
+    Route::get('/events', [\App\Http\Controllers\Api\V1\EventController::class, 'index']);
+    Route::get('/events/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
