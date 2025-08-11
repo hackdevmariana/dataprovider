@@ -5,6 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class Person
+ *
+ * Represents a person with biographical and relational data.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $birth_name
+ * @property string $slug
+ * @property \Carbon\Carbon|null $birth_date
+ * @property \Carbon\Carbon|null $death_date
+ * @property string|null $birth_place
+ * @property string|null $death_place
+ * @property int|null $nationality_id
+ * @property int|null $language_id
+ * @property int|null $image_id
+ * @property string|null $gender
+ * @property string|null $official_website
+ * @property string|null $wikidata_id
+ * @property string|null $wikipedia_url
+ * @property string|null $notable_for
+ * @property string|null $occupation_summary
+ * @property array|null $social_handles
+ * @property bool $is_influencer
+ * @property int|null $search_boost
+ * @property string|null $short_bio
+ * @property string|null $long_bio
+ * @property string|null $source_url
+ * @property \Carbon\Carbon|null $last_updated_from_source
+ *
+ * @property-read Country $nationality
+ * @property-read Language $language
+ * @property-read Image $image
+ * @property-read \Illuminate\Database\Eloquent\Collection|Alias[] $aliases
+ * @property-read \Illuminate\Database\Eloquent\Collection|Tag[] $tags
+ * @property-read Appearance|null $appearance
+ */
 class Person extends Model
 {
     protected $fillable = [
