@@ -80,6 +80,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/anniversaries', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'index']);
     Route::get('/anniversaries/{idOrSlug}', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'show']);
     Route::get('/anniversaries/day/{month}/{day}', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'byDay']);
+    Route::get('/calendar-holidays', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'index']);
+    Route::get('/calendar-holidays/{idOrSlug}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'show']);
+    Route::get('/calendar-holidays/date/{date}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'byDate']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
