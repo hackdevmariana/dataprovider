@@ -16,8 +16,9 @@ class AnniversaryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'day' => $this->day,
-            'year' => $this->year,
+            'day' => (int) $this->day,
+            'month' => (int) $this->month,
+            'year' => $this->year ? (int) $this->year : null,
             'title' => $this->title,
             'slug' => $this->slug,
             'description' => $this->description,

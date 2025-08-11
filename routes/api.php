@@ -79,7 +79,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/countries/{slug}/regions', [\App\Http\Controllers\Api\V1\RegionController::class, 'byCountry']);
     Route::get('/anniversaries', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'index']);
     Route::get('/anniversaries/{idOrSlug}', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'show']);
-    Route::get('/anniversaries/day/{day}', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'byDay']);
+    Route::get('/anniversaries/day/{month}/{day}', [\App\Http\Controllers\Api\V1\AnniversaryController::class, 'byDay']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

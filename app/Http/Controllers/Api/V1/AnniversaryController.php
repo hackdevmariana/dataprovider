@@ -64,15 +64,22 @@ class AnniversaryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/anniversaries/day/{day}",
-     *     summary="Get anniversaries by day (MM-DD)",
+     *     path="/api/v1/anniversaries/day/{month}/{day}",
+     *     summary="Get anniversaries by month and day",
      *     tags={"Anniversaries"},
+     *     @OA\Parameter(
+     *         name="month",
+     *         in="path",
+     *         required=true,
+     *         description="Month (1-12)",
+     *         @OA\Schema(type="integer", example=4)
+     *     ),
      *     @OA\Parameter(
      *         name="day",
      *         in="path",
      *         required=true,
-     *         description="Day in MM-DD format",
-     *         @OA\Schema(type="string", example="04-23")
+     *         description="Day (1-31)",
+     *         @OA\Schema(type="integer", example=23)
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -83,9 +90,9 @@ class AnniversaryController extends Controller
      *     )
      * )
      */
-    public function byDay($day)
+    public function byDay($month, $day)
     {
-        $anniversaries = Anniversary::where('day', $day)->get();
+        $anniversaries = Anniversary::where('month', $month)->where('day', $day)->get();
         return AnniversaryResource::collection($anniversaries);
     }
 }
