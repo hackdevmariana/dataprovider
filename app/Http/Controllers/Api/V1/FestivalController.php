@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Festival;
 use App\Http\Resources\V1\FestivalResource;
+use App\Http\Requests\StoreFestivalRequest;
 
 /**
  * @OA\Tag(
@@ -41,5 +42,35 @@ class FestivalController extends Controller
     {
         $festival = Festival::findOrFail($id);
         return new FestivalResource($festival);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/festivals",
+     *     summary="Create a new festival (public)",
+     *     tags={"Festivals"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "slug"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="slug", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="month", type="integer"),
+     *             @OA\Property(property="usual_days", type="string"),
+     *             @OA\Property(property="recurring", type="boolean"),
+     *             @OA\Property(property="location_id", type="integer"),
+     *             @OA\Property(property="logo_url", type="string"),
+     *             @OA\Property(property="color_theme", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Festival created"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function store(StoreFestivalRequest $request)
+    {
+        $festival = \App\Models\Festival::create($request->validated());
+        return (new FestivalResource($festival))->response()->setStatusCode(201);
     }
 }

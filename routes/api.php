@@ -98,6 +98,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/groups', [\App\Http\Controllers\Api\V1\GroupController::class, 'store']);
     Route::get('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'index']);
     Route::get('/festivals/{id}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'show']);
+    Route::post('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'store']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
