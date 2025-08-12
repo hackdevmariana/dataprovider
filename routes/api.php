@@ -87,6 +87,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/events/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventController::class, 'show']);
     Route::get('/event-types', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'index']);
     Route::get('/event-types/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'show']);
+    Route::get('/venues', [\App\Http\Controllers\Api\V1\VenueController::class, 'index']);
+    Route::get('/venues/{idOrSlug}', [\App\Http\Controllers\Api\V1\VenueController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
