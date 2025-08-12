@@ -119,6 +119,9 @@ tests/
 | POST   | /api/v1/links                                          | Crear enlace                                | Sí            |
 | POST   | /api/v1/awards                                         | Crear premio                                | Sí            |
 | POST   | /api/v1/award-winners                                  | Crear ganador de premio                     | Sí            |
+| GET    | /api/v1/artists                                         | Listar artistas                              | No            |
+| GET    | /api/v1/artists/{idOrSlug}                              | Detalle de artista                           | No            |
+| POST   | /api/v1/artists                                         | Crear artista                                | No            |
 
 #### Notas sobre el endpoint de Venue
 

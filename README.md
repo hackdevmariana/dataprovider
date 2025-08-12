@@ -119,6 +119,9 @@ tests/
 | POST   | /api/v1/links                                          | Create link                                 | Yes          |
 | POST   | /api/v1/awards                                         | Create award                                | Yes          |
 | POST   | /api/v1/award-winners                                  | Create award winner                         | Yes          |
+| GET    | /api/v1/artists                                         | List artists                                 | No           |
+| GET    | /api/v1/artists/{idOrSlug}                              | Artist details                               | No           |
+| POST   | /api/v1/artists                                         | Create artist                                | No           |
 
 ---
 
