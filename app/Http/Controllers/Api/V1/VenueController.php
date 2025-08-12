@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Venue;
 use App\Http\Resources\V1\VenueResource;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreVenueRequest;
 
 /**
  * @OA\Tag(
@@ -42,5 +43,37 @@ class VenueController extends Controller
     {
         $venue = Venue::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
         return new VenueResource($venue);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/venues",
+     *     summary="Create a new venue (public)",
+     *     tags={"Venues"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "slug", "municipality_id"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="slug", type="string"),
+     *             @OA\Property(property="address", type="string"),
+     *             @OA\Property(property="municipality_id", type="integer"),
+     *             @OA\Property(property="latitude", type="number"),
+     *             @OA\Property(property="longitude", type="number"),
+     *             @OA\Property(property="capacity", type="integer"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="venue_type", type="string"),
+     *             @OA\Property(property="venue_status", type="string"),
+     *             @OA\Property(property="is_verified", type="boolean"),
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Venue created"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function store(StoreVenueRequest $request)
+    {
+        $venue = \App\Models\Venue::create($request->validated());
+        return (new VenueResource($venue))->response()->setStatusCode(201);
     }
 }
