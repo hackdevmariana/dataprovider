@@ -2,9 +2,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Festival extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name', 'slug', 'description', 'month', 'usual_days',
         'recurring', 'location_id', 'logo_url', 'color_theme'
