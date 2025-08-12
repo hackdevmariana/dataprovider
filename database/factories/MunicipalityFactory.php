@@ -19,6 +19,9 @@ class MunicipalityFactory extends Factory
             'slug' => $this->faker->unique()->slug(),
             'latitude' => $this->faker->latitude(),
             'longitude' => $this->faker->longitude(),
+            'province_id' => \App\Models\Province::factory(),
+            'autonomous_community_id' => \App\Models\AutonomousCommunity::factory(),
+            'country_id' => \App\Models\Country::factory(),
         ];
     }
 }

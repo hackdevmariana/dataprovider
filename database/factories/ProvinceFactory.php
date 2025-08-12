@@ -1,0 +1,21 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Province;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ProvinceFactory extends Factory
+{
+    protected $model = Province::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->state,
+            'slug' => $this->faker->unique()->slug,
+            'autonomous_community_id' => \App\Models\AutonomousCommunity::factory(),
+            'country_id' => \App\Models\Country::factory(),
+        ];
+    }
+}
