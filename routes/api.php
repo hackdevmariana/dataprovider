@@ -92,6 +92,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/venues', [\App\Http\Controllers\Api\V1\VenueController::class, 'store']);
     Route::get('/artists', [\App\Http\Controllers\Api\V1\ArtistController::class, 'index']);
     Route::get('/artists/{idOrSlug}', [\App\Http\Controllers\Api\V1\ArtistController::class, 'show']);
+    Route::post('/artists', [\App\Http\Controllers\Api\V1\ArtistController::class, 'store']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
