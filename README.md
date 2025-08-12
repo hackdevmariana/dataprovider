@@ -125,6 +125,9 @@ tests/
 | GET    | /api/v1/groups                                          | List groups                                  | No           |
 | GET    | /api/v1/groups/{id}                                     | Group details                                | No           |
 | POST   | /api/v1/groups                                          | Create group                                 | No           |
+| GET    | /api/v1/festivals                                        | List festivals                                | No           |
+| GET    | /api/v1/festivals/{id}                                   | Festival details                              | No           |
+| POST   | /api/v1/festivals                                        | Create festival                               | No           |
 
 ---
 

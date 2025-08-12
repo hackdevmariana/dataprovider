@@ -125,6 +125,9 @@ tests/
 | GET    | /api/v1/groups                                          | Listar grupos                                | No            |
 | GET    | /api/v1/groups/{id}                                     | Detalle de grupo                             | No            |
 | POST   | /api/v1/groups                                          | Crear grupo                                  | No            |
+| GET    | /api/v1/festivals                                        | Listar festivales                             | No            |
+| GET    | /api/v1/festivals/{id}                                   | Detalle de festival                           | No            |
+| POST   | /api/v1/festivals                                        | Crear festival                                | No            |
 
 #### Notas sobre el endpoint de Venue
 
