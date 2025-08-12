@@ -120,14 +120,13 @@ tests/
 | POST   | /api/v1/awards                                         | Crear premio                                | Sí            |
 | POST   | /api/v1/award-winners                                  | Crear ganador de premio                     | Sí            |
 
+#### Notas sobre el endpoint de Venue
+
+- Los siguientes campos son opcionales al crear un Venue vía la API pública: `address`, `latitude`, `longitude`, `venue_type`. Si no se indican, se almacenan como null/vacío.
+- Campos obligatorios: `name`, `slug`, `municipality_id`.
+
 ---
 
 ### Scripts útiles
 
-- Test: `php artisan test`
-- Análisis estático: `php vendor/bin/phpstan analyse --memory-limit=1G`
-- Generar documentación: `php artisan l5-swagger:generate`
-
-### Licencia de datos
-
-Los datos servidos por esta API están bajo [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
+- Test: `

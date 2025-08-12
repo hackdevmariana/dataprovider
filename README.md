@@ -131,3 +131,8 @@ tests/
 ### Data license
 
 All data served by this API is released under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
+
+#### Venue endpoint notes
+
+- The following fields are optional when creating a Venue via the public API: `address`, `latitude`, `longitude`, `venue_type`. If not provided, they will be stored as null/empty.
+- Required fields: `name`, `slug`, `municipality_id`.
