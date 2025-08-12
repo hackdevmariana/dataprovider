@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Http\Resources\V1\GroupResource;
+use App\Http\Requests\StoreGroupRequest;
 
 /**
  * @OA\Tag(
@@ -41,5 +42,28 @@ class GroupController extends Controller
     {
         $group = Group::findOrFail($id);
         return new GroupResource($group);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/groups",
+     *     summary="Create a new group (public)",
+     *     tags={"Groups"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Group created"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function store(StoreGroupRequest $request)
+    {
+        $group = \App\Models\Group::create($request->validated());
+        return (new GroupResource($group))->response()->setStatusCode(201);
     }
 }
