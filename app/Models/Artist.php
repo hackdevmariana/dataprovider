@@ -2,9 +2,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Artist extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name', 'slug', 'description', 'birth_date', 'genre', 'person_id',
         'stage_name', 'group_name', 'active_years_start', 'active_years_end',
