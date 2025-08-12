@@ -122,6 +122,9 @@ tests/
 | GET    | /api/v1/artists                                         | List artists                                 | No           |
 | GET    | /api/v1/artists/{idOrSlug}                              | Artist details                               | No           |
 | POST   | /api/v1/artists                                         | Create artist                                | No           |
+| GET    | /api/v1/groups                                          | List groups                                  | No           |
+| GET    | /api/v1/groups/{id}                                     | Group details                                | No           |
+| POST   | /api/v1/groups                                          | Create group                                 | No           |
 
 ---
 

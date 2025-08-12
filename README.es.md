@@ -122,6 +122,9 @@ tests/
 | GET    | /api/v1/artists                                         | Listar artistas                              | No            |
 | GET    | /api/v1/artists/{idOrSlug}                              | Detalle de artista                           | No            |
 | POST   | /api/v1/artists                                         | Crear artista                                | No            |
+| GET    | /api/v1/groups                                          | Listar grupos                                | No            |
+| GET    | /api/v1/groups/{id}                                     | Detalle de grupo                             | No            |
+| POST   | /api/v1/groups                                          | Crear grupo                                  | No            |
 
 #### Notas sobre el endpoint de Venue
 
