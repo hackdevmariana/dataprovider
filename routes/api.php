@@ -36,7 +36,13 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
 // Rutas públicas sin autenticación
 Route::prefix('v1')->group(function () {
-    Route::apiResource('provinces', ProvinceController::class)->only(['index', 'show']);
+    Route::get('/provinces', [ProvinceController::class, 'index']);
+    Route::get('/provinces/with-municipalities-count', [ProvinceController::class, 'withMunicipalitiesCount']);
+    Route::get('/provinces/filter/by-area', [ProvinceController::class, 'filterByArea']);
+    Route::get('/provinces/search', [ProvinceController::class, 'search']);
+    Route::get('/provinces/largest/{limit}', [ProvinceController::class, 'largest']);
+    Route::get('/provinces/by-autonomous-community/{slug}', [ProvinceController::class, 'byAutonomousCommunity']);
+    Route::get('/provinces/{idOrSlug}', [ProvinceController::class, 'show']);
     Route::get('/countries', [CountryController::class, 'index']);
     Route::get('/countries/{idOrSlug}', [CountryController::class, 'show']);
     Route::get('/languages', [LanguageController::class, 'index']);
@@ -44,6 +50,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/timezones', [TimezoneController::class, 'index']);
     Route::get('/timezones/{idOrName}', [TimezoneController::class, 'show']);
     Route::get('/municipalities', [MunicipalityController::class, 'index']);
+    Route::get('/municipalities/filter/by-population', [MunicipalityController::class, 'filterByPopulation']);
+    Route::get('/municipalities/filter/by-area', [MunicipalityController::class, 'filterByArea']);
+    Route::get('/municipalities/search', [MunicipalityController::class, 'search']);
+    Route::get('/municipalities/largest/{limit}', [MunicipalityController::class, 'largest']);
     Route::get('/municipalities/province/{slug}', [MunicipalityController::class, 'byProvince']);
     Route::get('/municipalities/country/{slug}', [MunicipalityController::class, 'byCountry']);
     Route::get('/municipalities/{idOrSlug}', [MunicipalityController::class, 'show']);
@@ -84,6 +94,11 @@ Route::prefix('v1')->group(function () {
     Route::get('/calendar-holidays/{idOrSlug}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'show']);
     Route::get('/calendar-holidays/date/{date}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'byDate']);
     Route::get('/events', [\App\Http\Controllers\Api\V1\EventController::class, 'index']);
+    Route::get('/events/filter/by-date-range', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByDateRange']);
+    Route::get('/events/filter/by-location', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByLocation']);
+    Route::get('/events/filter/by-type', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByType']);
+    Route::get('/events/search', [\App\Http\Controllers\Api\V1\EventController::class, 'search']);
+    Route::get('/events/upcoming/{days}', [\App\Http\Controllers\Api\V1\EventController::class, 'upcoming']);
     Route::get('/events/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventController::class, 'show']);
     Route::get('/event-types', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'index']);
     Route::get('/event-types/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'show']);
@@ -97,6 +112,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/groups/{id}', [\App\Http\Controllers\Api\V1\GroupController::class, 'show']);
     Route::post('/groups', [\App\Http\Controllers\Api\V1\GroupController::class, 'store']);
     Route::get('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'index']);
+    Route::get('/festivals/filter/by-location', [\App\Http\Controllers\Api\V1\FestivalController::class, 'filterByLocation']);
+    Route::get('/festivals/search', [\App\Http\Controllers\Api\V1\FestivalController::class, 'search']);
     Route::post('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'store']);
     // Specific festival routes must come before {id} routes
     Route::get('/festivals/today', [\App\Http\Controllers\Api\V1\FestivalController::class, 'today']);

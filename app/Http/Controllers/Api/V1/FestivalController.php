@@ -288,4 +288,236 @@ class FestivalController extends Controller
             'unassigned_events' => EventResource::collection($events),
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/festivals/filter/by-location",
+     *     summary="Filter festivals by geographical location",
+     *     tags={"Festivals"},
+     *     @OA\Parameter(
+     *         name="latitude",
+     *         in="query",
+     *         description="Central latitude for search",
+     *         @OA\Schema(type="number", format="float", example=40.4168)
+     *     ),
+     *     @OA\Parameter(
+     *         name="longitude",
+     *         in="query",
+     *         description="Central longitude for search",
+     *         @OA\Schema(type="number", format="float", example=-3.7038)
+     *     ),
+     *     @OA\Parameter(
+     *         name="radius_km",
+     *         in="query",
+     *         description="Search radius in kilometers",
+     *         @OA\Schema(type="number", format="float", example=100.0)
+     *     ),
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date filter (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date filter (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Festivals filtered by location",
+     *         @OA\JsonContent(type="array", @OA\Items())
+     *     )
+     * )
+     */
+    public function filterByLocation(Request $request)
+    {
+        $query = Festival::with(['events.venue', 'events.eventType']);
+
+        // Filtro geográfico por coordenadas y radio
+        if ($request->has('latitude') && $request->has('longitude') && $request->has('radius_km')) {
+            $lat = (float)$request->latitude;
+            $lng = (float)$request->longitude;
+            $radiusKm = (float)$request->radius_km;
+
+            // Filtrar festivales que tienen eventos en venues dentro del radio
+            $query->whereHas('events.venue', function($q) use ($lat, $lng, $radiusKm) {
+                $q->whereNotNull('latitude')
+                  ->whereNotNull('longitude')
+                  ->whereRaw(
+                      '(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) <= ?',
+                      [$lat, $lng, $lat, $radiusKm]
+                  );
+            });
+        }
+
+        // Filtros adicionales de fecha
+        if ($request->has('start_date')) {
+            $query->whereHas('events', function($q) use ($request) {
+                $q->whereDate('start_datetime', '>=', $request->start_date);
+            });
+        }
+
+        if ($request->has('end_date')) {
+            $query->whereHas('events', function($q) use ($request) {
+                $q->whereDate('start_datetime', '<=', $request->end_date);
+            });
+        }
+
+        $festivals = $query->paginate(20);
+        
+        return FestivalResource::collection($festivals);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/festivals/search",
+     *     summary="Advanced festival search",
+     *     tags={"Festivals"},
+     *     @OA\Parameter(
+     *         name="q",
+     *         in="query",
+     *         description="Search query for festival name or description",
+     *         @OA\Schema(type="string", example="música rock")
+     *     ),
+     *     @OA\Parameter(
+     *         name="artist_name",
+     *         in="query",
+     *         description="Search by artist name",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="municipality_slug",
+     *         in="query",
+     *         description="Municipality slug",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="province_slug",
+     *         in="query",
+     *         description="Province slug",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="autonomous_community_slug",
+     *         in="query",
+     *         description="Autonomous community slug",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date filter (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date filter (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="min_duration_days",
+     *         in="query",
+     *         description="Minimum festival duration in days",
+     *         @OA\Schema(type="integer", example=3)
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_by",
+     *         in="query",
+     *         description="Sort field: start_date, name, duration",
+     *         @OA\Schema(type="string", enum={"start_date", "name", "duration"}, example="start_date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_direction",
+     *         in="query",
+     *         description="Sort direction",
+     *         @OA\Schema(type="string", enum={"asc", "desc"}, example="asc")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Search results",
+     *         @OA\JsonContent(type="array", @OA\Items())
+     *     )
+     * )
+     */
+    public function search(Request $request)
+    {
+        $query = Festival::with(['events.venue', 'events.eventType', 'events.artists']);
+
+        // Búsqueda por texto en nombre y descripción
+        if ($request->has('q') && !empty($request->q)) {
+            $searchTerm = $request->q;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Búsqueda por artista
+        if ($request->has('artist_name')) {
+            $query->whereHas('events.artists', function($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->artist_name . '%');
+            });
+        }
+
+        // Filtros geográficos
+        if ($request->has('municipality_slug')) {
+            $query->whereHas('events.venue.municipality', function($q) use ($request) {
+                $q->where('slug', $request->municipality_slug);
+            });
+        }
+
+        if ($request->has('province_slug')) {
+            $query->whereHas('events.venue.municipality.province', function($q) use ($request) {
+                $q->where('slug', $request->province_slug);
+            });
+        }
+
+        if ($request->has('autonomous_community_slug')) {
+            $query->whereHas('events.venue.municipality.autonomousCommunity', function($q) use ($request) {
+                $q->where('slug', $request->autonomous_community_slug);
+            });
+        }
+
+        // Filtros de fecha
+        if ($request->has('start_date')) {
+            $query->whereDate('start_date', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date')) {
+            $query->whereDate('end_date', '<=', $request->end_date);
+        }
+
+        // Filtro por duración mínima
+        if ($request->has('min_duration_days')) {
+            $minDays = (int)$request->min_duration_days;
+            $query->whereRaw('DATEDIFF(end_date, start_date) + 1 >= ?', [$minDays]);
+        }
+
+        // Ordenamiento
+        $sortBy = $request->get('sort_by', 'start_date');
+        $sortDirection = $request->get('sort_direction', 'asc');
+        
+        $allowedSortFields = ['start_date', 'end_date', 'name', 'created_at'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'start_date';
+        }
+        
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Para ordenar por duración, usar cálculo
+        if ($sortBy === 'duration') {
+            $query->orderByRaw('DATEDIFF(end_date, start_date) ' . $sortDirection);
+        } else {
+            $query->orderBy($sortBy, $sortDirection);
+        }
+
+        $festivals = $query->paginate(20);
+        
+        return FestivalResource::collection($festivals);
+    }
 }
