@@ -63,4 +63,9 @@ class Region extends Model
     {
         return $this->belongsTo(Timezone::class);
     }
+
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class);
+    }
 }

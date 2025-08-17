@@ -14,6 +14,7 @@ use App\Models\Province;
 use App\Models\AutonomousCommunity;
 use App\Http\Resources\V1\EventResource;
 use App\Http\Resources\V1\ArtistResource;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Tag(
@@ -208,10 +209,10 @@ class FestivalController extends Controller
      */
     public function thisWeek()
     {
-        $start = now()->startOfWeek();
-        $end = now()->endOfWeek();
+        $start = now()->startOfWeek()->toDateString();
+        $end = now()->endOfWeek()->toDateString();
         $festivals = Festival::whereHas('events', function($q) use ($start, $end) {
-            $q->whereBetween('start_datetime', [$start, $end]);
+            $q->whereBetween(DB::raw('DATE(start_datetime)'), [$start, $end]);
         })->paginate(20);
         return FestivalResource::collection($festivals);
     }
@@ -226,10 +227,10 @@ class FestivalController extends Controller
      */
     public function thisMonth()
     {
-        $start = now()->startOfMonth();
-        $end = now()->endOfMonth();
+        $start = now()->startOfMonth()->toDateString();
+        $end = now()->endOfMonth()->toDateString();
         $festivals = Festival::whereHas('events', function($q) use ($start, $end) {
-            $q->whereBetween('start_datetime', [$start, $end]);
+            $q->whereBetween(DB::raw('DATE(start_datetime)'), [$start, $end]);
         })->paginate(20);
         return FestivalResource::collection($festivals);
     }
@@ -244,10 +245,10 @@ class FestivalController extends Controller
      */
     public function thisYear()
     {
-        $start = now()->startOfYear();
-        $end = now()->endOfYear();
+        $start = now()->startOfYear()->toDateString();
+        $end = now()->endOfYear()->toDateString();
         $festivals = Festival::whereHas('events', function($q) use ($start, $end) {
-            $q->whereBetween('start_datetime', [$start, $end]);
+            $q->whereBetween(DB::raw('DATE(start_datetime)'), [$start, $end]);
         })->paginate(20);
         return FestivalResource::collection($festivals);
     }

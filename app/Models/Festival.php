@@ -29,7 +29,9 @@ class Festival extends Model
 
     public function artists()
     {
-        // You can define a relation via events or directly
-        return $this->hasManyThrough(Artist::class, Event::class);
+        // Obtener artistas a través de los eventos y la tabla pivote artist_event
+        return Artist::whereHas('events', function($q) {
+            $q->where('festival_id', $this->id);
+        });
     }
 }

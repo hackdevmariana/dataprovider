@@ -60,4 +60,9 @@ class AutonomousCommunity extends Model
     {
         return $this->hasMany(Region::class);
     }
+
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class);
+    }
 }

@@ -18,7 +18,7 @@ class FestivalFactory extends Factory
             'month' => $this->faker->optional()->numberBetween(1, 12),
             'usual_days' => $this->faker->optional()->word,
             'recurring' => $this->faker->boolean,
-            'location_id' => null,
+            'location_id' => \App\Models\Municipality::factory(),
             'logo_url' => $this->faker->optional()->imageUrl,
             'color_theme' => $this->faker->optional()->safeColorName,
         ];

@@ -97,18 +97,20 @@ Route::prefix('v1')->group(function () {
     Route::get('/groups/{id}', [\App\Http\Controllers\Api\V1\GroupController::class, 'show']);
     Route::post('/groups', [\App\Http\Controllers\Api\V1\GroupController::class, 'store']);
     Route::get('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'index']);
-    Route::get('/festivals/{id}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'show']);
     Route::post('/festivals', [\App\Http\Controllers\Api\V1\FestivalController::class, 'store']);
-    Route::get('/festivals/{id}/events', [\App\Http\Controllers\Api\V1\FestivalController::class, 'events']);
-    Route::get('/festivals/{id}/artists', [\App\Http\Controllers\Api\V1\FestivalController::class, 'artists']);
-    Route::get('/festivals/municipality/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byMunicipality']);
-    Route::get('/festivals/region/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byRegion']);
-    Route::get('/festivals/province/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byProvince']);
-    Route::get('/festivals/autonomous-community/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byAutonomousCommunity']);
+    // Specific festival routes must come before {id} routes
     Route::get('/festivals/today', [\App\Http\Controllers\Api\V1\FestivalController::class, 'today']);
     Route::get('/festivals/this-week', [\App\Http\Controllers\Api\V1\FestivalController::class, 'thisWeek']);
     Route::get('/festivals/this-month', [\App\Http\Controllers\Api\V1\FestivalController::class, 'thisMonth']);
     Route::get('/festivals/this-year', [\App\Http\Controllers\Api\V1\FestivalController::class, 'thisYear']);
+    Route::get('/festivals/municipality/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byMunicipality']);
+    Route::get('/festivals/region/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byRegion']);
+    Route::get('/festivals/province/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byProvince']);
+    Route::get('/festivals/autonomous-community/{idOrSlug}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'byAutonomousCommunity']);
+    // Generic {id} routes come last
+    Route::get('/festivals/{id}', [\App\Http\Controllers\Api\V1\FestivalController::class, 'show']);
+    Route::get('/festivals/{id}/events', [\App\Http\Controllers\Api\V1\FestivalController::class, 'events']);
+    Route::get('/festivals/{id}/artists', [\App\Http\Controllers\Api\V1\FestivalController::class, 'artists']);
     Route::get('/festivals-and-unassigned-events', [\App\Http\Controllers\Api\V1\FestivalController::class, 'festivalsAndUnassignedEvents']);
     Route::get('/festivals-with-events-and-unassigned', [\App\Http\Controllers\Api\V1\FestivalController::class, 'festivalsWithEventsAndUnassigned']);
 });
