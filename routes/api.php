@@ -18,6 +18,8 @@ use App\Http\Controllers\Api\V1\LinkController;
 use App\Http\Controllers\Api\V1\AwardController;
 use App\Http\Controllers\Api\V1\AwardWinnerController;
 use App\Http\Controllers\Api\V1\FamilyMemberController;
+use App\Http\Controllers\Api\V1\ElectricityPriceController;
+use App\Http\Controllers\Api\V1\EnergyCompanyController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -130,6 +132,21 @@ Route::prefix('v1')->group(function () {
     Route::get('/festivals/{id}/artists', [\App\Http\Controllers\Api\V1\FestivalController::class, 'artists']);
     Route::get('/festivals-and-unassigned-events', [\App\Http\Controllers\Api\V1\FestivalController::class, 'festivalsAndUnassignedEvents']);
     Route::get('/festivals-with-events-and-unassigned', [\App\Http\Controllers\Api\V1\FestivalController::class, 'festivalsWithEventsAndUnassigned']);
+    
+    // Energy APIs
+    Route::get('/electricity-prices', [ElectricityPriceController::class, 'index']);
+    Route::get('/electricity-prices/today', [ElectricityPriceController::class, 'today']);
+    Route::get('/electricity-prices/current-hour', [ElectricityPriceController::class, 'currentHour']);
+    Route::get('/electricity-prices/cheapest-hours', [ElectricityPriceController::class, 'cheapestHours']);
+    Route::get('/electricity-prices/daily-summary', [ElectricityPriceController::class, 'dailySummary']);
+    Route::get('/electricity-prices/{id}', [ElectricityPriceController::class, 'show']);
+    
+    Route::get('/energy-companies', [EnergyCompanyController::class, 'index']);
+    Route::get('/energy-companies/filter/by-location', [EnergyCompanyController::class, 'filterByLocation']);
+    Route::get('/energy-companies/search', [EnergyCompanyController::class, 'search']);
+    Route::get('/energy-companies/commercializers', [EnergyCompanyController::class, 'commercializers']);
+    Route::get('/energy-companies/cooperatives', [EnergyCompanyController::class, 'cooperatives']);
+    Route::get('/energy-companies/{idOrSlug}', [EnergyCompanyController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
