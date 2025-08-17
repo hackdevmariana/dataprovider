@@ -21,15 +21,29 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            // Core system data
             RolesAndAdminSeeder::class,
             AppSettingSeeder::class,
+            
+            // Reference data - Geographic
             TimezoneSeeder::class,
             LanguageSeeder::class,
             CountrySeeder::class,
             AutonomousCommunitySeeder::class,
             ProvinceSeeder::class,
-
             \Database\Seeders\Municipality\MadridMunicipalitiesSeeder::class,
+            
+            // Reference data - Economic
+            CurrencySeeder::class,
+            PriceUnitSeeder::class,
+            CompanyTypeSeeder::class,
+            
+            // Reference data - Cultural
+            EventTypeSeeder::class,
+            VenueTypeSeeder::class,
+            TagSeeder::class,
+            
+            // Reference data - People
             ProfessionSeeder::class,
             FamilyMemberSeeder::class,
         ]);
