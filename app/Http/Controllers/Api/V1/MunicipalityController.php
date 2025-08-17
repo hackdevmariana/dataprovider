@@ -342,7 +342,7 @@ class MunicipalityController extends Controller
      *     )
      * )
      */
-    public function largest($limit = 10, Request $request)
+    public function largest(Request $request, $limit = 10)
     {
         $limit = min(max((int)$limit, 1), 100); // Entre 1 y 100
         

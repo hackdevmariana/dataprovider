@@ -486,7 +486,7 @@ class EventController extends Controller
      *     )
      * )
      */
-    public function upcoming($days = 7, Request $request)
+    public function upcoming(Request $request, $days = 7)
     {
         $days = min(max((int)$days, 1), 365); // Entre 1 y 365 días
         

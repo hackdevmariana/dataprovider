@@ -53,7 +53,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/municipalities/filter/by-population', [MunicipalityController::class, 'filterByPopulation']);
     Route::get('/municipalities/filter/by-area', [MunicipalityController::class, 'filterByArea']);
     Route::get('/municipalities/search', [MunicipalityController::class, 'search']);
-    Route::get('/municipalities/largest/{limit}', [MunicipalityController::class, 'largest']);
+    Route::get('/municipalities/largest/{limit?}', [MunicipalityController::class, 'largest'])->where('limit', '[0-9]+');
     Route::get('/municipalities/province/{slug}', [MunicipalityController::class, 'byProvince']);
     Route::get('/municipalities/country/{slug}', [MunicipalityController::class, 'byCountry']);
     Route::get('/municipalities/{idOrSlug}', [MunicipalityController::class, 'show']);
@@ -98,7 +98,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/events/filter/by-location', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByLocation']);
     Route::get('/events/filter/by-type', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByType']);
     Route::get('/events/search', [\App\Http\Controllers\Api\V1\EventController::class, 'search']);
-    Route::get('/events/upcoming/{days}', [\App\Http\Controllers\Api\V1\EventController::class, 'upcoming']);
+    Route::get('/events/upcoming/{days?}', [\App\Http\Controllers\Api\V1\EventController::class, 'upcoming'])->where('days', '[0-9]+');
     Route::get('/events/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventController::class, 'show']);
     Route::get('/event-types', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'index']);
     Route::get('/event-types/{idOrSlug}', [\App\Http\Controllers\Api\V1\EventTypeController::class, 'show']);
