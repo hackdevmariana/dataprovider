@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ElectricityOffer extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'energy_company_id', 'name', 'slug', 'description',
         'price_fixed_eur_month', 'price_variable_eur_kwh',

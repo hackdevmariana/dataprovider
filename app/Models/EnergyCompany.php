@@ -38,5 +38,8 @@ class EnergyCompany extends Model
         return $this->belongsTo(Image::class);
     }
 
-
+    public function electricityOffers()
+    {
+        return $this->hasMany(ElectricityOffer::class);
+    }
 }
