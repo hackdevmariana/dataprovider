@@ -142,8 +142,14 @@ class ElectricityPriceController extends Controller
      */
     public function cheapestHours(Request $request)
     {
+        $request->validate([
+            'date' => 'sometimes|date',
+            'hours' => 'sometimes|integer|min:1|max:24',
+            'type' => 'sometimes|in:pvpc,spot',
+        ]);
+
         $date = $request->get('date', today()->format('Y-m-d'));
-        $hours = min(max((int)$request->get('hours', 6), 1), 24);
+        $hours = (int)$request->get('hours', 6);
 
         $query = ElectricityPrice::with('priceUnit')
             ->whereDate('date', $date)
