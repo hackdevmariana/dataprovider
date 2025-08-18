@@ -46,6 +46,23 @@ class DatabaseSeeder extends Seeder
             // Reference data - People
             ProfessionSeeder::class,
             FamilyMemberSeeder::class,
+            
+            // Energy sector data
+            EnergyCompanySeeder::class,
+            ElectricityPriceSeeder::class,
+            EnergyInstallationSeeder::class,
+            CooperativeSeeder::class,
+            
+            // Sustainability data
+            CarbonEquivalenceSeeder::class,
+            PlantSpeciesSeeder::class,
+            WeatherAndSolarDataSeeder::class,
+            
+            // Media and communication data
+            MediaOutletSeeder::class,
+            MediaContactSeeder::class,
+            NewsArticleSeeder::class,
+            UserGeneratedContentSeeder::class,
         ]);
     }
 }
