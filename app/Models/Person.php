@@ -107,4 +107,105 @@ class Person extends Model
     {
         return $this->hasOne(Appearance::class, 'person_id');
     }
+
+    /**
+     * Profesiones de la persona.
+     */
+    public function professions()
+    {
+        return $this->belongsToMany(Profession::class, 'person_profession')
+                    ->withPivot([
+                        'start_year',
+                        'end_year',
+                        'is_primary',
+                        'is_current',
+                        'notes'
+                    ])
+                    ->withTimestamps();
+    }
+
+    /**
+     * Profesión principal actual.
+     */
+    public function primaryProfession()
+    {
+        return $this->belongsToMany(Profession::class, 'person_profession')
+                    ->wherePivot('is_primary', true)
+                    ->wherePivot('is_current', true)
+                    ->withPivot([
+                        'start_year',
+                        'end_year',
+                        'is_primary',
+                        'is_current',
+                        'notes'
+                    ])
+                    ->withTimestamps();
+    }
+
+    /**
+     * Obras en las que ha participado.
+     */
+    public function works()
+    {
+        return $this->belongsToMany(Work::class, 'person_work')
+                    ->withPivot([
+                        'role',
+                        'character_name',
+                        'credited_as',
+                        'billing_order',
+                        'contribution_pct',
+                        'is_primary',
+                        'notes'
+                    ])
+                    ->withTimestamps();
+    }
+
+    /**
+     * Obras donde es protagonista.
+     */
+    public function leadingWorks()
+    {
+        return $this->belongsToMany(Work::class, 'person_work')
+                    ->wherePivot('is_primary', true)
+                    ->withPivot([
+                        'role',
+                        'character_name',
+                        'credited_as',
+                        'billing_order'
+                    ])
+                    ->orderByPivot('billing_order')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Premios ganados.
+     */
+    public function awards()
+    {
+        return $this->hasMany(AwardWinner::class);
+    }
+
+    /**
+     * Miembros de la familia.
+     */
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
+    /**
+     * Links relacionados.
+     */
+    public function links()
+    {
+        return $this->morphMany(Link::class, 'related');
+    }
+
+    /**
+     * Cuentas sociales.
+     */
+    public function socialAccounts()
+    {
+        return $this->hasMany(SocialAccount::class);
+    }
 }
