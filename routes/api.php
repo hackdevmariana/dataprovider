@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\V1\WeatherAndSolarDataController;
 use App\Http\Controllers\Api\V1\NewsArticleController;
 use App\Http\Controllers\Api\V1\MediaOutletController;
 use App\Http\Controllers\Api\V1\MediaContactController;
+use App\Http\Controllers\Api\V1\ScrapingSourceController;
 use App\Http\Controllers\Api\V1\UserGeneratedContentController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
@@ -255,6 +256,18 @@ Route::prefix('v1')->group(function () {
     Route::get('/media-contacts/{contact}', [MediaContactController::class, 'show']);
 
     // User Generated Content API (contenido usuarios con moderación automática)
+    // Scraping Sources
+    Route::get('/scraping-sources', [ScrapingSourceController::class, 'index']);
+    Route::get('/scraping-sources/active', [ScrapingSourceController::class, 'active']);
+    Route::get('/scraping-sources/sustainability', [ScrapingSourceController::class, 'sustainability']);
+    Route::get('/scraping-sources/type/{type}', [ScrapingSourceController::class, 'byType']);
+    Route::get('/scraping-sources/statistics', [ScrapingSourceController::class, 'statistics']);
+    Route::get('/scraping-sources/needs-scraping', [ScrapingSourceController::class, 'needsScraping']);
+    Route::post('/scraping-sources/{scrapingSource}/update-scraped', [ScrapingSourceController::class, 'updateLastScraped']);
+    Route::post('/scraping-sources/{scrapingSource}/toggle-active', [ScrapingSourceController::class, 'toggleActive']);
+    Route::get('/scraping-sources/{scrapingSource}', [ScrapingSourceController::class, 'show']);
+
+    // User Generated Content
     Route::get('/user-content', [UserGeneratedContentController::class, 'index']);
     Route::post('/user-content', [UserGeneratedContentController::class, 'store']);
     Route::get('/user-content/comments', [UserGeneratedContentController::class, 'comments']);
