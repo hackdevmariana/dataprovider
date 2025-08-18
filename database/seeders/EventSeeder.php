@@ -315,11 +315,11 @@ class EventSeeder extends Seeder
             'Total eventos' => Event::count(),
             'Eventos gratuitos' => Event::where('is_free', true)->count(),
             'Eventos de pago' => Event::where('is_free', false)->count(),
-            'Eventos online' => Event::where('is_online', true)->count(),
-            'Eventos presenciales' => Event::where('is_online', false)->count(),
-            'Requieren registro' => Event::where('registration_required', true)->count(),
-            'Eventos programados' => Event::where('status', 'scheduled')->count(),
-            'Con restricción de edad' => Event::whereNotNull('age_restriction')->count(),
+            'Con venue asignado' => Event::whereNotNull('venue_id')->count(),
+            'Con precio definido' => Event::whereNotNull('price')->count(),
+            'Con tipo de evento' => Event::whereNotNull('event_type_id')->count(),
+            'Con fecha de fin' => Event::whereNotNull('end_datetime')->count(),
+            'Con URL fuente' => Event::whereNotNull('source_url')->count(),
         ];
 
         $this->command->info("\n📊 Estadísticas de eventos:");
@@ -328,15 +328,11 @@ class EventSeeder extends Seeder
         }
 
         // Estadísticas de precios
-        $avgMinPrice = Event::where('is_free', false)->whereNotNull('price_min')->avg('price_min');
-        $avgMaxPrice = Event::where('is_free', false)->whereNotNull('price_max')->avg('price_max');
-        $avgCapacity = Event::whereNotNull('capacity')->avg('capacity');
+        $avgPrice = Event::where('is_free', false)->whereNotNull('price')->avg('price');
+        $avgCapacity = Event::whereNotNull('audience_size_estimate')->avg('audience_size_estimate');
 
-        if ($avgMinPrice) {
-            $this->command->info("   Precio mínimo promedio: " . round($avgMinPrice, 2) . " €");
-        }
-        if ($avgMaxPrice) {
-            $this->command->info("   Precio máximo promedio: " . round($avgMaxPrice, 2) . " €");
+        if ($avgPrice) {
+            $this->command->info("   Precio promedio: " . round($avgPrice, 2) . " €");
         }
         if ($avgCapacity) {
             $this->command->info("   Capacidad promedio: " . round($avgCapacity, 0) . " personas");
