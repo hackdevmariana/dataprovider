@@ -20,6 +20,15 @@ use App\Http\Controllers\Api\V1\AwardWinnerController;
 use App\Http\Controllers\Api\V1\FamilyMemberController;
 use App\Http\Controllers\Api\V1\ElectricityPriceController;
 use App\Http\Controllers\Api\V1\EnergyCompanyController;
+use App\Http\Controllers\Api\V1\EnergyInstallationController;
+use App\Http\Controllers\Api\V1\CooperativeController;
+use App\Http\Controllers\Api\V1\CarbonEquivalenceController;
+use App\Http\Controllers\Api\V1\PlantSpeciesController;
+use App\Http\Controllers\Api\V1\WeatherAndSolarDataController;
+use App\Http\Controllers\Api\V1\NewsArticleController;
+use App\Http\Controllers\Api\V1\MediaOutletController;
+use App\Http\Controllers\Api\V1\MediaContactController;
+use App\Http\Controllers\Api\V1\UserGeneratedContentController;
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
@@ -34,6 +43,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/links', [LinkController::class, 'store']);
     Route::post('/awards', [AwardController::class, 'store']);
     Route::post('/award-winners', [AwardWinnerController::class, 'store']);
+    
+    // Energy Installations (authenticated routes - only update/delete)
+    Route::put('/energy-installations/{energyInstallation}', [EnergyInstallationController::class, 'update']);
+    Route::delete('/energy-installations/{energyInstallation}', [EnergyInstallationController::class, 'destroy']);
+    
+    // Cooperatives (authenticated routes - only update/delete)
+    Route::put('/cooperatives/{cooperative}', [CooperativeController::class, 'update']);
+    Route::delete('/cooperatives/{cooperative}', [CooperativeController::class, 'destroy']);
 });
 
 // Rutas públicas sin autenticación
@@ -147,6 +164,107 @@ Route::prefix('v1')->group(function () {
     Route::get('/energy-companies/commercializers', [EnergyCompanyController::class, 'commercializers']);
     Route::get('/energy-companies/cooperatives', [EnergyCompanyController::class, 'cooperatives']);
     Route::get('/energy-companies/{idOrSlug}', [EnergyCompanyController::class, 'show']);
+
+    // Energy Installations API (public read and create, authenticated update/delete)
+    Route::get('/energy-installations', [EnergyInstallationController::class, 'index']);
+    Route::post('/energy-installations', [EnergyInstallationController::class, 'store']); // Public create
+    Route::get('/energy-installations/filter/by-type/{type}', [EnergyInstallationController::class, 'filterByType']);
+    Route::get('/energy-installations/filter/by-capacity', [EnergyInstallationController::class, 'filterByCapacity']);
+    Route::get('/energy-installations/commissioned', [EnergyInstallationController::class, 'commissioned']);
+    Route::get('/energy-installations/in-development', [EnergyInstallationController::class, 'inDevelopment']);
+    Route::get('/energy-installations/search', [EnergyInstallationController::class, 'search']);
+    Route::get('/energy-installations/statistics', [EnergyInstallationController::class, 'statistics']);
+    Route::get('/energy-installations/{energyInstallation}', [EnergyInstallationController::class, 'show']);
+
+    // Cooperatives API (public read and create, authenticated update/delete)
+    Route::get('/cooperatives', [CooperativeController::class, 'index']);
+    Route::post('/cooperatives', [CooperativeController::class, 'store']); // Public create
+    Route::get('/cooperatives/filter/by-type/{type}', [CooperativeController::class, 'filterByType']);
+    Route::get('/cooperatives/energy', [CooperativeController::class, 'energy']);
+    Route::get('/cooperatives/open-to-members', [CooperativeController::class, 'openToMembers']);
+    Route::get('/cooperatives/search', [CooperativeController::class, 'search']);
+    Route::get('/cooperatives/statistics', [CooperativeController::class, 'statistics']);
+    Route::get('/cooperatives/{idOrSlug}', [CooperativeController::class, 'show']);
+
+    // Carbon Equivalences API (calculadora de huella de carbono)
+    Route::get('/carbon-equivalences', [CarbonEquivalenceController::class, 'index']);
+    Route::get('/carbon-equivalences/filter/energy', [CarbonEquivalenceController::class, 'energy']);
+    Route::get('/carbon-equivalences/filter/transport', [CarbonEquivalenceController::class, 'transport']);
+    Route::post('/carbon-equivalences/calculate', [CarbonEquivalenceController::class, 'calculate']);
+    Route::get('/carbon-equivalences/statistics', [CarbonEquivalenceController::class, 'statistics']);
+    Route::get('/carbon-equivalences/{carbonEquivalence}', [CarbonEquivalenceController::class, 'show']);
+
+    // Plant Species API (catálogo de especies vegetales para reforestación)
+    Route::get('/plant-species', [PlantSpeciesController::class, 'index']);
+    Route::get('/plant-species/filter/trees', [PlantSpeciesController::class, 'trees']);
+    Route::get('/plant-species/filter/reforestation', [PlantSpeciesController::class, 'forReforestation']);
+    Route::get('/plant-species/filter/high-co2', [PlantSpeciesController::class, 'highCO2Absorption']);
+    Route::get('/plant-species/filter/drought-resistant', [PlantSpeciesController::class, 'droughtResistant']);
+    Route::post('/plant-species/calculate-compensation', [PlantSpeciesController::class, 'calculateCompensation']);
+    Route::get('/plant-species/statistics', [PlantSpeciesController::class, 'statistics']);
+    Route::get('/plant-species/{plantSpecies}', [PlantSpeciesController::class, 'show']);
+
+    // Weather & Solar Data API (optimización energética con datos meteorológicos)
+    Route::get('/weather-solar-data', [WeatherAndSolarDataController::class, 'index']);
+    Route::get('/weather-solar-data/current', [WeatherAndSolarDataController::class, 'current']);
+    Route::get('/weather-solar-data/forecast', [WeatherAndSolarDataController::class, 'forecast']);
+    Route::get('/weather-solar-data/optimal-solar', [WeatherAndSolarDataController::class, 'optimalSolar']);
+    Route::get('/weather-solar-data/optimal-wind', [WeatherAndSolarDataController::class, 'optimalWind']);
+    Route::get('/weather-solar-data/near-location', [WeatherAndSolarDataController::class, 'nearLocation']);
+    Route::post('/weather-solar-data/calculate-production', [WeatherAndSolarDataController::class, 'calculateProduction']);
+    Route::get('/weather-solar-data/daily-optimization', [WeatherAndSolarDataController::class, 'dailyOptimization']);
+    Route::get('/weather-solar-data/statistics', [WeatherAndSolarDataController::class, 'statistics']);
+    Route::get('/weather-solar-data/{weatherAndSolarData}', [WeatherAndSolarDataController::class, 'show']);
+
+    // === MEDIOS Y COMUNICACIÓN ===
+
+    // News Articles API (gestión completa de noticias con análisis sostenibilidad)
+    Route::get('/news-articles', [NewsArticleController::class, 'index']);
+    Route::get('/news-articles/featured', [NewsArticleController::class, 'featured']);
+    Route::get('/news-articles/breaking', [NewsArticleController::class, 'breaking']);
+    Route::get('/news-articles/sustainability', [NewsArticleController::class, 'sustainability']);
+    Route::get('/news-articles/popular', [NewsArticleController::class, 'popular']);
+    Route::get('/news-articles/near-location', [NewsArticleController::class, 'nearLocation']);
+    Route::get('/news-articles/statistics', [NewsArticleController::class, 'statistics']);
+    Route::post('/news-articles/{article}/analyze-sustainability', [NewsArticleController::class, 'analyzeSustainability']);
+    Route::post('/news-articles/{article}/increment-shares', [NewsArticleController::class, 'incrementShares']);
+    Route::get('/news-articles/{idOrSlug}', [NewsArticleController::class, 'show']);
+
+    // Media Outlets API (análisis de credibilidad e influencia de medios)
+    Route::get('/media-outlets', [MediaOutletController::class, 'index']);
+    Route::get('/media-outlets/verified', [MediaOutletController::class, 'verified']);
+    Route::get('/media-outlets/sustainability-focused', [MediaOutletController::class, 'sustainabilityFocused']);
+    Route::get('/media-outlets/high-credibility', [MediaOutletController::class, 'highCredibility']);
+    Route::get('/media-outlets/influential', [MediaOutletController::class, 'influential']);
+    Route::get('/media-outlets/digital-native', [MediaOutletController::class, 'digitalNative']);
+    Route::get('/media-outlets/local', [MediaOutletController::class, 'local']);
+    Route::get('/media-outlets/national', [MediaOutletController::class, 'national']);
+    Route::get('/media-outlets/reference', [MediaOutletController::class, 'reference']);
+    Route::get('/media-outlets/statistics', [MediaOutletController::class, 'statistics']);
+    Route::get('/media-outlets/credibility-ranking', [MediaOutletController::class, 'credibilityRanking']);
+    Route::get('/media-outlets/influence-ranking', [MediaOutletController::class, 'influenceRanking']);
+    Route::post('/media-outlets/{outlet}/calculate-scores', [MediaOutletController::class, 'calculateScores']);
+    Route::get('/media-outlets/{idOrSlug}', [MediaOutletController::class, 'show']);
+
+    // Media Contacts API (gestión de contactos de prensa con tracking interacciones)
+    Route::get('/media-contacts', [MediaContactController::class, 'index']);
+    Route::get('/media-contacts/press-contacts', [MediaContactController::class, 'pressContacts']);
+    Route::get('/media-contacts/sustainability-focused', [MediaContactController::class, 'sustainabilityFocused']);
+    Route::get('/media-contacts/statistics', [MediaContactController::class, 'statistics']);
+    Route::post('/media-contacts/{contact}/record-interaction', [MediaContactController::class, 'recordInteraction']);
+    Route::get('/media-contacts/{contact}', [MediaContactController::class, 'show']);
+
+    // User Generated Content API (contenido usuarios con moderación automática)
+    Route::get('/user-content', [UserGeneratedContentController::class, 'index']);
+    Route::post('/user-content', [UserGeneratedContentController::class, 'store']);
+    Route::get('/user-content/comments', [UserGeneratedContentController::class, 'comments']);
+    Route::get('/user-content/reviews', [UserGeneratedContentController::class, 'reviews']);
+    Route::get('/user-content/featured', [UserGeneratedContentController::class, 'featured']);
+    Route::get('/user-content/popular', [UserGeneratedContentController::class, 'popular']);
+    Route::get('/user-content/statistics', [UserGeneratedContentController::class, 'statistics']);
+    Route::post('/user-content/{content}/like', [UserGeneratedContentController::class, 'like']);
+    Route::post('/user-content/{content}/dislike', [UserGeneratedContentController::class, 'dislike']);
+    Route::get('/user-content/{content}', [UserGeneratedContentController::class, 'show']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
