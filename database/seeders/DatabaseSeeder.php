@@ -45,7 +45,14 @@ class DatabaseSeeder extends Seeder
             
             // Reference data - People
             ProfessionSeeder::class,
+            PersonSeeder::class,
             FamilyMemberSeeder::class,
+            
+            // Cultural and artistic data
+            ArtistSeeder::class,
+            EventSeeder::class,
+            AwardSeeder::class,
+            AnniversarySeeder::class,
             
             // Energy sector data
             EnergyCompanySeeder::class,
