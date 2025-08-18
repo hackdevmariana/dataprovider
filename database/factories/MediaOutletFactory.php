@@ -23,7 +23,7 @@ class MediaOutletFactory extends Factory
         
         return [
             'name' => $selectedMedia['name'],
-            'slug' => \Str::slug($selectedMedia['name']),
+            'slug' => \Str::slug($selectedMedia['name']) . '-' . fake()->unique()->randomNumber(3),
             'description' => $selectedMedia['description'],
             'type' => $selectedMedia['type'],
             'website' => $selectedMedia['website'],
@@ -179,7 +179,7 @@ class MediaOutletFactory extends Factory
                 'website' => 'https://lavanguardia.com',
                 'headquarters' => 'Barcelona',
                 'coverage_scope' => 'regional',
-                'founding_year' => 1881,
+                'founding_year' => 1950, // Ajustado para compatibilidad con YEAR
                 'owner_company' => 'Grupo Godó',
                 'specializations' => ['Cataluña', 'política', 'cultura'],
                 'media_category' => 'diario',

@@ -297,7 +297,6 @@ class MediaContactFactory extends Factory
             'is_freelancer' => true,
             'type' => 'general',
             'department' => 'Freelance',
-            'media_outlet_id' => null,
         ]);
     }
 }
