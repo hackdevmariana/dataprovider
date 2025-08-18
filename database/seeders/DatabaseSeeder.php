@@ -50,8 +50,10 @@ class DatabaseSeeder extends Seeder
             // Energy sector data
             EnergyCompanySeeder::class,
             ElectricityPriceSeeder::class,
+            ElectricityOfferSeeder::class,
             EnergyInstallationSeeder::class,
             CooperativeSeeder::class,
+            ExchangeRateSeeder::class,
             
             // Sustainability data
             CarbonEquivalenceSeeder::class,
@@ -61,6 +63,7 @@ class DatabaseSeeder extends Seeder
             // Media and communication data
             MediaOutletSeeder::class,
             MediaContactSeeder::class,
+            ScrapingSourceSeeder::class,
             NewsArticleSeeder::class,
             UserGeneratedContentSeeder::class,
         ]);
