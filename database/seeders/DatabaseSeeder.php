@@ -62,6 +62,10 @@ class DatabaseSeeder extends Seeder
             CooperativeSeeder::class,
             ExchangeRateSeeder::class,
             
+            // Geographic data
+            PointOfInterestSeeder::class,
+            ZoneClimateSeeder::class,
+            
             // Sustainability data
             CarbonEquivalenceSeeder::class,
             PlantSpeciesSeeder::class,
