@@ -75,6 +75,20 @@ class DatabaseSeeder extends Seeder
             MediaOutletSeeder::class,
             MediaContactSeeder::class,
             ScrapingSourceSeeder::class,
+            
+            // Technology and analytics data
+            UserDeviceSeeder::class,
+            NotificationSettingSeeder::class,
+            StatSeeder::class,
+            
+            // Visual identity and branding data
+            ColorSeeder::class,
+            FontSeeder::class,
+            VisualIdentitySeeder::class,
+            
+            // Gamification data
+            AchievementSeeder::class,
+            ChallengeSeeder::class,
             NewsArticleSeeder::class,
             UserGeneratedContentSeeder::class,
         ]);
