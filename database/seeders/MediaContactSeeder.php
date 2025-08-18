@@ -51,11 +51,15 @@ class MediaContactSeeder extends Seeder
 
         $this->command->info("✅ Creados {$totalContacts} contactos para {$mediaOutlets->count()} medios");
 
-        // Contactos freelance
+        // Contactos freelance asignados a medios aleatorios
         $freelanceContacts = MediaContact::factory()
             ->count(25)
             ->freelancer()
-            ->create(['media_outlet_id' => null]);
+            ->create([
+                'media_outlet_id' => $mediaOutlets->random()->id,
+                'is_freelancer' => true,
+                'department' => 'Freelance'
+            ]);
 
         $totalContacts += $freelanceContacts->count();
         $this->command->info("✅ Creados {$freelanceContacts->count()} contactos freelance");
