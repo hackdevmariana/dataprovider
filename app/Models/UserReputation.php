@@ -335,3 +335,4 @@ class UserReputation extends Model
         return array_slice($this->category_reputation, 0, $limit, true);
     }
 }
+
