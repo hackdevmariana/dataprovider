@@ -354,4 +354,183 @@ class User extends Authenticatable
             'total_engagement_score' => $this->activityFeeds()->sum('engagement_score'),
         ];
     }
+
+    // ========================================
+    // RELACIONES DE MONETIZACIÓN (FASE 7)
+    // ========================================
+
+    /**
+     * Suscripciones del usuario
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(\App\Models\UserSubscription::class);
+    }
+
+    /**
+     * Suscripción activa actual
+     */
+    public function activeSubscription()
+    {
+        return $this->hasOne(\App\Models\UserSubscription::class)
+                    ->where('status', 'active')
+                    ->where(function ($query) {
+                        $query->whereNull('ends_at')
+                              ->orWhere('ends_at', '>', now());
+                    });
+    }
+
+    /**
+     * Plan de suscripción actual
+     */
+    public function subscriptionPlan()
+    {
+        return $this->hasOneThrough(
+            \App\Models\SubscriptionPlan::class,
+            \App\Models\UserSubscription::class,
+            'user_id', // Foreign key on UserSubscription
+            'id', // Foreign key on SubscriptionPlan
+            'id', // Local key on User
+            'subscription_plan_id' // Local key on UserSubscription
+        )->where('user_subscriptions.status', 'active');
+    }
+
+    /**
+     * Comisiones que debe pagar este usuario
+     */
+    public function commissions()
+    {
+        return $this->hasMany(\App\Models\ProjectCommission::class);
+    }
+
+    /**
+     * Comisiones pendientes
+     */
+    public function pendingCommissions()
+    {
+        return $this->commissions()->where('status', 'pending');
+    }
+
+    /**
+     * Verificaciones solicitadas por este usuario
+     */
+    public function projectVerifications()
+    {
+        return $this->hasMany(\App\Models\ProjectVerification::class, 'requested_by');
+    }
+
+    /**
+     * Verificaciones realizadas por este usuario
+     */
+    public function verificationsDone()
+    {
+        return $this->hasMany(\App\Models\ProjectVerification::class, 'verified_by');
+    }
+
+    /**
+     * Consultas como consultor
+     */
+    public function consultationsAsConsultant()
+    {
+        return $this->hasMany(\App\Models\ConsultationService::class, 'consultant_id');
+    }
+
+    /**
+     * Consultas como cliente
+     */
+    public function consultationsAsClient()
+    {
+        return $this->hasMany(\App\Models\ConsultationService::class, 'client_id');
+    }
+
+    /**
+     * Pagos realizados por este usuario
+     */
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\Payment::class);
+    }
+
+    /**
+     * Pagos completados
+     */
+    public function completedPayments()
+    {
+        return $this->payments()->where('status', 'completed');
+    }
+
+    // Métodos auxiliares de monetización
+
+    /**
+     * Verificar si tiene suscripción activa
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->activeSubscription()->exists();
+    }
+
+    /**
+     * Verificar si tiene una característica específica
+     */
+    public function hasFeature(string $feature): bool
+    {
+        $subscription = $this->activeSubscription;
+        
+        if (!$subscription) {
+            return false;
+        }
+
+        return $subscription->subscriptionPlan->hasFeature($feature);
+    }
+
+    /**
+     * Verificar si ha alcanzado un límite
+     */
+    public function hasReachedLimit(string $limit): bool
+    {
+        $subscription = $this->activeSubscription;
+        
+        if (!$subscription) {
+            return true; // Sin suscripción = límites máximos
+        }
+
+        return $subscription->hasReachedLimit($limit);
+    }
+
+    /**
+     * Obtener estadísticas como consultor
+     */
+    public function getConsultantStats(): array
+    {
+        return \App\Models\ConsultationService::getConsultantStats($this->id);
+    }
+
+    /**
+     * Verificar si puede ser consultor
+     */
+    public function canBeConsultant(): bool
+    {
+        // Lógica para determinar si puede ser consultor
+        // Por ejemplo: verificar experiencia, certificaciones, etc.
+        return $this->hasFeature('consultation_services') || 
+               $this->verificationsDone()->count() > 0;
+    }
+
+    /**
+     * Calcular ingresos totales como consultor
+     */
+    public function getTotalConsultantEarnings(): float
+    {
+        return $this->consultationsAsConsultant()
+                   ->where('status', 'completed')
+                   ->sum('total_amount');
+    }
+
+    /**
+     * Calcular gastos totales como cliente
+     */
+    public function getTotalClientSpending(): float
+    {
+        return $this->completedPayments()->sum('amount');
+    }
 }
