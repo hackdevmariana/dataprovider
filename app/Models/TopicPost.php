@@ -7,304 +7,140 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
-/**
- * Post dentro de un tema de discusión.
- * 
- * Representa un hilo de discusión dentro de un tema específico,
- * con soporte para diferentes tipos de contenido y engagement.
- * 
- * @property int $id
- * @property int $topic_id Tema al que pertenece
- * @property int $author_id Usuario autor
- * @property string $title Título del post
- * @property string $content Contenido del post
- * @property string $type Tipo de post
- * @property array|null $images URLs de imágenes
- * @property array|null $attachments Documentos adjuntos
- * @property array|null $links Enlaces externos
- * @property array|null $poll_data Datos de encuesta
- * @property array|null $tags Tags específicos
- * @property string|null $difficulty_level Nivel de dificultad
- * @property float|null $estimated_cost Coste estimado
- * @property string|null $location Ubicación
- * @property string $status Estado del post
- * @property int|null $approved_by Usuario que aprobó
- * @property \Carbon\Carbon|null $approved_at Fecha de aprobación
- * @property string|null $rejection_reason Razón de rechazo
- * @property int $views_count Visualizaciones
- * @property int $likes_count Likes
- * @property int $comments_count Comentarios
- * @property int $shares_count Compartidos
- * @property int $bookmarks_count Bookmarks
- * @property float $engagement_score Score de engagement
- * @property bool $is_pinned Si está fijado
- * @property bool $is_locked Si está bloqueado
- * @property bool $is_featured Si está destacado
- * @property bool $allow_comments Si permite comentarios
- * @property bool $notify_on_comment Si notifica comentarios
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * 
- * @property-read \App\Models\Topic $topic Tema
- * @property-read \App\Models\User $author Usuario autor
- * @property-read \App\Models\User|null $approver Usuario que aprobó
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TopicComment[] $comments Comentarios
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ContentVote[] $votes Votos
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserBookmark[] $bookmarks Bookmarks
- */
 class TopicPost extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'topic_id',
-        'author_id',
-        'title',
-        'content',
-        'type',
-        'images',
-        'attachments',
-        'links',
-        'poll_data',
-        'tags',
-        'difficulty_level',
-        'estimated_cost',
-        'location',
-        'status',
-        'approved_by',
-        'approved_at',
-        'rejection_reason',
-        'views_count',
-        'likes_count',
-        'comments_count',
-        'shares_count',
-        'bookmarks_count',
-        'engagement_score',
-        'is_pinned',
-        'is_locked',
-        'is_featured',
-        'allow_comments',
-        'notify_on_comment',
+        'topic_id', 'user_id', 'title', 'slug', 'body', 'excerpt', 'summary',
+        'post_type', 'is_pinned', 'is_locked', 'is_featured', 'is_announcement',
+        'allow_comments', 'images', 'videos', 'attachments', 'links',
+        'views_count', 'upvotes_count', 'downvotes_count', 'score', 'comments_count',
+        'quality_score', 'trending_score', 'hot_score', 'status', 'tags',
+        'latitude', 'longitude', 'location_name', 'last_activity_at'
     ];
 
     protected $casts = [
         'images' => 'array',
+        'videos' => 'array', 
         'attachments' => 'array',
         'links' => 'array',
-        'poll_data' => 'array',
         'tags' => 'array',
-        'estimated_cost' => 'decimal:2',
-        'engagement_score' => 'decimal:2',
-        'approved_at' => 'datetime',
+        'quality_score' => 'decimal:2',
+        'trending_score' => 'decimal:2',
+        'hot_score' => 'decimal:2',
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
         'is_pinned' => 'boolean',
         'is_locked' => 'boolean',
         'is_featured' => 'boolean',
+        'is_announcement' => 'boolean',
         'allow_comments' => 'boolean',
-        'notify_on_comment' => 'boolean',
+        'last_activity_at' => 'datetime',
     ];
 
-    /**
-     * Tema al que pertenece el post.
-     */
+    // Relaciones básicas
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);
     }
 
-    /**
-     * Usuario autor del post.
-     */
-    public function author(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Usuario que aprobó el post.
-     */
-    public function approver(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-
-    /**
-     * Comentarios del post.
-     */
     public function comments(): HasMany
     {
         return $this->hasMany(TopicComment::class);
     }
 
-    /**
-     * Comentarios de nivel superior (no respuestas).
-     */
-    public function topLevelComments(): HasMany
+    public function publishedComments(): HasMany
     {
-        return $this->hasMany(TopicComment::class)->whereNull('parent_id');
+        return $this->comments()->where('status', 'published');
     }
 
-    /**
-     * Votos del post.
-     */
-    public function votes(): MorphMany
+    public function socialInteractions(): MorphMany
     {
-        return $this->morphMany(ContentVote::class, 'votable');
+        return $this->morphMany(SocialInteraction::class, 'interactable');
     }
 
-    /**
-     * Bookmarks del post.
-     */
-    public function bookmarks(): MorphMany
+    // Scopes principales
+    public function scopePublished(Builder $query): Builder
     {
-        return $this->morphMany(UserBookmark::class, 'bookmarkable');
+        return $query->where('status', 'published');
     }
 
-    /**
-     * Hashtags del post.
-     */
-    public function hashtags(): MorphMany
+    public function scopeFeatured(Builder $query): Builder
     {
-        return $this->morphMany(ContentHashtag::class, 'hashtaggable');
+        return $query->where('is_featured', true);
     }
 
-    /**
-     * Incrementar contador de vistas.
-     */
-    public function incrementViews(): void
+    public function scopeTrending(Builder $query): Builder
+    {
+        return $query->orderByDesc('trending_score');
+    }
+
+    public function scopeHot(Builder $query): Builder
+    {
+        return $query->orderByDesc('hot_score')->orderByDesc('score');
+    }
+
+    // Métodos auxiliares principales
+    public static function generateUniqueSlug(string $title, int $topicId): string
+    {
+        $slug = Str::slug($title);
+        $count = 0;
+        $originalSlug = $slug;
+        
+        while (static::where('slug', $slug)->where('topic_id', $topicId)->exists()) {
+            $count++;
+            $slug = $originalSlug . '-' . $count;
+        }
+        
+        return $slug;
+    }
+
+    public function canBeViewedBy(?User $user = null): bool
+    {
+        if ($this->status !== 'published') {
+            return $user && ($this->user_id === $user->id || $this->topic->isModerator($user));
+        }
+        return $this->topic->canBeViewedBy($user);
+    }
+
+    public function incrementViews(?User $user = null): void
     {
         $this->increment('views_count');
-        $this->updateEngagementScore();
+        $this->touch('last_activity_at');
     }
 
-    /**
-     * Incrementar contador de likes.
-     */
-    public function incrementLikes(): void
+    public function calculateScore(): int
     {
-        $this->increment('likes_count');
-        $this->updateEngagementScore();
+        return $this->upvotes_count - $this->downvotes_count;
     }
 
-    /**
-     * Decrementar contador de likes.
-     */
-    public function decrementLikes(): void
+    public function updateScore(): void
     {
-        $this->decrement('likes_count');
-        $this->updateEngagementScore();
+        $this->update(['score' => $this->calculateScore()]);
     }
 
-    /**
-     * Incrementar contador de comentarios.
-     */
-    public function incrementComments(): void
+    // Eventos del modelo
+    protected static function booted()
     {
-        $this->increment('comments_count');
-        $this->topic->incrementCommentsCount();
-        $this->updateEngagementScore();
-    }
-
-    /**
-     * Incrementar contador de compartidos.
-     */
-    public function incrementShares(): void
-    {
-        $this->increment('shares_count');
-        $this->updateEngagementScore();
-    }
-
-    /**
-     * Incrementar contador de bookmarks.
-     */
-    public function incrementBookmarks(): void
-    {
-        $this->increment('bookmarks_count');
-        $this->updateEngagementScore();
-    }
-
-    /**
-     * Calcular y actualizar score de engagement.
-     */
-    public function updateEngagementScore(): void
-    {
-        // Algoritmo de engagement: vistas + likes*5 + comentarios*10 + shares*15 + bookmarks*8
-        $score = $this->views_count + 
-                ($this->likes_count * 5) + 
-                ($this->comments_count * 10) + 
-                ($this->shares_count * 15) + 
-                ($this->bookmarks_count * 8);
-        
-        $this->update(['engagement_score' => $score]);
-    }
-
-    /**
-     * Verificar si el usuario puede editar el post.
-     */
-    public function canEdit(User $user): bool
-    {
-        // El autor puede editar su propio post
-        if ($this->author_id === $user->id) {
-            return true;
-        }
-
-        // Los moderadores del tema pueden editar
-        return $this->topic->isModerator($user);
-    }
-
-    /**
-     * Verificar si el usuario puede eliminar el post.
-     */
-    public function canDelete(User $user): bool
-    {
-        // El autor puede eliminar su propio post
-        if ($this->author_id === $user->id) {
-            return true;
-        }
-
-        // Los moderadores del tema pueden eliminar
-        return $this->topic->isModerator($user);
-    }
-
-    /**
-     * Marcar post como solución (para posts tipo question).
-     */
-    public function markAsSolution(): void
-    {
-        if ($this->type === 'question') {
-            // Buscar comentario marcado como solución
-            $solutionComment = $this->comments()->where('is_solution', true)->first();
-            if ($solutionComment) {
-                $this->update(['status' => 'solved']);
+        static::creating(function (TopicPost $post) {
+            if (empty($post->slug)) {
+                $post->slug = static::generateUniqueSlug($post->title, $post->topic_id);
             }
-        }
-    }
+        });
 
-    /**
-     * Obtener votos positivos.
-     */
-    public function upvotes()
-    {
-        return $this->votes()->where('vote_type', 'upvote');
-    }
-
-    /**
-     * Obtener votos negativos.
-     */
-    public function downvotes()
-    {
-        return $this->votes()->where('vote_type', 'downvote');
-    }
-
-    /**
-     * Calcular ratio de votos positivos.
-     */
-    public function getUpvoteRatio(): float
-    {
-        $totalVotes = $this->votes()->count();
-        if ($totalVotes === 0) return 0;
-        
-        $upvotes = $this->upvotes()->count();
-        return ($upvotes / $totalVotes) * 100;
+        static::created(function (TopicPost $post) {
+            if ($post->status === 'published') {
+                $post->topic->increment('posts_count');
+            }
+        });
     }
 }

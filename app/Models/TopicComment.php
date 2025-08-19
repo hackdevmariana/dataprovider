@@ -7,257 +7,121 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Comentario en un post de tema.
- * 
- * Representa un comentario dentro de un post, con soporte para
- * comentarios anidados y marcado de soluciones.
- * 
- * @property int $id
- * @property int $topic_post_id Post al que pertenece
- * @property int $author_id Usuario autor
- * @property int|null $parent_id Comentario padre
- * @property string $content Contenido del comentario
- * @property array|null $images URLs de imágenes
- * @property array|null $attachments Documentos adjuntos
- * @property array|null $links Enlaces externos
- * @property string $status Estado del comentario
- * @property string|null $edit_reason Razón de edición
- * @property \Carbon\Carbon|null $edited_at Fecha de edición
- * @property int $likes_count Likes
- * @property int $replies_count Respuestas
- * @property bool $is_solution Si es solución
- * @property bool $is_pinned Si está fijado
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * 
- * @property-read \App\Models\TopicPost $post Post
- * @property-read \App\Models\User $author Usuario autor
- * @property-read \App\Models\TopicComment|null $parent Comentario padre
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TopicComment[] $replies Respuestas
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ContentVote[] $votes Votos
- */
 class TopicComment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'topic_post_id',
-        'author_id',
-        'parent_id',
-        'content',
-        'images',
-        'attachments',
-        'links',
-        'status',
-        'edit_reason',
-        'edited_at',
-        'likes_count',
-        'replies_count',
-        'is_solution',
-        'is_pinned',
+        'topic_post_id', 'user_id', 'parent_id', 'body', 'excerpt',
+        'depth', 'thread_path', 'sort_order', 'children_count',
+        'comment_type', 'is_best_answer', 'is_pinned',
+        'upvotes_count', 'downvotes_count', 'score', 'replies_count',
+        'quality_score', 'status', 'images', 'attachments', 'links',
+        'mentioned_users', 'tags', 'last_activity_at'
     ];
 
     protected $casts = [
         'images' => 'array',
         'attachments' => 'array',
         'links' => 'array',
-        'edited_at' => 'datetime',
-        'is_solution' => 'boolean',
+        'mentioned_users' => 'array',
+        'tags' => 'array',
+        'quality_score' => 'decimal:2',
+        'is_best_answer' => 'boolean',
         'is_pinned' => 'boolean',
+        'last_activity_at' => 'datetime',
     ];
 
-    /**
-     * Post al que pertenece el comentario.
-     */
-    public function post(): BelongsTo
+    // Relaciones básicas
+    public function topicPost(): BelongsTo
     {
-        return $this->belongsTo(TopicPost::class, 'topic_post_id');
+        return $this->belongsTo(TopicPost::class);
     }
 
-    /**
-     * Usuario autor del comentario.
-     */
-    public function author(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Comentario padre (para comentarios anidados).
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(TopicComment::class, 'parent_id');
     }
 
-    /**
-     * Respuestas al comentario.
-     */
-    public function replies(): HasMany
+    public function children(): HasMany
     {
         return $this->hasMany(TopicComment::class, 'parent_id');
     }
 
-    /**
-     * Votos del comentario.
-     */
-    public function votes(): MorphMany
+    public function socialInteractions(): MorphMany
     {
-        return $this->morphMany(ContentVote::class, 'votable');
+        return $this->morphMany(SocialInteraction::class, 'interactable');
     }
 
-    /**
-     * Incrementar contador de likes.
-     */
-    public function incrementLikes(): void
+    // Scopes principales
+    public function scopePublished(Builder $query): Builder
     {
-        $this->increment('likes_count');
+        return $query->where('status', 'published');
     }
 
-    /**
-     * Decrementar contador de likes.
-     */
-    public function decrementLikes(): void
+    public function scopeRootComments(Builder $query): Builder
     {
-        $this->decrement('likes_count');
+        return $query->whereNull('parent_id');
     }
 
-    /**
-     * Incrementar contador de respuestas.
-     */
-    public function incrementReplies(): void
+    public function scopeBestAnswers(Builder $query): Builder
     {
-        $this->increment('replies_count');
+        return $query->where('is_best_answer', true);
     }
 
-    /**
-     * Marcar como solución.
-     */
-    public function markAsSolution(): void
+    public function scopeOrderByScore(Builder $query): Builder
     {
-        // Solo el autor del post o moderadores pueden marcar soluciones
-        $this->update(['is_solution' => true]);
+        return $query->orderByDesc('score')->orderBy('created_at');
+    }
+
+    // Métodos auxiliares
+    public function calculateScore(): int
+    {
+        return $this->upvotes_count - $this->downvotes_count;
+    }
+
+    public function updateScore(): void
+    {
+        $this->update(['score' => $this->calculateScore()]);
+    }
+
+    public function markAsBestAnswer(): void
+    {
+        // Desmarcar otras respuestas como mejor respuesta
+        $this->topicPost->comments()
+             ->where('is_best_answer', true)
+             ->update(['is_best_answer' => false]);
         
-        // Desmarcar otras soluciones en el mismo post
-        $this->post->comments()
-             ->where('id', '!=', $this->id)
-             ->where('is_solution', true)
-             ->update(['is_solution' => false]);
-
-        // Actualizar estado del post si es pregunta
-        $this->post->markAsSolution();
+        $this->update(['is_best_answer' => true]);
     }
 
-    /**
-     * Desmarcar como solución.
-     */
-    public function unmarkAsSolution(): void
+    public function canBeViewedBy(?User $user = null): bool
     {
-        $this->update(['is_solution' => false]);
-    }
-
-    /**
-     * Verificar si el usuario puede editar el comentario.
-     */
-    public function canEdit(User $user): bool
-    {
-        // El autor puede editar su propio comentario
-        if ($this->author_id === $user->id) {
-            return true;
+        if ($this->status !== 'published') {
+            return $user && ($this->user_id === $user->id || $this->topicPost->topic->isModerator($user));
         }
-
-        // Los moderadores del tema pueden editar
-        return $this->post->topic->isModerator($user);
+        return $this->topicPost->canBeViewedBy($user);
     }
 
-    /**
-     * Verificar si el usuario puede eliminar el comentario.
-     */
-    public function canDelete(User $user): bool
+    // Eventos del modelo
+    protected static function booted()
     {
-        // El autor puede eliminar su propio comentario
-        if ($this->author_id === $user->id) {
-            return true;
-        }
-
-        // Los moderadores del tema pueden eliminar
-        return $this->post->topic->isModerator($user);
-    }
-
-    /**
-     * Verificar si el usuario puede marcar como solución.
-     */
-    public function canMarkAsSolution(User $user): bool
-    {
-        // Solo para posts tipo pregunta o ayuda
-        if (!in_array($this->post->type, ['question', 'help'])) {
-            return false;
-        }
-
-        // El autor del post puede marcar soluciones
-        if ($this->post->author_id === $user->id) {
-            return true;
-        }
-
-        // Los moderadores del tema pueden marcar soluciones
-        return $this->post->topic->isModerator($user);
-    }
-
-    /**
-     * Obtener nivel de anidamiento del comentario.
-     */
-    public function getNestingLevel(): int
-    {
-        $level = 0;
-        $parent = $this->parent;
-        
-        while ($parent) {
-            $level++;
-            $parent = $parent->parent;
-        }
-        
-        return $level;
-    }
-
-    /**
-     * Obtener hilo completo de comentarios.
-     */
-    public function getThread()
-    {
-        $thread = collect([$this]);
-        $parent = $this->parent;
-        
-        while ($parent) {
-            $thread->prepend($parent);
-            $parent = $parent->parent;
-        }
-        
-        return $thread;
-    }
-
-    /**
-     * Obtener votos positivos.
-     */
-    public function upvotes()
-    {
-        return $this->votes()->where('vote_type', 'upvote');
-    }
-
-    /**
-     * Obtener votos negativos.
-     */
-    public function downvotes()
-    {
-        return $this->votes()->where('vote_type', 'downvote');
-    }
-
-    /**
-     * Calcular score del comentario.
-     */
-    public function getScore(): int
-    {
-        return $this->upvotes()->count() - $this->downvotes()->count();
+        static::created(function (TopicComment $comment) {
+            if ($comment->status === 'published') {
+                $comment->topicPost->increment('comments_count');
+                $comment->topicPost->update(['last_comment_at' => $comment->created_at]);
+                
+                if ($comment->parent_id) {
+                    $comment->parent->increment('children_count');
+                }
+            }
+        });
     }
 }
