@@ -496,6 +496,38 @@ Route::prefix('v1')->group(function () {
     Route::post('project-verifications/{projectVerification}/start-review', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'startReview']);
     Route::post('project-verifications/{projectVerification}/approve', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'approve']);
     Route::post('project-verifications/{projectVerification}/reject', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'reject']);
+
+    // User Subscriptions (Suscripciones de usuarios)
+    Route::get('user-subscriptions', [\App\Http\Controllers\Api\V1\UserSubscriptionController::class, 'index']);
+    Route::post('user-subscriptions', [\App\Http\Controllers\Api\V1\UserSubscriptionController::class, 'store']);
+    Route::get('user-subscriptions/{userSubscription}', [\App\Http\Controllers\Api\V1\UserSubscriptionController::class, 'show']);
+    Route::delete('user-subscriptions/{userSubscription}', [\App\Http\Controllers\Api\V1\UserSubscriptionController::class, 'destroy']);
+    Route::post('user-subscriptions/{userSubscription}/reactivate', [\App\Http\Controllers\Api\V1\UserSubscriptionController::class, 'reactivate']);
+
+    // Project Commissions (Comisiones de proyectos)
+    Route::get('project-commissions', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'index']);
+    Route::post('project-commissions', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'store']);
+    Route::get('project-commissions/{projectCommission}', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'show']);
+    Route::post('project-commissions/{projectCommission}/mark-paid', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'markAsPaid']);
+    Route::post('project-commissions/{projectCommission}/waive', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'waive']);
+    Route::get('project-commissions/stats', [\App\Http\Controllers\Api\V1\ProjectCommissionController::class, 'stats']);
+
+    // Consultation Services (Servicios de consultoría)
+    Route::get('consultation-services', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'index']);
+    Route::post('consultation-services', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'store']);
+    Route::get('consultation-services/{consultationService}', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'show']);
+    Route::post('consultation-services/{consultationService}/accept', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'accept']);
+    Route::post('consultation-services/{consultationService}/start', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'start']);
+    Route::post('consultation-services/{consultationService}/complete', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'complete']);
+    Route::post('consultation-services/{consultationService}/rate', [\App\Http\Controllers\Api\V1\ConsultationServiceController::class, 'rate']);
+
+    // Payments (Pagos)
+    Route::get('payments', [\App\Http\Controllers\Api\V1\PaymentController::class, 'index']);
+    Route::get('payments/{payment}', [\App\Http\Controllers\Api\V1\PaymentController::class, 'show']);
+    Route::get('payments/stats', [\App\Http\Controllers\Api\V1\PaymentController::class, 'stats']);
+    Route::post('payments/create-intent', [\App\Http\Controllers\Api\V1\PaymentController::class, 'createPaymentIntent']);
+    Route::post('payments/{payment}/confirm', [\App\Http\Controllers\Api\V1\PaymentController::class, 'confirmPayment']);
+    Route::post('payments/{payment}/refund', [\App\Http\Controllers\Api\V1\PaymentController::class, 'requestRefund']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
