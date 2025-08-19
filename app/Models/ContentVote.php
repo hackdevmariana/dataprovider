@@ -140,3 +140,4 @@ class ContentVote extends Model
         return null;
     }
 }
+
