@@ -533,4 +533,54 @@ class User extends Authenticatable
     {
         return $this->completedPayments()->sum('amount');
     }
+
+    // NUEVOS MODELOS SOCIALES AVANZADOS
+
+    /**
+     * Insignias del usuario
+     */
+    public function badges()
+    {
+        return $this->hasMany(\App\Models\UserBadge::class);
+    }
+
+    /**
+     * Privilegios del usuario
+     */
+    public function privileges()
+    {
+        return $this->hasMany(\App\Models\UserPrivilege::class);
+    }
+
+    /**
+     * Verificaciones de experto del usuario
+     */
+    public function expertVerifications()
+    {
+        return $this->hasMany(\App\Models\ExpertVerification::class);
+    }
+
+    /**
+     * Seguimiento de temas del usuario
+     */
+    public function topicFollowings()
+    {
+        return $this->hasMany(\App\Models\TopicFollowing::class);
+    }
+
+    /**
+     * Posts de cooperativa creados por el usuario
+     */
+    public function cooperativePosts()
+    {
+        return $this->hasMany(\App\Models\CooperativePost::class, 'author_id');
+    }
+
+    /**
+     * Comparaciones sociales del usuario
+     */
+    public function socialComparisons()
+    {
+        return $this->hasMany(\App\Models\SocialComparison::class);
+    }
 }
