@@ -31,6 +31,64 @@ use App\Http\Controllers\Api\V1\MediaContactController;
 use App\Http\Controllers\Api\V1\ScrapingSourceController;
 use App\Http\Controllers\Api\V1\UserGeneratedContentController;
 
+// Nuevos controladores implementados
+use App\Http\Controllers\Api\V1\AchievementController;
+use App\Http\Controllers\Api\V1\ChallengeController;
+use App\Http\Controllers\Api\V1\ColorController;
+use App\Http\Controllers\Api\V1\FontController;
+use App\Http\Controllers\Api\V1\ElectricityOfferController;
+use App\Http\Controllers\Api\V1\NotificationSettingController;
+use App\Http\Controllers\Api\V1\ExchangeRateController;
+use App\Http\Controllers\Api\V1\CurrencyController;
+use App\Http\Controllers\Api\V1\PriceUnitController;
+use App\Http\Controllers\Api\V1\UserDeviceController;
+use App\Http\Controllers\Api\V1\SocialAccountController;
+use App\Http\Controllers\Api\V1\ApiKeyController;
+
+// Controladores restantes implementados
+use App\Http\Controllers\Api\V1\AliasController;
+use App\Http\Controllers\Api\V1\AppearanceController;
+use App\Http\Controllers\Api\V1\OrganizationController;
+use App\Http\Controllers\Api\V1\OrganizationFeatureController;
+use App\Http\Controllers\Api\V1\CarbonCalculationController;
+use App\Http\Controllers\Api\V1\CarbonSavingLogController;
+use App\Http\Controllers\Api\V1\CarbonSavingRequestController;
+use App\Http\Controllers\Api\V1\EmissionFactorController;
+use App\Http\Controllers\Api\V1\EnergyCertificateController;
+use App\Http\Controllers\Api\V1\EnergyTransactionController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CompanyTypeController;
+use App\Http\Controllers\Api\V1\DataSourceController;
+use App\Http\Controllers\Api\V1\ElectricityPriceIntervalController;
+use App\Http\Controllers\Api\V1\PlatformController;
+use App\Http\Controllers\Api\V1\StatController;
+use App\Http\Controllers\Api\V1\SyncLogController;
+use App\Http\Controllers\Api\V1\TagController;
+use App\Http\Controllers\Api\V1\TagGroupController;
+use App\Http\Controllers\Api\V1\RelationshipTypeController;
+use App\Http\Controllers\Api\V1\VenueTypeController;
+use App\Http\Controllers\Api\V1\VisualIdentityController;
+use App\Http\Controllers\Api\V1\CalendarHolidayLocationController;
+use App\Http\Controllers\Api\V1\CooperativeUserMemberController;
+use App\Http\Controllers\Api\V1\PersonProfessionController;
+use App\Http\Controllers\Api\V1\PersonWorkController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\UserAchievementController;
+use App\Http\Controllers\Api\V1\UserChallengeController;
+use App\Http\Controllers\Api\V1\ZoneClimateController;
+
+// Social Features Controllers
+use App\Http\Controllers\Api\V1\TopicController;
+use App\Http\Controllers\Api\V1\HashtagController;
+use App\Http\Controllers\Api\V1\ActivityFeedController;
+use App\Http\Controllers\Api\V1\SocialInteractionController;
+use App\Http\Controllers\Api\V1\UserFollowController;
+use App\Http\Controllers\Api\V1\UserListController;
+
+// Collaborative Projects Controllers
+use App\Http\Controllers\Api\V1\ProjectProposalController;
+use App\Http\Controllers\Api\V1\RoofMarketplaceController;
+
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
     Route::post('/points-of-interest', [PointOfInterestController::class, 'store']);
@@ -278,6 +336,149 @@ Route::prefix('v1')->group(function () {
     Route::post('/user-content/{content}/like', [UserGeneratedContentController::class, 'like']);
     Route::post('/user-content/{content}/dislike', [UserGeneratedContentController::class, 'dislike']);
     Route::get('/user-content/{content}', [UserGeneratedContentController::class, 'show']);
+
+    // ========== NUEVOS ENDPOINTS IMPLEMENTADOS ==========
+    
+    // Gamificación
+    Route::apiResource('achievements', AchievementController::class)->only(['index', 'show']);
+    Route::apiResource('challenges', ChallengeController::class)->only(['index', 'show']);
+    
+    // Identidad Visual
+    Route::apiResource('colors', ColorController::class)->only(['index', 'show']);
+    Route::apiResource('fonts', FontController::class)->only(['index', 'show']);
+    
+    // Datos Económicos
+    Route::apiResource('electricity-offers', ElectricityOfferController::class)->only(['index', 'show']);
+    Route::apiResource('exchange-rates', ExchangeRateController::class)->only(['index', 'show']);
+    Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
+    Route::apiResource('price-units', PriceUnitController::class)->only(['index', 'show']);
+    
+    // Configuración de Usuario
+    Route::apiResource('notification-settings', NotificationSettingController::class);
+    Route::apiResource('user-devices', UserDeviceController::class);
+    Route::apiResource('social-accounts', SocialAccountController::class);
+    Route::apiResource('api-keys', ApiKeyController::class)->only(['index', 'show', 'store', 'destroy']);
+
+    // ========== TODOS LOS CONTROLADORES RESTANTES ==========
+    
+    // Personas y Organizaciones
+    Route::apiResource('aliases', AliasController::class)->only(['index', 'show']);
+    Route::apiResource('appearances', AppearanceController::class)->only(['index', 'show']);
+    Route::apiResource('organizations', OrganizationController::class)->only(['index', 'show']);
+    Route::apiResource('organization-features', OrganizationFeatureController::class)->only(['index', 'show']);
+    
+    // Energía y Sostenibilidad
+    Route::apiResource('carbon-calculations', CarbonCalculationController::class)->only(['index', 'show']);
+    Route::apiResource('carbon-saving-logs', CarbonSavingLogController::class)->only(['index', 'show']);
+    Route::apiResource('carbon-saving-requests', CarbonSavingRequestController::class);
+    Route::apiResource('emission-factors', EmissionFactorController::class)->only(['index', 'show']);
+    Route::apiResource('energy-certificates', EnergyCertificateController::class)->only(['index', 'show']);
+    Route::apiResource('energy-transactions', EnergyTransactionController::class);
+    
+    // Configuración y Datos
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+    Route::apiResource('company-types', CompanyTypeController::class)->only(['index', 'show']);
+    Route::apiResource('data-sources', DataSourceController::class)->only(['index', 'show']);
+    Route::apiResource('electricity-price-intervals', ElectricityPriceIntervalController::class)->only(['index', 'show']);
+    Route::apiResource('platforms', PlatformController::class)->only(['index', 'show']);
+    Route::apiResource('stats', StatController::class)->only(['index', 'show']);
+    Route::apiResource('sync-logs', SyncLogController::class)->only(['index', 'show']);
+    
+    // Contenido y Etiquetas
+    Route::apiResource('tags', TagController::class);
+    Route::apiResource('tag-groups', TagGroupController::class)->only(['index', 'show']);
+    Route::apiResource('relationship-types', RelationshipTypeController::class)->only(['index', 'show']);
+    Route::apiResource('venue-types', VenueTypeController::class)->only(['index', 'show']);
+    Route::apiResource('visual-identities', VisualIdentityController::class)->only(['index', 'show']);
+    
+    // Especiales y Pivot
+    Route::apiResource('calendar-holiday-locations', CalendarHolidayLocationController::class)->only(['index', 'show']);
+    Route::apiResource('cooperative-user-members', CooperativeUserMemberController::class);
+    Route::apiResource('person-professions', PersonProfessionController::class)->only(['index', 'show']);
+    Route::apiResource('person-works', PersonWorkController::class)->only(['index', 'show']);
+    Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);
+    Route::apiResource('user-achievements', UserAchievementController::class);
+    Route::apiResource('user-challenges', UserChallengeController::class);
+    Route::apiResource('zone-climates', ZoneClimateController::class)->only(['index', 'show']);
+    
+    // ===== SOCIAL FEATURES ROUTES =====
+    
+    // Topics (Thematic Communities)
+    Route::get('topics/trending', [TopicController::class, 'trending']); // Debe ir ANTES del apiResource
+    Route::apiResource('topics', TopicController::class)->except(['update', 'destroy']);
+    Route::post('topics/{slug}/join', [TopicController::class, 'join']);
+    Route::post('topics/{slug}/leave', [TopicController::class, 'leave']);
+    Route::get('topics/{slug}/stats', [TopicController::class, 'stats']);
+    
+    // Hashtags (Sistema de etiquetas inteligente)
+    Route::get('hashtags/trending', [HashtagController::class, 'trending']);
+    Route::get('hashtags/suggest', [HashtagController::class, 'suggest']);
+    Route::get('hashtags/extract', [HashtagController::class, 'extract']);
+    Route::apiResource('hashtags', HashtagController::class)->except(['update', 'destroy']);
+    Route::get('hashtags/{hashtag}/related', [HashtagController::class, 'related']);
+    
+    // User Lists (Listas personalizadas)
+    Route::get('user-lists/featured', [UserListController::class, 'featured']);
+    Route::get('user-lists/search', [UserListController::class, 'search']);
+    Route::apiResource('user-lists', UserListController::class);
+    
+    // ===== COLLABORATIVE PROJECTS ROUTES =====
+    
+    // Project Proposals (Propuestas de proyectos)
+    Route::get('project-proposals/featured', [ProjectProposalController::class, 'featured']);
+    Route::get('project-proposals/funding', [ProjectProposalController::class, 'funding']);
+    Route::get('project-proposals/nearby', [ProjectProposalController::class, 'nearby']);
+    Route::apiResource('project-proposals', ProjectProposalController::class)->except(['update', 'destroy']);
+    Route::post('project-proposals/{slug}/invest', [ProjectProposalController::class, 'invest']);
+    Route::get('project-proposals/{slug}/stats', [ProjectProposalController::class, 'stats']);
+    
+    // Roof Marketplace (Marketplace de techos)
+    Route::get('roof-marketplace/featured', [RoofMarketplaceController::class, 'featured']);
+    Route::get('roof-marketplace/nearby', [RoofMarketplaceController::class, 'nearby']);
+    Route::get('roof-marketplace/stats', [RoofMarketplaceController::class, 'stats']);
+    Route::apiResource('roof-marketplace', RoofMarketplaceController::class)->except(['update', 'destroy']);
+    Route::post('roof-marketplace/{slug}/inquire', [RoofMarketplaceController::class, 'inquire']);
+    Route::get('roof-marketplace/{slug}/energy-potential', [RoofMarketplaceController::class, 'energyPotential']);
+    
+    // ========================================
+    // FASE 5: FEED DE ACTIVIDAD SOCIAL
+    // ========================================
+    
+    // Activity Feed (Feed de actividades energéticas)
+    Route::get('activity-feed', [ActivityFeedController::class, 'index']);
+    Route::get('activity-feed/public', [ActivityFeedController::class, 'public']);
+    Route::get('activity-feed/featured', [ActivityFeedController::class, 'featured']);
+    Route::get('activity-feed/milestones', [ActivityFeedController::class, 'milestones']);
+    Route::get('activity-feed/nearby', [ActivityFeedController::class, 'nearby']);
+    Route::get('activity-feed/stats', [ActivityFeedController::class, 'stats']);
+    Route::get('activity-feed/{activityFeed}', [ActivityFeedController::class, 'show']);
+    
+    // Social Interactions (Interacciones sociales)
+    Route::post('social-interactions', [SocialInteractionController::class, 'store']);
+    Route::delete('social-interactions/{socialInteraction}', [SocialInteractionController::class, 'destroy']);
+    Route::get('social-interactions/for-object', [SocialInteractionController::class, 'forObject']);
+    Route::get('social-interactions/my-interactions', [SocialInteractionController::class, 'myInteractions']);
+    Route::get('social-interactions/stats', [SocialInteractionController::class, 'stats']);
+    
+    // User Following (Seguimiento de usuarios)
+    Route::post('users/{user}/follow', [UserFollowController::class, 'follow']);
+    Route::delete('users/{user}/unfollow', [UserFollowController::class, 'unfollow']);
+    Route::get('user-follows/following', [UserFollowController::class, 'following']);
+    Route::get('user-follows/followers', [UserFollowController::class, 'followers']);
+    Route::get('user-follows/suggestions', [UserFollowController::class, 'suggestions']);
+    Route::put('user-follows/{userFollow}/configure', [UserFollowController::class, 'configure']);
+    Route::get('user-follows/stats', [UserFollowController::class, 'stats']);
+    
+    // ========================================
+    // FASE 6: COMUNIDADES TEMÁTICAS
+    // ========================================
+    
+    // Topics (Comunidades temáticas especializadas)
+    Route::get('topics/trending', [TopicController::class, 'trending']);
+    Route::get('topics/stats', [TopicController::class, 'stats']);
+    Route::post('topics/{topic}/join', [TopicController::class, 'join']);
+    Route::delete('topics/{topic}/leave', [TopicController::class, 'leave']);
+    Route::apiResource('topics', TopicController::class)->except(['update', 'destroy']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
