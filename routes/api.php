@@ -479,6 +479,23 @@ Route::prefix('v1')->group(function () {
     Route::post('topics/{topic}/join', [TopicController::class, 'join']);
     Route::delete('topics/{topic}/leave', [TopicController::class, 'leave']);
     Route::apiResource('topics', TopicController::class)->except(['update', 'destroy']);
+
+    // ========================================
+    // FASE 7: SISTEMA DE MONETIZACIÓN
+    // ========================================
+
+    // Subscription Plans (Planes de suscripción)
+    Route::get('subscription-plans', [\App\Http\Controllers\Api\V1\SubscriptionPlanController::class, 'index']);
+    Route::get('subscription-plans/compare', [\App\Http\Controllers\Api\V1\SubscriptionPlanController::class, 'compare']);
+    Route::get('subscription-plans/{plan}', [\App\Http\Controllers\Api\V1\SubscriptionPlanController::class, 'show']);
+
+    // Project Verifications (Verificaciones de proyectos)
+    Route::get('project-verifications', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'index']);
+    Route::post('project-verifications', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'store']);
+    Route::get('project-verifications/{projectVerification}', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'show']);
+    Route::post('project-verifications/{projectVerification}/start-review', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'startReview']);
+    Route::post('project-verifications/{projectVerification}/approve', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'approve']);
+    Route::post('project-verifications/{projectVerification}/reject', [\App\Http\Controllers\Api\V1\ProjectVerificationController::class, 'reject']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
