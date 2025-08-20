@@ -12,6 +12,12 @@ use Illuminate\Http\Request;
  *     name="Energy Installations",
  *     description="API endpoints para gestión de instalaciones energéticas"
  * )
+ * 
+ * @group Energy Installations
+ *
+ * APIs para la gestión de instalaciones energéticas renovables.
+ * Permite a los usuarios registrar, gestionar y consultar
+ * instalaciones de energía solar, eólica, hidráulica y biomasa.
  */
 class EnergyInstallationController extends Controller
 {
@@ -34,6 +40,16 @@ class EnergyInstallationController extends Controller
      *     ),
      *     @OA\Response(response=200, description="List of energy installations")
      * )
+     * 
+     * Display a listing of energy installations
+     *
+     * Obtiene una lista de instalaciones energéticas con opciones de paginación.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyInstallationResource
+     * @apiResourceModel App\Models\EnergyInstallation
      */
     public function index(Request $request)
     {
