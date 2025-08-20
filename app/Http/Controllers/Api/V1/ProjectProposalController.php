@@ -13,6 +13,12 @@ use Illuminate\Http\JsonResponse;
  *     name="Project Proposals",
  *     description="Sistema de propuestas de proyectos colaborativos energéticos"
  * )
+ * 
+ * @group Project Proposals
+ *
+ * APIs para la gestión de propuestas de proyectos colaborativos energéticos.
+ * Permite a los usuarios crear, gestionar y participar en proyectos
+ * de instalaciones energéticas, almacenamiento y eficiencia.
  */
 class ProjectProposalController extends Controller
 {
@@ -53,6 +59,21 @@ class ProjectProposalController extends Controller
      *     ),
      *     @OA\Response(response=200, description="Lista de propuestas de proyectos")
      * )
+     * 
+     * Display a listing of project proposals
+     *
+     * Obtiene una lista de propuestas de proyectos con opciones de filtrado.
+     *
+     * @queryParam status string Filtrar por estado del proyecto. Example: approved
+     * @queryParam project_type string Filtrar por tipo de proyecto. Example: community_installation
+     * @queryParam scale string Filtrar por escala del proyecto. Example: residential
+     * @queryParam featured boolean Solo proyectos destacados. Example: true
+     * @queryParam search string Buscar en título y descripción. Example: energía solar
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @apiResourceCollection App\Http\Resources\V1\ProjectProposalResource
+     * @apiResourceModel App\Models\ProjectProposal
      */
     public function index(Request $request)
     {
