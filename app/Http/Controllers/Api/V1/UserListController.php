@@ -6,308 +6,288 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\UserListResource;
 use App\Models\UserList;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 /**
- * @OA\Tag(
- *     name="User Lists",
- *     description="Sistema de listas personalizadas estilo Twitter/Discord"
- * )
+ * @group User Lists
+ *
+ * APIs para la gestión de listas personalizadas de usuarios.
+ * Permite crear listas como "Favoritos", "Seguir más tarde", etc.
+ * Similar a las listas de Twitter o Discord.
  */
 class UserListController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/user-lists",
-     *     summary="Listar listas de usuarios",
-     *     tags={"User Lists"},
-     *     @OA\Parameter(
-     *         name="type",
-     *         in="query",
-     *         description="Filtrar por tipo de lista",
-     *         @OA\Schema(type="string", enum={"mixed", "users", "posts", "projects", "companies", "resources", "events", "custom"})
-     *     ),
-     *     @OA\Parameter(
-     *         name="visibility",
-     *         in="query",
-     *         description="Filtrar por visibilidad",
-     *         @OA\Schema(type="string", enum={"public", "private", "followers", "collaborative"})
-     *     ),
-     *     @OA\Parameter(
-     *         name="featured",
-     *         in="query",
-     *         description="Solo listas destacadas",
-     *         @OA\Schema(type="boolean")
-     *     ),
-     *     @OA\Response(response=200, description="Lista de listas de usuarios")
-     * )
+     * Display a listing of user lists
+     *
+     * Obtiene una lista de listas del usuario autenticado.
+     *
+     * @queryParam type string Tipo de lista (favorites, following, custom, shared). Example: favorites
+     * @queryParam visibility string Visibilidad (private, public, shared). Example: public
+     * @queryParam is_featured boolean Filtrar listas destacadas. Example: true
+     * @queryParam sort string Ordenamiento (recent, alphabetical, items_count, followers_count). Example: recent
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     *
+     * @apiResourceCollection App\Http\Resources\V1\UserListResource
+     * @apiResourceModel App\Models\UserList
+     * @authenticated
      */
     public function index(Request $request)
     {
-        $query = UserList::where('is_active', true);
+        $user = Auth::guard('sanctum')->user();
+        
+        $query = $user->lists()
+            ->when($request->type, fn($q, $type) => $q->where('type', $type))
+            ->when($request->visibility, fn($q, $visibility) => $q->where('visibility', $visibility))
+            ->when($request->has('is_featured'), fn($q) => $q->where('is_featured', $request->boolean('is_featured')));
 
-        // Solo mostrar listas públicas si no es el propietario
-        if (!auth()->check()) {
-            $query->where('visibility', 'public');
-        } else {
-            $user = auth()->user();
-            $query->where(function ($q) use ($user) {
-                $q->where('visibility', 'public')
-                  ->orWhere('user_id', $user->id)
-                  ->orWhere(function ($subQ) use ($user) {
-                      $subQ->where('visibility', 'followers')
-                           ->whereHas('user.followers', function ($followerQ) use ($user) {
-                               $followerQ->where('follower_id', $user->id);
-                           });
-                  })
-                  ->orWhere(function ($subQ) use ($user) {
-                      $subQ->where('visibility', 'collaborative')
-                           ->whereJsonContains('collaborator_ids', $user->id);
-                  });
-            });
+        // Aplicar ordenamiento
+        switch ($request->get('sort', 'recent')) {
+            case 'alphabetical':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'items_count':
+                $query->orderBy('items_count', 'desc');
+                break;
+            case 'followers_count':
+                $query->orderBy('followers_count', 'desc');
+                break;
+            default: // recent
+                $query->orderBy('updated_at', 'desc');
         }
 
-        if ($request->has('type')) {
-            $query->where('list_type', $request->type);
-        }
-
-        if ($request->has('visibility')) {
-            $query->where('visibility', $request->visibility);
-        }
-
-        if ($request->boolean('featured')) {
-            $query->where('is_featured', true);
-        }
-
-        $lists = $query->with(['user'])
-                      ->orderBy('engagement_score', 'desc')
-                      ->paginate(20);
+        $perPage = min($request->get('per_page', 15), 100);
+        $lists = $query->paginate($perPage);
 
         return UserListResource::collection($lists);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/v1/user-lists",
-     *     summary="Crear nueva lista",
-     *     tags={"User Lists"},
-     *     security={{"sanctum": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name", "list_type"},
-     *             @OA\Property(property="name", type="string", example="Instaladores de confianza"),
-     *             @OA\Property(property="description", type="string", example="Lista de instaladores verificados"),
-     *             @OA\Property(property="list_type", type="string", enum={"mixed", "users", "posts", "projects", "companies", "resources", "events", "custom"}),
-     *             @OA\Property(property="visibility", type="string", enum={"private", "public", "followers", "collaborative"}, default="private"),
-     *             @OA\Property(property="icon", type="string", example="users"),
-     *             @OA\Property(property="color", type="string", example="#3B82F6")
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Lista creada"),
-     *     @OA\Response(response=422, description="Error de validación")
-     * )
+     * Store a new user list
+     *
+     * Crea una nueva lista personalizada.
+     *
+     * @bodyParam name string required Nombre de la lista. Example: Mis Favoritos
+     * @bodyParam description string Descripción de la lista. Example: Lista de contenido favorito
+     * @bodyParam type string Tipo de lista (favorites, following, custom, shared). Default: custom. Example: custom
+     * @bodyParam visibility string Visibilidad (private, public, shared). Default: private. Example: private
+     * @bodyParam color string Color de la lista (hex). Example: #ff6b6b
+     * @bodyParam icon string Icono de la lista. Example: star
+     * @bodyParam is_featured boolean Si es destacada. Default: false. Example: false
+     * @bodyParam allows_contributions boolean Si permite contribuciones. Default: false. Example: false
+     * @bodyParam tags array Etiquetas de la lista. Example: ["favoritos", "importante"]
+     *
+     * @apiResource App\Http\Resources\V1\UserListResource
+     * @apiResourceModel App\Models\UserList
+     *
+     * @response 201 {"data": {...}, "message": "Lista creada exitosamente"}
+     * @response 422 {"message": "Datos inválidos", "errors": {...}}
+     * @authenticated
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'list_type' => 'required|in:mixed,users,posts,projects,companies,resources,events,custom',
-            'visibility' => 'nullable|in:private,public,followers,collaborative',
-            'icon' => 'nullable|string|max:50',
-            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'allowed_content_types' => 'nullable|array',
-            'collaborator_ids' => 'nullable|array',
-            'collaborator_ids.*' => 'exists:users,id',
+            'type' => 'in:favorites,following,custom,shared',
+            'visibility' => 'in:private,public,shared',
+            'color' => 'nullable|string|max:7|regex:/^#[0-9A-Fa-f]{6}$/',
+            'icon' => 'nullable|string|max:100',
+            'is_featured' => 'boolean',
+            'allows_contributions' => 'boolean',
+            'tags' => 'nullable|array',
         ]);
 
-        $list = UserList::create([
-            'user_id' => auth()->id(),
-            'name' => $request->name,
-            'description' => $request->description,
-            'list_type' => $request->list_type,
-            'visibility' => $request->visibility ?? 'private',
-            'icon' => $request->icon,
-            'color' => $request->color ?? '#3B82F6',
-            'allowed_content_types' => $request->allowed_content_types,
-            'collaborator_ids' => $request->collaborator_ids,
-        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Datos inválidos',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        return response()->json([
-            'message' => 'Lista creada exitosamente',
-            'data' => new UserListResource($list),
-        ], 201);
+        $user = Auth::guard('sanctum')->user();
+
+        $list = UserList::create(array_merge($validator->validated(), [
+            'user_id' => $user->id,
+            'type' => $request->get('type', 'custom'),
+            'visibility' => $request->get('visibility', 'private'),
+            'is_featured' => $request->get('is_featured', false),
+            'allows_contributions' => $request->get('allows_contributions', false),
+            'items_count' => 0,
+            'followers_count' => 0,
+        ]));
+
+        $list->load(['user']);
+        return new UserListResource($list);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/user-lists/{userList}",
-     *     summary="Obtener lista específica",
-     *     tags={"User Lists"},
-     *     @OA\Parameter(
-     *         name="userList",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la lista",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Detalles de la lista"),
-     *     @OA\Response(response=404, description="Lista no encontrada")
-     * )
+     * Display the specified user list
+     *
+     * Muestra una lista específica con sus items.
+     *
+     * @urlParam userList int required ID de la lista. Example: 1
+     *
+     * @apiResource App\Http\Resources\V1\UserListResource
+     * @apiResourceModel App\Models\UserList
+     *
+     * @response 404 {"message": "Lista no encontrada"}
      */
     public function show(UserList $userList)
     {
-        // Verificar permisos de visualización
-        if (!$userList->canView(auth()->user())) {
-            abort(403, 'No tienes permisos para ver esta lista');
+        // Solo mostrar listas públicas o propias
+        $user = Auth::guard('sanctum')->user();
+        if ($userList->visibility !== 'public' && $userList->user_id !== $user->id) {
+            return response()->json(['message' => 'Lista no encontrada'], 404);
         }
 
-        $userList->incrementViews();
-        $userList->load(['user', 'items.listable']);
+        $userList->load(['user', 'items']);
+        return new UserListResource($userList);
+    }
+
+    /**
+     * Update the specified user list
+     *
+     * Actualiza una lista existente.
+     *
+     * @urlParam userList int required ID de la lista. Example: 1
+     * @bodyParam name string Nuevo nombre. Example: Nuevo nombre
+     * @bodyParam description string Nueva descripción. Example: Nueva descripción
+     * @bodyParam visibility string Nueva visibilidad. Example: public
+     * @bodyParam color string Nuevo color. Example: #4ecdc4
+     * @bodyParam icon string Nuevo icono. Example: heart
+     * @bodyParam is_featured boolean Si es destacada. Example: true
+     * @bodyParam allows_contributions boolean Si permite contribuciones. Example: true
+     * @bodyParam tags array Nuevas etiquetas. Example: ["actualizado", "nuevo"]
+     *
+     * @apiResource App\Http\Resources\V1\UserListResource
+     * @apiResourceModel App\Models\UserList
+     *
+     * @response 403 {"message": "No autorizado"}
+     * @response 422 {"message": "Datos inválidos", "errors": {...}}
+     * @authenticated
+     */
+    public function update(Request $request, UserList $userList)
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        if ($userList->user_id !== $user->id) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'visibility' => 'in:private,public,shared',
+            'color' => 'nullable|string|max:7|regex:/^#[0-9A-Fa-f]{6}$/',
+            'icon' => 'nullable|string|max:100',
+            'is_featured' => 'boolean',
+            'allows_contributions' => 'boolean',
+            'tags' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Datos inválidos',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $userList->update($validator->validated());
+        $userList->load(['user']);
 
         return new UserListResource($userList);
     }
 
     /**
-     * @OA\Put(
-     *     path="/api/v1/user-lists/{userList}",
-     *     summary="Actualizar lista",
-     *     tags={"User Lists"},
-     *     security={{"sanctum": {}}},
-     *     @OA\Parameter(
-     *         name="userList",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la lista",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="description", type="string"),
-     *             @OA\Property(property="visibility", type="string", enum={"private", "public", "followers", "collaborative"}),
-     *             @OA\Property(property="icon", type="string"),
-     *             @OA\Property(property="color", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Lista actualizada"),
-     *     @OA\Response(response=403, description="Sin permisos"),
-     *     @OA\Response(response=422, description="Error de validación")
-     * )
+     * Remove the specified user list
+     *
+     * Elimina una lista y todos sus items.
+     *
+     * @urlParam userList int required ID de la lista. Example: 1
+     *
+     * @response 200 {"message": "Lista eliminada exitosamente"}
+     * @response 403 {"message": "No autorizado"}
+     * @authenticated
      */
-    public function update(Request $request, UserList $userList): JsonResponse
+    public function destroy(UserList $userList)
     {
-        if (!$userList->canEdit(auth()->user())) {
-            abort(403, 'No tienes permisos para editar esta lista');
+        $user = Auth::guard('sanctum')->user();
+
+        if ($userList->user_id !== $user->id) {
+            return response()->json(['message' => 'No autorizado'], 403);
         }
 
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'visibility' => 'nullable|in:private,public,followers,collaborative',
-            'icon' => 'nullable|string|max:50',
-            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
-            'collaborator_ids' => 'nullable|array',
-            'collaborator_ids.*' => 'exists:users,id',
-        ]);
-
-        $userList->update($request->only([
-            'name', 'description', 'visibility', 'icon', 'color', 'collaborator_ids'
-        ]));
-
-        return response()->json([
-            'message' => 'Lista actualizada exitosamente',
-            'data' => new UserListResource($userList),
-        ]);
-    }
-
-    /**
-     * @OA\Delete(
-     *     path="/api/v1/user-lists/{userList}",
-     *     summary="Eliminar lista",
-     *     tags={"User Lists"},
-     *     security={{"sanctum": {}}},
-     *     @OA\Parameter(
-     *         name="userList",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la lista",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Lista eliminada"),
-     *     @OA\Response(response=403, description="Sin permisos")
-     * )
-     */
-    public function destroy(UserList $userList): JsonResponse
-    {
-        if ($userList->user_id !== auth()->id()) {
-            abort(403, 'Solo el propietario puede eliminar la lista');
-        }
-
+        // Eliminar items de la lista primero
+        $userList->items()->delete();
+        
+        // Eliminar la lista
         $userList->delete();
 
-        return response()->json([
-            'message' => 'Lista eliminada exitosamente',
-        ]);
+        return response()->json(['message' => 'Lista eliminada exitosamente']);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/user-lists/featured",
-     *     summary="Obtener listas destacadas",
-     *     tags={"User Lists"},
-     *     @OA\Parameter(
-     *         name="limit",
-     *         in="query",
-     *         description="Número de listas a retornar",
-     *         @OA\Schema(type="integer", default=10)
-     *     ),
-     *     @OA\Response(response=200, description="Listas destacadas")
-     * )
+     * Follow a user list
+     *
+     * Seguir una lista pública de otro usuario.
+     *
+     * @urlParam userList int required ID de la lista. Example: 1
+     *
+     * @response 200 {"message": "Lista seguida exitosamente"}
+     * @response 403 {"message": "No puedes seguir tu propia lista"}
+     * @response 404 {"message": "Lista no encontrada"}
+     * @authenticated
      */
-    public function featured(Request $request)
+    public function follow(UserList $userList)
     {
-        $limit = $request->integer('limit', 10);
-        $lists = UserList::getFeatured($limit);
-        
-        return UserListResource::collection($lists);
+        $user = Auth::guard('sanctum')->user();
+
+        if ($userList->user_id === $user->id) {
+            return response()->json(['message' => 'No puedes seguir tu propia lista'], 403);
+        }
+
+        if ($userList->visibility !== 'public') {
+            return response()->json(['message' => 'Lista no encontrada'], 404);
+        }
+
+        // Verificar si ya sigue la lista
+        if ($userList->followers()->where('user_id', $user->id)->exists()) {
+            return response()->json(['message' => 'Ya sigues esta lista']);
+        }
+
+        // Agregar seguidor
+        $userList->followers()->attach($user->id);
+        $userList->increment('followers_count');
+
+        return response()->json(['message' => 'Lista seguida exitosamente']);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/user-lists/search",
-     *     summary="Buscar listas",
-     *     tags={"User Lists"},
-     *     @OA\Parameter(
-     *         name="q",
-     *         in="query",
-     *         required=true,
-     *         description="Término de búsqueda",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="limit",
-     *         in="query",
-     *         description="Número de resultados",
-     *         @OA\Schema(type="integer", default=20)
-     *     ),
-     *     @OA\Response(response=200, description="Resultados de búsqueda")
-     * )
+     * Unfollow a user list
+     *
+     * Dejar de seguir una lista.
+     *
+     * @urlParam userList int required ID de la lista. Example: 1
+     *
+     * @response 200 {"message": "Lista dejada de seguir"}
+     * @response 404 {"message": "No sigues esta lista"}
+     * @authenticated
      */
-    public function search(Request $request)
+    public function unfollow(UserList $userList)
     {
-        $request->validate([
-            'q' => 'required|string|min:2',
-            'limit' => 'integer|min:1|max:50',
-        ]);
+        $user = Auth::guard('sanctum')->user();
 
-        $term = $request->q;
-        $limit = $request->integer('limit', 20);
-        
-        $lists = UserList::search($term, $limit);
-        
-        return UserListResource::collection($lists);
+        if (!$userList->followers()->where('user_id', $user->id)->exists()) {
+            return response()->json(['message' => 'No sigues esta lista'], 404);
+        }
+
+        // Remover seguidor
+        $userList->followers()->detach($user->id);
+        $userList->decrement('followers_count');
+
+        return response()->json(['message' => 'Lista dejada de seguir']);
     }
 }
