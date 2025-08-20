@@ -37,18 +37,10 @@ class ElectricityPriceController extends Controller
      *       "hour": 0,
      *       "price_eur_mwh": 45.23,
      *       "type": "pvpc",
-     *       "price_unit": {
-     *         "id": 1,
-     *         "name": "EUR/MWh"
-     *       }
+     *       "price_unit": {...}
      *     }
      *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "last_page": 1,
-     *     "per_page": 24,
-     *     "total": 24
-     *   }
+     *   "meta": {...}
      * }
      *
      * @apiResourceCollection App\Http\Resources\V1\ElectricityPriceResource
@@ -104,7 +96,7 @@ class ElectricityPriceController extends Controller
      *
      * Obtiene los detalles de un precio de electricidad específico.
      *
-     * @urlParam id int ID del precio de electricidad. Example: 1
+     * @urlParam id integer ID del precio. Example: 1
      *
      * @response 200 {
      *   "data": {
@@ -113,10 +105,7 @@ class ElectricityPriceController extends Controller
      *     "hour": 0,
      *     "price_eur_mwh": 45.23,
      *     "type": "pvpc",
-     *     "price_unit": {
-     *       "id": 1,
-     *       "name": "EUR/MWh"
-     *     }
+     *     "price_unit": {...}
      *   }
      * }
      *
@@ -221,9 +210,7 @@ class ElectricityPriceController extends Controller
         $price = $query->first();
 
         if (!$price) {
-            return response()->json([
-                'message' => 'Precio no encontrado para la hora actual'
-            ], 404);
+            return response()->json(['message' => 'Precio no encontrado para la hora actual'], 404);
         }
 
         return response()->json([
@@ -237,7 +224,7 @@ class ElectricityPriceController extends Controller
      * Obtiene las horas más baratas para consumo de electricidad en una fecha.
      *
      * @queryParam date string Fecha para consultar (YYYY-MM-DD). Example: 2024-08-17
-     * @queryParam hours int Número de horas a retornar (1-24). Example: 6
+     * @queryParam hours int Número de horas a obtener (1-24). Example: 6
      * @queryParam type string Tipo de precio (pvpc, spot). Example: pvpc
      *
      * @response 200 {
@@ -336,9 +323,7 @@ class ElectricityPriceController extends Controller
             ->first();
 
         if (!$summary) {
-            return response()->json([
-                'message' => 'No se encontraron datos para la fecha especificada'
-            ], 404);
+            return response()->json(['message' => 'No se encontraron datos para la fecha especificada'], 404);
         }
 
         return response()->json([
