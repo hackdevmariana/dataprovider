@@ -89,6 +89,23 @@ use App\Http\Controllers\Api\V1\UserListController;
 use App\Http\Controllers\Api\V1\ProjectProposalController;
 use App\Http\Controllers\Api\V1\RoofMarketplaceController;
 
+// Nuevos controladores de modelos sociales y proyectos
+use App\Http\Controllers\Api\V1\UserBookmarkController;
+use App\Http\Controllers\Api\V1\ContentVoteController;
+use App\Http\Controllers\Api\V1\UserEndorsementController;
+use App\Http\Controllers\Api\V1\UserReviewController;
+use App\Http\Controllers\Api\V1\SponsoredContentController;
+use App\Http\Controllers\Api\V1\TopicPostController;
+use App\Http\Controllers\Api\V1\TopicCommentController;
+use App\Http\Controllers\Api\V1\TopicMembershipController;
+use App\Http\Controllers\Api\V1\ProjectInvestmentController;
+use App\Http\Controllers\Api\V1\ProjectUpdateController;
+use App\Http\Controllers\Api\V1\UserReputationController;
+use App\Http\Controllers\Api\V1\ReputationTransactionController;
+use App\Http\Controllers\Api\V1\ProductionRightController;
+use App\Http\Controllers\Api\V1\ListItemController;
+use App\Http\Controllers\Api\V1\ContentHashtagController;
+
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('app-settings', AppSettingController::class)->only(['index', 'show']);
     Route::post('/points-of-interest', [PointOfInterestController::class, 'store']);
@@ -604,6 +621,76 @@ Route::prefix('v1')->group(function () {
     Route::put('leaderboards/{leaderboard}', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'update']);
     Route::post('leaderboards/{leaderboard}/recalculate', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'recalculate']);
     Route::delete('leaderboards/{leaderboard}', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'destroy']);
+
+    // ========================================
+    // NUEVOS CONTROLADORES API - COMPLEMENTARIOS
+    // ========================================
+
+    // User Bookmarks (Marcadores de usuarios)
+    Route::apiResource('user-bookmarks', UserBookmarkController::class);
+    Route::get('user-bookmarks/my-bookmarks', [UserBookmarkController::class, 'myBookmarks']);
+    Route::post('user-bookmarks/{userBookmark}/toggle-favorite', [UserBookmarkController::class, 'toggleFavorite']);
+
+    // Content Votes (Votos de contenido)
+    Route::apiResource('content-votes', ContentVoteController::class);
+    Route::post('content-votes/vote', [ContentVoteController::class, 'vote']);
+    Route::delete('content-votes/unvote', [ContentVoteController::class, 'unvote']);
+
+    // User Endorsements (Endorsements de usuarios)
+    Route::apiResource('user-endorsements', UserEndorsementController::class);
+    Route::get('users/{user}/endorsements', [UserEndorsementController::class, 'userEndorsements']);
+
+    // User Reviews (Reseñas de usuarios)
+    Route::apiResource('user-reviews', UserReviewController::class);
+    Route::get('users/{user}/reviews', [UserReviewController::class, 'userReviews']);
+
+    // Sponsored Content (Contenido patrocinado)
+    Route::apiResource('sponsored-content', SponsoredContentController::class);
+    Route::get('sponsored-content/active', [SponsoredContentController::class, 'active']);
+
+    // Topic Posts (Posts de temas)
+    Route::apiResource('topic-posts', TopicPostController::class);
+    Route::get('topics/{topic}/posts', [TopicPostController::class, 'topicPosts']);
+    Route::post('topic-posts/{topicPost}/pin', [TopicPostController::class, 'pin']);
+
+    // Topic Comments (Comentarios de temas)
+    Route::apiResource('topic-comments', TopicCommentController::class);
+    Route::get('topic-posts/{topicPost}/comments', [TopicCommentController::class, 'postComments']);
+
+    // Topic Memberships (Membresías de temas)
+    Route::apiResource('topic-memberships', TopicMembershipController::class);
+    Route::get('topics/{topic}/memberships', [TopicMembershipController::class, 'topicMemberships']);
+    Route::post('topics/{topic}/join', [TopicMembershipController::class, 'join']);
+    Route::post('topics/{topic}/leave', [TopicMembershipController::class, 'leave']);
+
+    // Project Investments (Inversiones en proyectos)
+    Route::apiResource('project-investments', ProjectInvestmentController::class);
+    Route::get('projects/{project}/investments', [ProjectInvestmentController::class, 'projectInvestments']);
+    Route::post('project-investments/{projectInvestment}/confirm', [ProjectInvestmentController::class, 'confirm']);
+
+    // Project Updates (Actualizaciones de proyectos)
+    Route::apiResource('project-updates', ProjectUpdateController::class);
+    Route::get('projects/{project}/updates', [ProjectUpdateController::class, 'projectUpdates']);
+
+    // User Reputation (Reputación de usuarios)
+    Route::apiResource('user-reputations', UserReputationController::class);
+    Route::get('users/{user}/reputation', [UserReputationController::class, 'userReputation']);
+
+    // Reputation Transactions (Transacciones de reputación)
+    Route::apiResource('reputation-transactions', ReputationTransactionController::class);
+    Route::get('users/{user}/reputation-history', [ReputationTransactionController::class, 'userHistory']);
+
+    // Production Rights (Derechos de producción)
+    Route::apiResource('production-rights', ProductionRightController::class);
+    Route::get('production-rights/marketplace', [ProductionRightController::class, 'marketplace']);
+
+    // List Items (Items de listas)
+    Route::apiResource('list-items', ListItemController::class);
+    Route::get('user-lists/{userList}/items', [ListItemController::class, 'listItems']);
+
+    // Content Hashtags (Relaciones contenido-hashtags)
+    Route::apiResource('content-hashtags', ContentHashtagController::class);
+    Route::get('hashtags/{hashtag}/content', [ContentHashtagController::class, 'hashtagContent']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
