@@ -1,0 +1,208 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\CooperativeResource;
+use App\Models\Cooperative;
+use Illuminate\Http\Request;
+
+/**
+ * @group Cooperatives
+ *
+ * APIs para la gestión de cooperativas energéticas y de otros tipos.
+ * Permite crear, consultar y gestionar cooperativas y sus miembros.
+ */
+class CooperativeController extends Controller
+{
+    /**
+     * @OA\Get(
+     *     path="/api/v1/cooperatives",
+     *     summary="List cooperatives",
+     *     tags={"Cooperatives"},
+     *     @OA\Response(response=200, description="List of cooperatives")
+     * )
+     */
+    public function index(Request $request)
+    {
+        $cooperatives = Cooperative::with(['municipality', 'image'])
+            ->paginate($request->get('per_page', 15));
+
+        return CooperativeResource::collection($cooperatives);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/cooperatives",
+     *     summary="Create cooperative",
+     *     tags={"Cooperatives"},
+     *     @OA\Response(response=201, description="Cooperative created successfully")
+     * )
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:cooperatives,slug',
+            'legal_name' => 'nullable|string|max:255',
+            'cooperative_type' => 'required|in:energy,housing,agriculture,etc',
+            'scope' => 'required|in:local,regional,national',
+            'nif' => 'nullable|string|max:20',
+            'founded_at' => 'nullable|date',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'website' => 'required|url|max:255',
+            'logo_url' => 'nullable|url|max:255',
+            'municipality_id' => 'required|exists:municipalities,id',
+            'address' => 'required|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'description' => 'nullable|string|max:2000',
+            'number_of_members' => 'nullable|integer|min:1',
+            'main_activity' => 'required|string|max:255',
+            'is_open_to_new_members' => 'boolean',
+            'source' => 'nullable|string|max:100',
+            'has_energy_market_access' => 'boolean',
+            'legal_form' => 'nullable|string|max:100',
+            'statutes_url' => 'nullable|url|max:255',
+            'accepts_new_installations' => 'boolean',
+        ]);
+
+        $validated['source'] = $validated['source'] ?? 'api';
+
+        $cooperative = Cooperative::create($validated);
+        $cooperative->load(['municipality', 'image']);
+
+        return new CooperativeResource($cooperative);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/cooperatives/{idOrSlug}",
+     *     summary="Show cooperative",
+     *     tags={"Cooperatives"},
+     *     @OA\Response(response=200, description="Cooperative details")
+     * )
+     */
+    public function show($idOrSlug)
+    {
+        $cooperative = Cooperative::with(['municipality', 'image', 'userMemberships', 'users'])
+            ->where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
+
+        return new CooperativeResource($cooperative);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/v1/cooperatives/{id}",
+     *     summary="Update cooperative",
+     *     tags={"Cooperatives"},
+     *     @OA\Response(response=200, description="Cooperative updated successfully")
+     * )
+     */
+    public function update(Request $request, Cooperative $cooperative)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'slug' => 'sometimes|string|max:255|unique:cooperatives,slug,' . $cooperative->id,
+            'legal_name' => 'nullable|string|max:255',
+            'cooperative_type' => 'sometimes|in:energy,housing,agriculture,etc',
+            'scope' => 'sometimes|in:local,regional,national',
+            'nif' => 'nullable|string|max:20',
+            'founded_at' => 'nullable|date',
+            'phone' => 'sometimes|string|max:20',
+            'email' => 'sometimes|email|max:255',
+            'website' => 'sometimes|url|max:255',
+            'description' => 'nullable|string|max:2000',
+            'is_open_to_new_members' => 'boolean',
+            'accepts_new_installations' => 'boolean',
+        ]);
+
+        $cooperative->update($validated);
+        $cooperative->load(['municipality', 'image']);
+
+        return new CooperativeResource($cooperative);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/cooperatives/{id}",
+     *     summary="Delete cooperative",
+     *     tags={"Cooperatives"},
+     *     @OA\Response(response=204, description="Cooperative deleted successfully")
+     * )
+     */
+    public function destroy(Cooperative $cooperative)
+    {
+        $cooperative->delete();
+        return response()->noContent();
+    }
+
+    public function filterByType($type)
+    {
+        $cooperatives = Cooperative::with(['municipality', 'image'])
+            ->ofType($type)
+            ->paginate(15);
+
+        return CooperativeResource::collection($cooperatives);
+    }
+
+    public function energy()
+    {
+        $cooperatives = Cooperative::with(['municipality', 'image'])
+            ->energy()
+            ->paginate(15);
+
+        return CooperativeResource::collection($cooperatives);
+    }
+
+    public function openToMembers()
+    {
+        $cooperatives = Cooperative::with(['municipality', 'image'])
+            ->openToNewMembers()
+            ->paginate(15);
+
+        return CooperativeResource::collection($cooperatives);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+        
+        if (empty($query)) {
+            return response()->json(['error' => 'Query parameter q is required'], 400);
+        }
+
+        $cooperatives = Cooperative::with(['municipality', 'image'])
+            ->where(function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('legal_name', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhere('main_activity', 'LIKE', "%{$query}%");
+            })
+            ->paginate(15);
+
+        return CooperativeResource::collection($cooperatives);
+    }
+
+    public function statistics()
+    {
+        $stats = [
+            'total_cooperatives' => Cooperative::count(),
+            'energy_cooperatives' => Cooperative::energy()->count(),
+            'open_to_members' => Cooperative::openToNewMembers()->count(),
+            'by_type' => Cooperative::selectRaw('cooperative_type, COUNT(*) as count')
+                ->groupBy('cooperative_type')
+                ->get(),
+            'by_scope' => Cooperative::selectRaw('scope, COUNT(*) as count')
+                ->groupBy('scope')
+                ->get(),
+            'total_members' => Cooperative::sum('number_of_members'),
+            'average_members' => round(Cooperative::avg('number_of_members'), 1),
+        ];
+
+        return response()->json(['data' => $stats]);
+    }
+}
