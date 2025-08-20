@@ -6,51 +6,73 @@ use App\Http\Controllers\Controller;
 use App\Models\Person;
 use Illuminate\Http\Request;
 use App\Http\Resources\V1\PersonResource;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Persons
+ *
+ * APIs para la gestión de personas y perfiles individuales.
+ * Permite consultar información de personas, artistas, expertos y otros perfiles.
+ */
 class PersonController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/persons",
-     *     summary="Obtener listado de personas",
-     *     tags={"Persons"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Listado de personas",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Person"))
-     *         )
-     *     )
-     * )
+     * Display a listing of persons
+     *
+     * Obtiene una lista de personas con sus relaciones cargadas.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Juan Pérez",
+     *       "slug": "juan-perez",
+     *       "nationality": {...},
+     *       "language": {...},
+     *       "image": {...},
+     *       "aliases": [...]
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\PersonResource
+     * @apiResourceModel App\Models\Person
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $persons = Person::with(['nationality', 'language', 'image', 'aliases'])->get();
-        return PersonResource::collection($persons);
+        
+        return response()->json([
+            'data' => PersonResource::collection($persons)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/persons/{idOrSlug}",
-     *     summary="Mostrar detalles de una persona",
-     *     tags={"Persons"},
-     *     @OA\Parameter(
-     *         name="idOrSlug",
-     *         in="path",
-     *         required=true,
-     *         description="ID o slug de la persona",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Persona encontrada",
-     *         @OA\JsonContent(ref="#/components/schemas/Person")
-     *     ),
-     *     @OA\Response(response=404, description="Persona no encontrada")
-     * )
+     * Display the specified person
+     *
+     * Obtiene los detalles de una persona específica por ID o slug.
+     *
+     * @urlParam idOrSlug integer|string ID o slug de la persona. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *       "id": 1,
+     *       "name": "Juan Pérez",
+     *       "slug": "juan-perez",
+     *       "nationality": {...},
+     *       "language": {...},
+     *       "image": {...},
+     *       "aliases": [...]
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Persona no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\Person
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug): JsonResponse
     {
         $person = Person::with([
             'nationality',
@@ -61,8 +83,8 @@ class PersonController extends Controller
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
 
-        return new PersonResource($person);
+        return response()->json([
+            'data' => new PersonResource($person)
+        ]);
     }
 }
-
-
