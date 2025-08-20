@@ -528,6 +528,82 @@ Route::prefix('v1')->group(function () {
     Route::post('payments/create-intent', [\App\Http\Controllers\Api\V1\PaymentController::class, 'createPaymentIntent']);
     Route::post('payments/{payment}/confirm', [\App\Http\Controllers\Api\V1\PaymentController::class, 'confirmPayment']);
     Route::post('payments/{payment}/refund', [\App\Http\Controllers\Api\V1\PaymentController::class, 'requestRefund']);
+
+    // ========================================
+    // NUEVOS MODELOS SOCIALES AVANZADOS
+    // ========================================
+
+    // User Badges (Insignias de usuarios)
+    Route::get('user-badges', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'index']);
+    Route::get('user-badges/my-badges', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'myBadges']);
+    Route::get('user-badges/stats', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'stats']);
+    Route::post('user-badges', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'store']);
+    Route::get('user-badges/{userBadge}', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'show']);
+    Route::delete('user-badges/{userBadge}', [\App\Http\Controllers\Api\V1\UserBadgeController::class, 'destroy']);
+
+    // Expert Verifications (Verificaciones de expertos)
+    Route::get('expert-verifications', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'index']);
+    Route::get('expert-verifications/stats', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'stats']);
+    Route::post('expert-verifications', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'store']);
+    Route::get('expert-verifications/{expertVerification}', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'show']);
+    Route::post('expert-verifications/{expertVerification}/start-review', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'startReview']);
+    Route::post('expert-verifications/{expertVerification}/approve', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'approve']);
+    Route::post('expert-verifications/{expertVerification}/reject', [\App\Http\Controllers\Api\V1\ExpertVerificationController::class, 'reject']);
+
+    // Topic Following (Seguimiento de temas)
+    Route::get('topic-followings', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'index']);
+    Route::get('topic-followings/stats', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'stats']);
+    Route::post('topic-followings', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'store']);
+    Route::get('topic-followings/{topicFollowing}', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'show']);
+    Route::put('topic-followings/{topicFollowing}', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'update']);
+    Route::delete('topic-followings/{topicFollowing}', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'destroy']);
+    Route::post('topics/{topic}/mark-visited', [\App\Http\Controllers\Api\V1\TopicFollowingController::class, 'markVisited']);
+
+    // User Privileges (Privilegios de usuarios)
+    Route::get('user-privileges', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'index']);
+    Route::get('user-privileges/my-privileges', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'myPrivileges']);
+    Route::get('user-privileges/stats', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'stats']);
+    Route::post('user-privileges', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'store']);
+    Route::get('user-privileges/{userPrivilege}', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'show']);
+    Route::put('user-privileges/{userPrivilege}', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'update']);
+    Route::post('user-privileges/{userPrivilege}/revoke', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'revoke']);
+    Route::post('user-privileges/{userPrivilege}/activate', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'activate']);
+    Route::post('user-privileges/check', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'checkPrivilege']);
+    Route::delete('user-privileges/{userPrivilege}', [\App\Http\Controllers\Api\V1\UserPrivilegeController::class, 'destroy']);
+
+    // Cooperative Posts (Posts de cooperativas)
+    Route::get('cooperative-posts', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'index']);
+    Route::get('cooperative-posts/stats', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'stats']);
+    Route::post('cooperative-posts', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'store']);
+    Route::get('cooperative-posts/{cooperativePost}', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'show']);
+    Route::put('cooperative-posts/{cooperativePost}', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'update']);
+    Route::post('cooperative-posts/{cooperativePost}/publish', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'publish']);
+    Route::post('cooperative-posts/{cooperativePost}/archive', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'archive']);
+    Route::post('cooperative-posts/{cooperativePost}/toggle-pin', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'togglePin']);
+    Route::delete('cooperative-posts/{cooperativePost}', [\App\Http\Controllers\Api\V1\CooperativePostController::class, 'destroy']);
+
+    // Social Comparisons (Comparaciones sociales)
+    Route::get('social-comparisons', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'index']);
+    Route::get('social-comparisons/my-comparisons', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'myComparisons']);
+    Route::get('social-comparisons/stats', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'stats']);
+    Route::get('social-comparisons/leaderboard', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'leaderboard']);
+    Route::post('social-comparisons', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'store']);
+    Route::post('social-comparisons/generate', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'generateComparison']);
+    Route::get('social-comparisons/{socialComparison}', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'show']);
+    Route::put('social-comparisons/{socialComparison}', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'update']);
+    Route::delete('social-comparisons/{socialComparison}', [\App\Http\Controllers\Api\V1\SocialComparisonController::class, 'destroy']);
+
+    // Leaderboards (Tablas de clasificación)
+    Route::get('leaderboards', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'index']);
+    Route::get('leaderboards/active', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'active']);
+    Route::get('leaderboards/stats', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'stats']);
+    Route::post('leaderboards', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'store']);
+    Route::get('leaderboards/{leaderboard}', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'show']);
+    Route::get('leaderboards/{leaderboard}/rankings', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'rankings']);
+    Route::get('leaderboards/{leaderboard}/user-position', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'userPosition']);
+    Route::put('leaderboards/{leaderboard}', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'update']);
+    Route::post('leaderboards/{leaderboard}/recalculate', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'recalculate']);
+    Route::delete('leaderboards/{leaderboard}', [\App\Http\Controllers\Api\V1\LeaderboardController::class, 'destroy']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
