@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @OA\Tag(
- *     name="Events",
- *     description="API for managing events"
- * )
+ * @group Events
+ *
+ * APIs para la gestión de eventos del sistema.
+ * Permite consultar, filtrar y gestionar eventos de todo tipo.
  */
 class EventController extends Controller
 {
