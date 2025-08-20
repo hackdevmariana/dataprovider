@@ -35,18 +35,11 @@ class EnergyCompanyController extends Controller
      *       "slug": "iberdrola",
      *       "company_type": "comercializadora",
      *       "coverage_scope": "nacional",
-     *       "municipality": {
-     *         "id": 1,
-     *         "name": "Madrid"
-     *       }
+     *       "municipality": {...},
+     *       "image": {...}
      *     }
      *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "last_page": 5,
-     *     "per_page": 20,
-     *     "total": 100
-     *   }
+     *   "meta": {...}
      * }
      *
      * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
@@ -56,7 +49,7 @@ class EnergyCompanyController extends Controller
     {
         $request->validate([
             'company_type' => 'sometimes|string|in:comercializadora,distribuidora,cooperativa,productora',
-            'coverage_scope' => 'sometimes|string|in:local,provincial,autonomico,nacional,internacional',
+            'coverage_scope' => 'sometimes|string|in:local,provincial,autonómico,nacional,internacional',
             'municipality_id' => 'sometimes|integer|exists:municipalities,id',
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|min:1|max:100'
@@ -95,7 +88,7 @@ class EnergyCompanyController extends Controller
      *
      * Obtiene los detalles de una empresa energética específica por ID o slug.
      *
-     * @urlParam idOrSlug mixed ID o slug de la empresa. Example: iberdrola
+     * @urlParam idOrSlug integer|string ID o slug de la empresa. Example: 1
      *
      * @response 200 {
      *   "data": {
@@ -104,11 +97,8 @@ class EnergyCompanyController extends Controller
      *     "slug": "iberdrola",
      *     "company_type": "comercializadora",
      *     "coverage_scope": "nacional",
-     *     "description": "Empresa líder en energías renovables",
-     *     "municipality": {
-     *       "id": 1,
-     *       "name": "Madrid"
-     *     }
+     *     "municipality": {...},
+     *     "image": {...}
      *   }
      * }
      *
@@ -146,15 +136,11 @@ class EnergyCompanyController extends Controller
      *     {
      *       "id": 1,
      *       "name": "Iberdrola",
-     *       "distance_km": 25.3
+     *       "distance_km": 25.3,
+     *       "municipality": {...}
      *     }
      *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "last_page": 1,
-     *     "per_page": 20,
-     *     "total": 1
-     *   }
+     *   "meta": {...}
      * }
      *
      * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
@@ -163,9 +149,9 @@ class EnergyCompanyController extends Controller
     public function filterByLocation(Request $request): JsonResponse
     {
         $request->validate([
-            'latitude' => 'required_with:longitude,radius_km|numeric|between:-90,90',
-            'longitude' => 'required_with:latitude,radius_km|numeric|between:-180,180',
-            'radius_km' => 'required_with:latitude,longitude|numeric|min:0.1|max:1000',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'radius_km' => 'required|numeric|min:0.1|max:1000',
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|min:1|max:100'
         ]);
@@ -214,15 +200,11 @@ class EnergyCompanyController extends Controller
      *     {
      *       "id": 1,
      *       "name": "Iberdrola",
-     *       "company_type": "comercializadora"
+     *       "company_type": "comercializadora",
+     *       "municipality": {...}
      *     }
      *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "last_page": 1,
-     *     "per_page": 20,
-     *     "total": 1
-     *   }
+     *   "meta": {...}
      * }
      *
      * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
@@ -272,7 +254,8 @@ class EnergyCompanyController extends Controller
      *     {
      *       "id": 1,
      *       "name": "Iberdrola",
-     *       "company_type": "comercializadora"
+     *       "company_type": "comercializadora",
+     *       "municipality": {...}
      *     }
      *   ]
      * }
@@ -302,7 +285,8 @@ class EnergyCompanyController extends Controller
      *     {
      *       "id": 2,
      *       "name": "Som Energia",
-     *       "company_type": "cooperativa"
+     *       "company_type": "cooperativa",
+     *       "municipality": {...}
      *     }
      *   ]
      * }
