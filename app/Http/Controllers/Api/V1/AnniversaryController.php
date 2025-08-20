@@ -6,131 +6,93 @@ use App\Http\Controllers\Controller;
 use App\Models\Anniversary;
 use App\Http\Resources\V1\AnniversaryResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
 /**
- * @group Anniversaries
- *
- * APIs para la gestión de aniversarios y efemérides del sistema.
- * Permite consultar aniversarios por fecha y obtener detalles específicos.
+ * @OA\Tag(
+ *     name="Anniversaries",
+ *     description="API for managing anniversaries (efemérides)"
+ * )
  */
 class AnniversaryController extends Controller
 {
     /**
-     * Display a listing of anniversaries
-     *
-     * Obtiene una lista de todos los aniversarios disponibles.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "title": "Día Mundial de la Energía",
-     *       "slug": "dia-mundial-energia",
-     *       "description": "Celebración anual para concienciar sobre el uso racional de la energía",
-     *       "day": 14,
-     *       "month": 2,
-     *       "year": 1949,
-     *       "category": "energy"
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\AnniversaryResource
-     * @apiResourceModel App\Models\Anniversary
+     * @OA\Get(
+     *     path="/api/v1/anniversaries",
+     *     summary="Get all anniversaries",
+     *     tags={"Anniversaries"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of anniversaries",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Anniversary"))
+     *         )
+     *     )
+     * )
      */
-    public function index(): JsonResponse
+    public function index()
     {
-        $anniversaries = Anniversary::all();
-        
-        return response()->json([
-            'data' => AnniversaryResource::collection($anniversaries)
-        ]);
+        return AnniversaryResource::collection(Anniversary::all());
     }
 
     /**
-     * Display the specified anniversary
-     *
-     * Obtiene los detalles de un aniversario específico por ID o slug.
-     *
-     * @urlParam idOrSlug mixed ID o slug del aniversario. Example: dia-mundial-energia
-     *
-     * @response 200 {
-     *   "data": {
-     *     "id": 1,
-     *     "title": "Día Mundial de la Energía",
-     *     "slug": "dia-mundial-energia",
-     *     "description": "Celebración anual para concienciar sobre el uso racional de la energía",
-     *     "day": 14,
-     *     "month": 2,
-     *     "year": 1949,
-     *     "category": "energy",
-     *     "source_url": "https://example.com/energia"
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Aniversario no encontrado"
-     * }
-     *
-     * @apiResourceModel App\Models\Anniversary
+     * @OA\Get(
+     *     path="/api/v1/anniversaries/{idOrSlug}",
+     *     summary="Get anniversary by ID or slug",
+     *     tags={"Anniversaries"},
+     *     @OA\Parameter(
+     *         name="idOrSlug",
+     *         in="path",
+     *         required=true,
+     *         description="ID or slug of the anniversary",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Anniversary found",
+     *         @OA\JsonContent(ref="#/components/schemas/Anniversary")
+     *     ),
+     *     @OA\Response(response=404, description="Anniversary not found")
+     * )
      */
-    public function show($idOrSlug): JsonResponse
+    public function show($idOrSlug)
     {
         $anniversary = Anniversary::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
-            
-        return response()->json([
-            'data' => new AnniversaryResource($anniversary)
-        ]);
+        return new AnniversaryResource($anniversary);
     }
 
     /**
-     * Get anniversaries by month and day
-     *
-     * Obtiene aniversarios para una fecha específica (mes y día).
-     *
-     * @urlParam month int Mes (1-12). Example: 2
-     * @urlParam day int Día (1-31). Example: 14
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "title": "Día Mundial de la Energía",
-     *       "slug": "dia-mundial-energia",
-     *       "description": "Celebración anual para concienciar sobre el uso racional de la energía",
-     *       "day": 14,
-     *       "month": 2,
-     *       "year": 1949
-     *     }
-     *   ]
-     * }
-     *
-     * @response 400 {
-     *   "message": "Fecha inválida proporcionada"
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\AnniversaryResource
-     * @apiResourceModel App\Models\Anniversary
+     * @OA\Get(
+     *     path="/api/v1/anniversaries/day/{month}/{day}",
+     *     summary="Get anniversaries by month and day",
+     *     tags={"Anniversaries"},
+     *     @OA\Parameter(
+     *         name="month",
+     *         in="path",
+     *         required=true,
+     *         description="Month (1-12)",
+     *         @OA\Schema(type="integer", example=4)
+     *     ),
+     *     @OA\Parameter(
+     *         name="day",
+     *         in="path",
+     *         required=true,
+     *         description="Day (1-31)",
+     *         @OA\Schema(type="integer", example=23)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Anniversaries for the given day",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Anniversary"))
+     *         )
+     *     )
+     * )
      */
-    public function byDay($month, $day): JsonResponse
+    public function byDay($month, $day)
     {
-        // Validar que mes y día sean válidos
-        if (!is_numeric($month) || !is_numeric($day) || 
-            $month < 1 || $month > 12 || $day < 1 || $day > 31) {
-            return response()->json([
-                'message' => 'Fecha inválida proporcionada'
-            ], 400);
-        }
-
-        $anniversaries = Anniversary::where('month', $month)
-            ->where('day', $day)
-            ->get();
-            
-        return response()->json([
-            'data' => AnniversaryResource::collection($anniversaries)
-        ]);
+        $anniversaries = Anniversary::where('month', $month)->where('day', $day)->get();
+        return AnniversaryResource::collection($anniversaries);
     }
 }
