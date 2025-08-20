@@ -7,22 +7,28 @@ use App\Http\Resources\V1\CooperativeResource;
 use App\Models\Cooperative;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Cooperatives
  *
  * APIs para la gestión de cooperativas energéticas y de otros tipos.
- * Permite crear, consultar, actualizar y gestionar cooperativas.
+ * Permite crear, consultar y gestionar cooperativas y sus miembros.
  */
 class CooperativeController extends Controller
 {
     /**
      * Display a listing of cooperatives
      *
-     * Obtiene una lista de cooperativas con opciones de paginación.
+     * Obtiene una lista de cooperativas con opciones de filtrado.
      *
-     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     * @queryParam cooperative_type string Filtrar por tipo de cooperativa (energy, housing, agriculture, etc). Example: energy
+     * @queryParam scope string Filtrar por alcance (local, regional, national). Example: local
+     * @queryParam municipality_id int ID del municipio para filtrar. Example: 1
+     * @queryParam is_open_to_new_members boolean Filtrar por cooperativas que aceptan nuevos miembros. Example: true
+     * @queryParam has_energy_market_access boolean Filtrar por acceso al mercado energético. Example: true
      * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
      *
      * @response 200 {
      *   "data": [
@@ -32,18 +38,11 @@ class CooperativeController extends Controller
      *       "slug": "som-energia",
      *       "cooperative_type": "energy",
      *       "scope": "national",
-     *       "municipality": {
-     *         "id": 1,
-     *         "name": "Girona"
-     *       }
+     *       "municipality": {...},
+     *       "image": {...}
      *     }
      *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "last_page": 5,
-     *     "per_page": 15,
-     *     "total": 75
-     *   }
+     *   "meta": {...}
      * }
      *
      * @apiResourceCollection App\Http\Resources\V1\CooperativeResource
@@ -52,13 +51,39 @@ class CooperativeController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'per_page' => 'sometimes|integer|min:1|max:100',
-            'page' => 'sometimes|integer|min:1'
+            'cooperative_type' => 'sometimes|string|in:energy,housing,agriculture,etc',
+            'scope' => 'sometimes|string|in:local,regional,national',
+            'municipality_id' => 'sometimes|integer|exists:municipalities,id',
+            'is_open_to_new_members' => 'sometimes|boolean',
+            'has_energy_market_access' => 'sometimes|boolean',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
         ]);
 
+        $query = Cooperative::with(['municipality', 'image']);
+
+        if ($request->has('cooperative_type')) {
+            $query->where('cooperative_type', $request->cooperative_type);
+        }
+
+        if ($request->has('scope')) {
+            $query->where('scope', $request->scope);
+        }
+
+        if ($request->has('municipality_id')) {
+            $query->where('municipality_id', $request->municipality_id);
+        }
+
+        if ($request->has('is_open_to_new_members')) {
+            $query->where('is_open_to_new_members', $request->is_open_to_new_members);
+        }
+
+        if ($request->has('has_energy_market_access')) {
+            $query->where('has_energy_market_access', $request->has_energy_market_access);
+        }
+
         $perPage = min($request->get('per_page', 15), 100);
-        $cooperatives = Cooperative::with(['municipality', 'image'])
-            ->paginate($perPage);
+        $cooperatives = $query->orderBy('name')->paginate($perPage);
 
         return response()->json([
             'data' => CooperativeResource::collection($cooperatives),
@@ -74,7 +99,7 @@ class CooperativeController extends Controller
     /**
      * Store a newly created cooperative
      *
-     * Crea una nueva cooperativa con los datos validados.
+     * Crea una nueva cooperativa.
      *
      * @bodyParam name string required Nombre de la cooperativa. Example: Som Energia
      * @bodyParam slug string required Slug único de la cooperativa. Example: som-energia
@@ -85,17 +110,16 @@ class CooperativeController extends Controller
      * @bodyParam founded_at date Fecha de fundación. Example: 2010-01-01
      * @bodyParam phone string required Teléfono de contacto. Example: +34 972 123 456
      * @bodyParam email string required Email de contacto. Example: info@somenergia.coop
-     * @bodyParam website string required Sitio web. Example: https://somenergia.coop
+     * @bodyParam website string required Sitio web. Example: https://www.somenergia.coop
      * @bodyParam logo_url string URL del logo. Example: https://example.com/logo.png
-     * @bodyParam municipality_id int required ID del municipio. Example: 1
-     * @bodyParam address string required Dirección física. Example: Carrer de la Pau 1
-     * @bodyParam latitude number Latitud geográfica. Example: 41.9833
-     * @bodyParam longitude number Longitud geográfica. Example: 2.8167
+     * @bodyParam municipality_id integer required ID del municipio. Example: 1
+     * @bodyParam address string required Dirección física. Example: Carrer de la Pau, 123
+     * @bodyParam latitude number Latitud geográfica. Example: 41.3851
+     * @bodyParam longitude number Longitud geográfica. Example: 2.1734
      * @bodyParam description string Descripción de la cooperativa. Example: Cooperativa de energía renovable
-     * @bodyParam number_of_members int Número de miembros. Example: 1000
-     * @bodyParam main_activity string required Actividad principal. Example: Producción de energía renovable
+     * @bodyParam number_of_members integer Número de miembros. Example: 1000
+     * @bodyParam main_activity string required Actividad principal. Example: Producción y comercialización de energía renovable
      * @bodyParam is_open_to_new_members boolean Abierta a nuevos miembros. Example: true
-     * @bodyParam source string Fuente de los datos. Example: api
      * @bodyParam has_energy_market_access boolean Acceso al mercado energético. Example: true
      * @bodyParam legal_form string Forma legal. Example: SCCL
      * @bodyParam statutes_url string URL de los estatutos. Example: https://example.com/estatutos.pdf
@@ -107,15 +131,15 @@ class CooperativeController extends Controller
      *     "name": "Som Energia",
      *     "slug": "som-energia",
      *     "cooperative_type": "energy",
-     *     "scope": "national"
+     *     "scope": "national",
+     *     "municipality": {...},
+     *     "image": {...}
      *   }
      * }
      *
      * @response 422 {
      *   "message": "Los datos proporcionados no son válidos.",
-     *   "errors": {
-     *     "name": ["El campo nombre es obligatorio."]
-     *   }
+     *   "errors": {...}
      * }
      *
      * @apiResourceModel App\Models\Cooperative
@@ -141,12 +165,12 @@ class CooperativeController extends Controller
             'description' => 'nullable|string|max:2000',
             'number_of_members' => 'nullable|integer|min:1',
             'main_activity' => 'required|string|max:255',
-            'is_open_to_new_members' => 'sometimes|boolean',
+            'is_open_to_new_members' => 'boolean',
             'source' => 'nullable|string|max:100',
-            'has_energy_market_access' => 'sometimes|boolean',
+            'has_energy_market_access' => 'boolean',
             'legal_form' => 'nullable|string|max:100',
             'statutes_url' => 'nullable|url|max:255',
-            'accepts_new_installations' => 'sometimes|boolean',
+            'accepts_new_installations' => 'boolean',
         ]);
 
         $validated['source'] = $validated['source'] ?? 'api';
@@ -164,7 +188,7 @@ class CooperativeController extends Controller
      *
      * Obtiene los detalles de una cooperativa específica por ID o slug.
      *
-     * @urlParam idOrSlug mixed ID o slug de la cooperativa. Example: som-energia
+     * @urlParam idOrSlug integer|string ID o slug de la cooperativa. Example: 1
      *
      * @response 200 {
      *   "data": {
@@ -173,11 +197,10 @@ class CooperativeController extends Controller
      *     "slug": "som-energia",
      *     "cooperative_type": "energy",
      *     "scope": "national",
-     *     "description": "Cooperativa de energía renovable",
-     *     "municipality": {
-     *       "id": 1,
-     *       "name": "Girona"
-     *     }
+     *     "municipality": {...},
+     *     "image": {...},
+     *     "user_memberships": [...],
+     *     "users": [...]
      *   }
      * }
      *
@@ -202,9 +225,9 @@ class CooperativeController extends Controller
     /**
      * Update the specified cooperative
      *
-     * Actualiza una cooperativa existente con los datos proporcionados.
+     * Actualiza una cooperativa existente.
      *
-     * @urlParam cooperative int ID de la cooperativa. Example: 1
+     * @urlParam id integer ID de la cooperativa. Example: 1
      * @bodyParam name string Nombre de la cooperativa. Example: Som Energia
      * @bodyParam slug string Slug único de la cooperativa. Example: som-energia
      * @bodyParam legal_name string Nombre legal de la cooperativa. Example: Som Energia SCCL
@@ -214,9 +237,19 @@ class CooperativeController extends Controller
      * @bodyParam founded_at date Fecha de fundación. Example: 2010-01-01
      * @bodyParam phone string Teléfono de contacto. Example: +34 972 123 456
      * @bodyParam email string Email de contacto. Example: info@somenergia.coop
-     * @bodyParam website string Sitio web. Example: https://somenergia.coop
+     * @bodyParam website string Sitio web. Example: https://www.somenergia.coop
+     * @bodyParam logo_url string URL del logo. Example: https://example.com/logo.png
+     * @bodyParam municipality_id integer ID del municipio. Example: 1
+     * @bodyParam address string Dirección física. Example: Carrer de la Pau, 123
+     * @bodyParam latitude number Latitud geográfica. Example: 41.3851
+     * @bodyParam longitude number Longitud geográfica. Example: 2.1734
      * @bodyParam description string Descripción de la cooperativa. Example: Cooperativa de energía renovable
+     * @bodyParam number_of_members integer Número de miembros. Example: 1000
+     * @bodyParam main_activity string Actividad principal. Example: Producción y comercialización de energía renovable
      * @bodyParam is_open_to_new_members boolean Abierta a nuevos miembros. Example: true
+     * @bodyParam has_energy_market_access boolean Acceso al mercado energético. Example: true
+     * @bodyParam legal_form string Forma legal. Example: SCCL
+     * @bodyParam statutes_url string URL de los estatutos. Example: https://example.com/estatutos.pdf
      * @bodyParam accepts_new_installations boolean Acepta nuevas instalaciones. Example: true
      *
      * @response 200 {
@@ -224,7 +257,8 @@ class CooperativeController extends Controller
      *     "id": 1,
      *     "name": "Som Energia",
      *     "slug": "som-energia",
-     *     "cooperative_type": "energy"
+     *     "cooperative_type": "energy",
+     *     "scope": "national"
      *   }
      * }
      *
@@ -232,13 +266,20 @@ class CooperativeController extends Controller
      *   "message": "Cooperativa no encontrada"
      * }
      *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
      * @apiResourceModel App\Models\Cooperative
      */
-    public function update(Request $request, Cooperative $cooperative): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $cooperative = Cooperative::findOrFail($id);
+
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255|unique:cooperatives,slug,' . $cooperative->id,
+            'slug' => 'sometimes|string|max:255|unique:cooperatives,slug,' . $id,
             'legal_name' => 'nullable|string|max:255',
             'cooperative_type' => 'sometimes|string|in:energy,housing,agriculture,etc',
             'scope' => 'sometimes|string|in:local,regional,national',
@@ -247,9 +288,19 @@ class CooperativeController extends Controller
             'phone' => 'sometimes|string|max:20',
             'email' => 'sometimes|email|max:255',
             'website' => 'sometimes|url|max:255',
+            'logo_url' => 'nullable|url|max:255',
+            'municipality_id' => 'sometimes|integer|exists:municipalities,id',
+            'address' => 'sometimes|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'description' => 'nullable|string|max:2000',
-            'is_open_to_new_members' => 'sometimes|boolean',
-            'accepts_new_installations' => 'sometimes|boolean',
+            'number_of_members' => 'nullable|integer|min:1',
+            'main_activity' => 'sometimes|string|max:255',
+            'is_open_to_new_members' => 'boolean',
+            'has_energy_market_access' => 'boolean',
+            'legal_form' => 'nullable|string|max:100',
+            'statutes_url' => 'nullable|url|max:255',
+            'accepts_new_installations' => 'boolean',
         ]);
 
         $cooperative->update($validated);
@@ -263,9 +314,9 @@ class CooperativeController extends Controller
     /**
      * Remove the specified cooperative
      *
-     * Elimina una cooperativa específica del sistema.
+     * Elimina una cooperativa.
      *
-     * @urlParam cooperative int ID de la cooperativa. Example: 1
+     * @urlParam id integer ID de la cooperativa. Example: 1
      *
      * @response 204 {
      *   "message": "Cooperativa eliminada exitosamente"
@@ -275,110 +326,22 @@ class CooperativeController extends Controller
      *   "message": "Cooperativa no encontrada"
      * }
      */
-    public function destroy(Cooperative $cooperative): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $cooperative = Cooperative::findOrFail($id);
         $cooperative->delete();
-        
+
         return response()->json([
             'message' => 'Cooperativa eliminada exitosamente'
         ], 204);
     }
 
     /**
-     * Filter cooperatives by type
+     * Get cooperative members
      *
-     * Filtra cooperativas por tipo específico.
+     * Obtiene la lista de miembros de una cooperativa.
      *
-     * @urlParam type string Tipo de cooperativa. Example: energy
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Som Energia",
-     *       "cooperative_type": "energy"
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\CooperativeResource
-     * @apiResourceModel App\Models\Cooperative
-     */
-    public function filterByType($type): JsonResponse
-    {
-        $cooperatives = Cooperative::with(['municipality', 'image'])
-            ->ofType($type)
-            ->paginate(15);
-
-        return response()->json([
-            'data' => CooperativeResource::collection($cooperatives)
-        ]);
-    }
-
-    /**
-     * Get energy cooperatives
-     *
-     * Obtiene una lista de cooperativas energéticas.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Som Energia",
-     *       "cooperative_type": "energy"
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\CooperativeResource
-     * @apiResourceModel App\Models\Cooperative
-     */
-    public function energy(): JsonResponse
-    {
-        $cooperatives = Cooperative::with(['municipality', 'image'])
-            ->energy()
-            ->paginate(15);
-
-        return response()->json([
-            'data' => CooperativeResource::collection($cooperatives)
-        ]);
-    }
-
-    /**
-     * Get cooperatives open to new members
-     *
-     * Obtiene una lista de cooperativas abiertas a nuevos miembros.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Som Energia",
-     *       "is_open_to_new_members": true
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\CooperativeResource
-     * @apiResourceModel App\Models\Cooperative
-     */
-    public function openToMembers(): JsonResponse
-    {
-        $cooperatives = Cooperative::with(['municipality', 'image'])
-            ->openToNewMembers()
-            ->paginate(15);
-
-        return response()->json([
-            'data' => CooperativeResource::collection($cooperatives)
-        ]);
-    }
-
-    /**
-     * Search cooperatives
-     *
-     * Busca cooperativas por nombre, nombre legal, descripción o actividad principal.
-     *
-     * @queryParam q string required Término de búsqueda. Example: energia
+     * @urlParam idOrSlug integer|string ID o slug de la cooperativa. Example: 1
      * @queryParam page int Número de página. Example: 1
      * @queryParam per_page int Cantidad por página (máx 100). Example: 15
      *
@@ -386,93 +349,120 @@ class CooperativeController extends Controller
      *   "data": [
      *     {
      *       "id": 1,
-     *       "name": "Som Energia",
-     *       "main_activity": "Producción de energía renovable"
+     *       "name": "Juan Pérez",
+     *       "email": "juan@example.com",
+     *       "membership_date": "2020-01-01"
      *     }
-     *   ]
+     *   ],
+     *   "meta": {...}
      * }
-     *
-     * @response 400 {
-     *   "error": "El parámetro de consulta q es obligatorio"
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\CooperativeResource
-     * @apiResourceModel App\Models\Cooperative
      */
-    public function search(Request $request): JsonResponse
+    public function members(Request $request, $idOrSlug): JsonResponse
     {
-        $request->validate([
-            'q' => 'required|string|max:255',
-            'page' => 'sometimes|integer|min:1',
-            'per_page' => 'sometimes|integer|min:1|max:100'
-        ]);
+        $cooperative = Cooperative::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
 
-        $query = $request->get('q');
         $perPage = min($request->get('per_page', 15), 100);
-
-        $cooperatives = Cooperative::with(['municipality', 'image'])
-            ->where(function($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%")
-                  ->orWhere('legal_name', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
-                  ->orWhere('main_activity', 'LIKE', "%{$query}%");
-            })
-            ->paginate($perPage);
+        $members = $cooperative->users()->paginate($perPage);
 
         return response()->json([
-            'data' => CooperativeResource::collection($cooperatives),
+            'data' => $members->items(),
             'meta' => [
-                'current_page' => $cooperatives->currentPage(),
-                'last_page' => $cooperatives->lastPage(),
-                'per_page' => $cooperatives->perPage(),
-                'total' => $cooperatives->total(),
+                'current_page' => $members->currentPage(),
+                'last_page' => $members->lastPage(),
+                'per_page' => $members->perPage(),
+                'total' => $members->total(),
             ]
         ]);
     }
 
     /**
-     * Get cooperative statistics
+     * Join cooperative
      *
-     * Obtiene estadísticas generales sobre las cooperativas del sistema.
+     * Permite a un usuario unirse a una cooperativa.
+     *
+     * @urlParam idOrSlug integer|string ID o slug de la cooperativa. Example: 1
      *
      * @response 200 {
-     *   "data": {
-     *     "total_cooperatives": 75,
-     *     "energy_cooperatives": 25,
-     *     "open_to_members": 60,
-     *     "by_type": [
-     *       {
-     *         "cooperative_type": "energy",
-     *         "count": 25
-     *       }
-     *     ],
-     *     "by_scope": [
-     *       {
-     *         "scope": "national",
-     *         "count": 30
-     *       }
-     *     ],
-     *     "total_members": 15000,
-     *     "average_members": 200.0
-     *   }
+     *   "message": "Te has unido exitosamente a la cooperativa",
+     *   "cooperative": {...}
      * }
+     *
+     * @response 400 {
+     *   "message": "Ya eres miembro de esta cooperativa"
+     * }
+     *
+     * @response 404 {
+     *   "message": "Cooperativa no encontrada"
+     * }
+     *
+     * @authenticated
      */
-    public function statistics(): JsonResponse
+    public function join($idOrSlug): JsonResponse
     {
-        $stats = [
-            'total_cooperatives' => Cooperative::count(),
-            'energy_cooperatives' => Cooperative::energy()->count(),
-            'open_to_members' => Cooperative::openToNewMembers()->count(),
-            'by_type' => Cooperative::selectRaw('cooperative_type, COUNT(*) as count')
-                ->groupBy('cooperative_type')
-                ->get(),
-            'by_scope' => Cooperative::selectRaw('scope, COUNT(*) as count')
-                ->groupBy('scope')
-                ->get(),
-            'total_members' => Cooperative::sum('number_of_members'),
-            'average_members' => round(Cooperative::avg('number_of_members'), 1),
-        ];
+        $cooperative = Cooperative::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
 
-        return response()->json(['data' => $stats]);
+        $userId = Auth::guard('sanctum')->user()->id;
+
+        if ($cooperative->users()->where('user_id', $userId)->exists()) {
+            return response()->json([
+                'message' => 'Ya eres miembro de esta cooperativa'
+            ], 400);
+        }
+
+        $cooperative->users()->attach($userId, [
+            'joined_at' => now(),
+            'status' => 'active'
+        ]);
+
+        return response()->json([
+            'message' => 'Te has unido exitosamente a la cooperativa',
+            'cooperative' => new CooperativeResource($cooperative)
+        ]);
+    }
+
+    /**
+     * Leave cooperative
+     *
+     * Permite a un usuario salir de una cooperativa.
+     *
+     * @urlParam idOrSlug integer|string ID o slug de la cooperativa. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Has salido exitosamente de la cooperativa"
+     * }
+     *
+     * @response 400 {
+     *   "message": "No eres miembro de esta cooperativa"
+     * }
+     *
+     * @response 404 {
+     *   "message": "Cooperativa no encontrada"
+     * }
+     *
+     * @authenticated
+     */
+    public function leave($idOrSlug): JsonResponse
+    {
+        $cooperative = Cooperative::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
+
+        $userId = Auth::guard('sanctum')->user()->id;
+
+        if (!$cooperative->users()->where('user_id', $userId)->exists()) {
+            return response()->json([
+                'message' => 'No eres miembro de esta cooperativa'
+            ], 400);
+        }
+
+        $cooperative->users()->detach($userId);
+
+        return response()->json([
+            'message' => 'Has salido exitosamente de la cooperativa'
+        ]);
     }
 }
