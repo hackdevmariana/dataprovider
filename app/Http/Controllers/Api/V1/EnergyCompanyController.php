@@ -6,46 +6,62 @@ use App\Http\Controllers\Controller;
 use App\Models\EnergyCompany;
 use App\Http\Resources\V1\EnergyCompanyResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="Energy Companies",
- *     description="API for energy companies (commercializers, distributors, cooperatives)"
- * )
+ * @group Energy Companies
+ *
+ * APIs para la gestión de empresas energéticas (comercializadoras, distribuidoras, cooperativas).
+ * Permite consultar, filtrar y buscar empresas del sector energético.
  */
 class EnergyCompanyController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies",
-     *     summary="Get energy companies",
-     *     tags={"Energy Companies"},
-     *     @OA\Parameter(
-     *         name="company_type",
-     *         in="query",
-     *         description="Filter by company type",
-     *         @OA\Schema(type="string", example="comercializadora")
-     *     ),
-     *     @OA\Parameter(
-     *         name="coverage_scope",
-     *         in="query",
-     *         description="Filter by coverage scope",
-     *         @OA\Schema(type="string", example="nacional")
-     *     ),
-     *     @OA\Parameter(
-     *         name="municipality_id",
-     *         in="query",
-     *         description="Filter by municipality",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of energy companies"
-     *     )
-     * )
+     * Display a listing of energy companies
+     *
+     * Obtiene una lista de empresas energéticas con opciones de filtrado.
+     *
+     * @queryParam company_type string Tipo de empresa (comercializadora, distribuidora, cooperativa, productora). Example: comercializadora
+     * @queryParam coverage_scope string Alcance de cobertura (local, provincial, autonómico, nacional, internacional). Example: nacional
+     * @queryParam municipality_id int ID del municipio para filtrar. Example: 1
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Iberdrola",
+     *       "slug": "iberdrola",
+     *       "company_type": "comercializadora",
+     *       "coverage_scope": "nacional",
+     *       "municipality": {
+     *         "id": 1,
+     *         "name": "Madrid"
+     *       }
+     *     }
+     *   ],
+     *   "meta": {
+     *     "current_page": 1,
+     *     "last_page": 5,
+     *     "per_page": 20,
+     *     "total": 100
+     *   }
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'company_type' => 'sometimes|string|in:comercializadora,distribuidora,cooperativa,productora',
+            'coverage_scope' => 'sometimes|string|in:local,provincial,autonomico,nacional,internacional',
+            'municipality_id' => 'sometimes|integer|exists:municipalities,id',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
         $query = EnergyCompany::with(['municipality', 'image']);
 
         if ($request->has('company_type')) {
@@ -60,60 +76,100 @@ class EnergyCompanyController extends Controller
             $query->where('municipality_id', $request->municipality_id);
         }
 
-        $companies = $query->orderBy('name')->paginate(20);
+        $perPage = min($request->get('per_page', 20), 100);
+        $companies = $query->orderBy('name')->paginate($perPage);
 
-        return EnergyCompanyResource::collection($companies);
+        return response()->json([
+            'data' => EnergyCompanyResource::collection($companies),
+            'meta' => [
+                'current_page' => $companies->currentPage(),
+                'last_page' => $companies->lastPage(),
+                'per_page' => $companies->perPage(),
+                'total' => $companies->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies/{idOrSlug}",
-     *     summary="Get specific energy company",
-     *     tags={"Energy Companies"},
-     *     @OA\Response(response=200, description="Energy company details")
-     * )
+     * Display the specified energy company
+     *
+     * Obtiene los detalles de una empresa energética específica por ID o slug.
+     *
+     * @urlParam idOrSlug mixed ID o slug de la empresa. Example: iberdrola
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Iberdrola",
+     *     "slug": "iberdrola",
+     *     "company_type": "comercializadora",
+     *     "coverage_scope": "nacional",
+     *     "description": "Empresa líder en energías renovables",
+     *     "municipality": {
+     *       "id": 1,
+     *       "name": "Madrid"
+     *     }
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Empresa energética no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug): JsonResponse
     {
         $company = EnergyCompany::with(['municipality', 'image'])
             ->where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
-        return new EnergyCompanyResource($company);
+        return response()->json([
+            'data' => new EnergyCompanyResource($company)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies/filter/by-location",
-     *     summary="Filter companies by geographical location",
-     *     tags={"Energy Companies"},
-     *     @OA\Parameter(
-     *         name="latitude",
-     *         in="query",
-     *         description="Central latitude for search",
-     *         @OA\Schema(type="number", format="float")
-     *     ),
-     *     @OA\Parameter(
-     *         name="longitude",
-     *         in="query",
-     *         description="Central longitude for search",
-     *         @OA\Schema(type="number", format="float")
-     *     ),
-     *     @OA\Parameter(
-     *         name="radius_km",
-     *         in="query",
-     *         description="Search radius in kilometers",
-     *         @OA\Schema(type="number", format="float", example=50.0)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Companies filtered by location"
-     *     )
-     * )
+     * Filter companies by geographical location
+     *
+     * Filtra empresas energéticas por ubicación geográfica usando coordenadas y radio.
+     *
+     * @queryParam latitude number Latitud central para la búsqueda. Example: 40.4168
+     * @queryParam longitude number Longitud central para la búsqueda. Example: -3.7038
+     * @queryParam radius_km number Radio de búsqueda en kilómetros. Example: 50.0
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Iberdrola",
+     *       "distance_km": 25.3
+     *     }
+     *   ],
+     *   "meta": {
+     *     "current_page": 1,
+     *     "last_page": 1,
+     *     "per_page": 20,
+     *     "total": 1
+     *   }
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function filterByLocation(Request $request)
+    public function filterByLocation(Request $request): JsonResponse
     {
+        $request->validate([
+            'latitude' => 'required_with:longitude,radius_km|numeric|between:-90,90',
+            'longitude' => 'required_with:latitude,radius_km|numeric|between:-180,180',
+            'radius_km' => 'required_with:latitude,longitude|numeric|min:0.1|max:1000',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
         $query = EnergyCompany::with(['municipality', 'image']);
 
         if ($request->has('latitude') && $request->has('longitude') && $request->has('radius_km')) {
@@ -129,36 +185,58 @@ class EnergyCompanyController extends Controller
                   );
         }
 
-        $companies = $query->orderBy('name')->paginate(20);
+        $perPage = min($request->get('per_page', 20), 100);
+        $companies = $query->orderBy('name')->paginate($perPage);
 
-        return EnergyCompanyResource::collection($companies);
+        return response()->json([
+            'data' => EnergyCompanyResource::collection($companies),
+            'meta' => [
+                'current_page' => $companies->currentPage(),
+                'last_page' => $companies->lastPage(),
+                'per_page' => $companies->perPage(),
+                'total' => $companies->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies/search",
-     *     summary="Search energy companies",
-     *     tags={"Energy Companies"},
-     *     @OA\Parameter(
-     *         name="q",
-     *         in="query",
-     *         description="Search query for company name",
-     *         @OA\Schema(type="string", example="iberdrola")
-     *     ),
-     *     @OA\Parameter(
-     *         name="company_type",
-     *         in="query",
-     *         description="Filter by company type",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Search results"
-     *     )
-     * )
+     * Search energy companies
+     *
+     * Busca empresas energéticas por nombre y otros criterios.
+     *
+     * @queryParam q string Término de búsqueda para el nombre de la empresa. Example: iberdrola
+     * @queryParam company_type string Filtrar por tipo de empresa. Example: comercializadora
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Iberdrola",
+     *       "company_type": "comercializadora"
+     *     }
+     *   ],
+     *   "meta": {
+     *     "current_page": 1,
+     *     "last_page": 1,
+     *     "per_page": 20,
+     *     "total": 1
+     *   }
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
+        $request->validate([
+            'q' => 'sometimes|string|max:255',
+            'company_type' => 'sometimes|string|in:comercializadora,distribuidora,cooperativa,productora',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
         $query = EnergyCompany::with(['municipality', 'image']);
 
         if ($request->has('q') && !empty($request->q)) {
@@ -170,44 +248,77 @@ class EnergyCompanyController extends Controller
             $query->where('company_type', $request->company_type);
         }
 
-        $companies = $query->orderBy('name')->paginate(20);
+        $perPage = min($request->get('per_page', 20), 100);
+        $companies = $query->orderBy('name')->paginate($perPage);
 
-        return EnergyCompanyResource::collection($companies);
+        return response()->json([
+            'data' => EnergyCompanyResource::collection($companies),
+            'meta' => [
+                'current_page' => $companies->currentPage(),
+                'last_page' => $companies->lastPage(),
+                'per_page' => $companies->perPage(),
+                'total' => $companies->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies/commercializers",
-     *     summary="Get commercializing companies",
-     *     tags={"Energy Companies"},
-     *     @OA\Response(response=200, description="List of commercializing companies")
-     * )
+     * Get commercializing companies
+     *
+     * Obtiene una lista de empresas comercializadoras de energía.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Iberdrola",
+     *       "company_type": "comercializadora"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function commercializers()
+    public function commercializers(): JsonResponse
     {
         $companies = EnergyCompany::with(['municipality', 'image'])
             ->where('company_type', 'comercializadora')
             ->orderBy('name')
             ->get();
 
-        return EnergyCompanyResource::collection($companies);
+        return response()->json([
+            'data' => EnergyCompanyResource::collection($companies)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/energy-companies/cooperatives",
-     *     summary="Get energy cooperatives",
-     *     tags={"Energy Companies"},
-     *     @OA\Response(response=200, description="List of energy cooperatives")
-     * )
+     * Get energy cooperatives
+     *
+     * Obtiene una lista de cooperativas energéticas.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 2,
+     *       "name": "Som Energia",
+     *       "company_type": "cooperativa"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EnergyCompanyResource
+     * @apiResourceModel App\Models\EnergyCompany
      */
-    public function cooperatives()
+    public function cooperatives(): JsonResponse
     {
         $companies = EnergyCompany::with(['municipality', 'image'])
             ->where('company_type', 'cooperativa')
             ->orderBy('name')
             ->get();
 
-        return EnergyCompanyResource::collection($companies);
+        return response()->json([
+            'data' => EnergyCompanyResource::collection($companies)
+        ]);
     }
 }
