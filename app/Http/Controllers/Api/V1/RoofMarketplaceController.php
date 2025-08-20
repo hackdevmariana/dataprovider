@@ -13,6 +13,12 @@ use Illuminate\Http\JsonResponse;
  *     name="Roof Marketplace",
  *     description="Marketplace de techos y espacios para instalaciones solares"
  * )
+ * 
+ * @group Roof Marketplace
+ *
+ * APIs para la gestión del marketplace de techos y espacios para instalaciones solares.
+ * Permite a los usuarios ofrecer y encontrar espacios disponibles para
+ * instalaciones de energía renovable.
  */
 class RoofMarketplaceController extends Controller
 {
@@ -53,6 +59,24 @@ class RoofMarketplaceController extends Controller
      *     ),
      *     @OA\Response(response=200, description="Lista de espacios disponibles")
      * )
+     * 
+     * Display a listing of available roof spaces
+     *
+     * Obtiene una lista de espacios disponibles para instalaciones solares
+     * con opciones de filtrado avanzadas.
+     *
+     * @queryParam space_type string Tipo de espacio disponible. Example: residential_roof
+     * @queryParam offering_type string Tipo de oferta del espacio. Example: rent
+     * @queryParam min_area number Área mínima en m². Example: 50
+     * @queryParam max_area number Área máxima en m². Example: 200
+     * @queryParam municipality_id int ID del municipio. Example: 1
+     * @queryParam max_rent number Renta máxima mensual en euros. Example: 300
+     * @queryParam verified_only boolean Solo espacios verificados. Example: true
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @apiResourceCollection App\Http\Resources\V1\RoofMarketplaceResource
+     * @apiResourceModel App\Models\RoofMarketplace
      */
     public function index(Request $request)
     {
