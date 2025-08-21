@@ -5,60 +5,76 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\EventType;
 use App\Http\Resources\V1\EventTypeResource;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="EventTypes",
- *     description="API for managing event types"
- * )
+ * @group Event Types
+ *
+ * APIs para la gestión de tipos de eventos.
+ * Permite consultar diferentes categorías y tipos de eventos del sistema.
  */
 class EventTypeController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/event-types",
-     *     summary="Get all event types",
-     *     tags={"EventTypes"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of event types",
-     *         @OA\JsonContent(type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/EventType"))
-     *         )
-     *     )
-     * )
+     * Display a listing of event types
+     *
+     * Obtiene una lista de todos los tipos de eventos disponibles.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Conferencia",
+     *       "slug": "conferencia",
+     *       "description": "Eventos de tipo conferencia",
+     *       "category": "educativo"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\EventTypeResource
+     * @apiResourceModel App\Models\EventType
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return EventTypeResource::collection(EventType::all());
+        $eventTypes = EventType::all();
+        
+        return response()->json([
+            'data' => EventTypeResource::collection($eventTypes)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/event-types/{idOrSlug}",
-     *     summary="Get event type by ID or slug",
-     *     tags={"EventTypes"},
-     *     @OA\Parameter(
-     *         name="idOrSlug",
-     *         in="path",
-     *         required=true,
-     *         description="ID or slug of the event type",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Event type found",
-     *         @OA\JsonContent(ref="#/components/schemas/EventType")
-     *     ),
-     *     @OA\Response(response=404, description="Event type not found")
-     * )
+     * Display the specified event type
+     *
+     * Obtiene los detalles de un tipo de evento específico por ID o slug.
+     *
+     * @urlParam idOrSlug integer|string ID o slug del tipo de evento. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Conferencia",
+     *     "slug": "conferencia",
+     *     "description": "Eventos de tipo conferencia",
+     *     "category": "educativo"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Tipo de evento no encontrado"
+     * }
+     *
+     * @apiResourceModel App\Models\EventType
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug): JsonResponse
     {
         $eventType = EventType::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
-        return new EventTypeResource($eventType);
+            
+        return response()->json([
+            'data' => new EventTypeResource($eventType)
+        ]);
     }
 }
