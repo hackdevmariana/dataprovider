@@ -5,85 +5,98 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Provinces
+ *
+ * APIs para la gestión de provincias y divisiones administrativas.
+ * Permite consultar información de provincias, comunidades autónomas y países.
+ */
 class ProvinceController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/provinces",
-     *     summary="Obtener listado de provincias",
-     *     tags={"Provinces"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista paginada de provincias",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer"),
-     *                 @OA\Property(property="name", type="string"),
-     *                 @OA\Property(property="slug", type="string"),
-     *                 @OA\Property(property="ine_code", type="string"),
-     *                 @OA\Property(property="latitude", type="number", format="float"),
-     *                 @OA\Property(property="longitude", type="number", format="float"),
-     *                 @OA\Property(property="area_km2", type="number", format="float"),
-     *                 @OA\Property(property="altitude_m", type="integer"),
-     *                 @OA\Property(property="autonomous_community", type="object",
-     *                     @OA\Property(property="name", type="string")
-     *                 ),
-     *                 @OA\Property(property="country", type="object",
-     *                     @OA\Property(property="name", type="string")
-     *                 )
-     *             )),
-     *             @OA\Property(property="links", type="object"),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     )
-     * )
+     * Display a listing of provinces
+     *
+     * Obtiene una lista paginada de provincias con sus relaciones.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Barcelona",
+     *       "slug": "barcelona",
+     *       "ine_code": "08",
+     *       "latitude": 41.3851,
+     *       "longitude": 2.1734,
+     *       "area_km2": 7721.5,
+     *       "altitude_m": 12,
+     *       "autonomous_community": {
+     *         "name": "Cataluña"
+     *       },
+     *       "country": {
+     *         "name": "España"
+     *       }
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $provinces = Province::with(['autonomousCommunity', 'country'])->paginate(20);
-        return response()->json($provinces);
+        $request->validate([
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
+        $perPage = min($request->get('per_page', 20), 100);
+        $provinces = Province::with(['autonomousCommunity', 'country'])->paginate($perPage);
+        
+        return response()->json([
+            'data' => $provinces->items(),
+            'meta' => [
+                'current_page' => $provinces->currentPage(),
+                'last_page' => $provinces->lastPage(),
+                'per_page' => $provinces->perPage(),
+                'total' => $provinces->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/{idOrSlug}",
-     *     summary="Mostrar detalles de una provincia",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="idOrSlug",
-     *         in="path",
-     *         required=true,
-     *         description="ID o slug de la provincia",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Provincia encontrada",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="integer"),
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="slug", type="string"),
-     *             @OA\Property(property="ine_code", type="string"),
-     *             @OA\Property(property="latitude", type="number", format="float"),
-     *             @OA\Property(property="longitude", type="number", format="float"),
-     *             @OA\Property(property="area_km2", type="number", format="float"),
-     *             @OA\Property(property="altitude_m", type="integer"),
-     *             @OA\Property(property="autonomous_community", type="object",
-     *                 @OA\Property(property="name", type="string")
-     *             ),
-     *             @OA\Property(property="country", type="object",
-     *                 @OA\Property(property="name", type="string")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response=404, description="Provincia no encontrada")
-     * )
+     * Display the specified province
+     *
+     * Obtiene los detalles de una provincia específica por ID o slug.
+     *
+     * @urlParam idOrSlug integer|string ID o slug de la provincia. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Barcelona",
+     *     "slug": "barcelona",
+     *     "ine_code": "08",
+     *     "latitude": 41.3851,
+     *     "longitude": 2.1734,
+     *     "area_km2": 7721.5,
+     *     "altitude_m": 12,
+     *     "autonomous_community": {
+     *       "name": "Cataluña"
+     *     },
+     *     "country": {
+     *       "name": "España"
+     *     }
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Provincia no encontrada"
+     * }
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug): JsonResponse
     {
         $province = Province::with(['autonomousCommunity', 'country'])
             ->where('id', $idOrSlug)
@@ -94,252 +107,102 @@ class ProvinceController extends Controller
             return response()->json(['message' => 'Provincia no encontrada'], 404);
         }
 
-        return response()->json($province);
+        return response()->json([
+            'data' => $province
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/with-municipalities-count",
-     *     summary="Provincias con conteo de municipios",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="min_municipalities",
-     *         in="query",
-     *         description="Número mínimo de municipios",
-     *         @OA\Schema(type="integer", example=10)
-     *     ),
-     *     @OA\Parameter(
-     *         name="max_municipalities",
-     *         in="query",
-     *         description="Número máximo de municipios",
-     *         @OA\Schema(type="integer", example=500)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Provincias con conteo de municipios",
-     *         @OA\JsonContent(type="array", @OA\Items())
-     *     )
-     * )
+     * Get provinces by autonomous community
+     *
+     * Obtiene las provincias de una comunidad autónoma específica.
+     *
+     * @queryParam autonomous_community_id int ID de la comunidad autónoma. Example: 1
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Barcelona",
+     *       "slug": "barcelona",
+     *       "ine_code": "08"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
      */
-    public function withMunicipalitiesCount(Request $request)
+    public function byAutonomousCommunity(Request $request): JsonResponse
     {
-        $query = Province::with(['autonomousCommunity', 'country'])
-            ->withCount('municipalities');
+        $request->validate([
+            'autonomous_community_id' => 'required|integer|exists:autonomous_communities,id',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
 
-        // Filtro por número mínimo de municipios
-        if ($request->has('min_municipalities')) {
-            $query->having('municipalities_count', '>=', (int)$request->min_municipalities);
-        }
-
-        // Filtro por número máximo de municipios
-        if ($request->has('max_municipalities')) {
-            $query->having('municipalities_count', '<=', (int)$request->max_municipalities);
-        }
-
-        $provinces = $query->orderBy('municipalities_count', 'desc')->paginate(20);
-        
-        return response()->json($provinces);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/filter/by-area",
-     *     summary="Filtrar provincias por superficie",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="min_area",
-     *         in="query",
-     *         description="Superficie mínima en km²",
-     *         @OA\Schema(type="number", format="float", example=1000.0)
-     *     ),
-     *     @OA\Parameter(
-     *         name="max_area",
-     *         in="query",
-     *         description="Superficie máxima en km²",
-     *         @OA\Schema(type="number", format="float", example=50000.0)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Provincias filtradas por superficie",
-     *         @OA\JsonContent(type="array", @OA\Items())
-     *     )
-     * )
-     */
-    public function filterByArea(Request $request)
-    {
-        $query = Province::with(['autonomousCommunity', 'country']);
-
-        // Filtro por superficie mínima
-        if ($request->has('min_area')) {
-            $query->where('area_km2', '>=', (float)$request->min_area);
-        }
-
-        // Filtro por superficie máxima
-        if ($request->has('max_area')) {
-            $query->where('area_km2', '<=', (float)$request->max_area);
-        }
-
-        $provinces = $query->orderBy('area_km2', 'desc')->paginate(20);
-        
-        return response()->json($provinces);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/by-autonomous-community/{slug}",
-     *     summary="Provincias por comunidad autónoma",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="slug",
-     *         in="path",
-     *         description="Slug de la comunidad autónoma",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="include_municipalities",
-     *         in="query",
-     *         description="Incluir municipios en la respuesta",
-     *         @OA\Schema(type="boolean", example=false)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Provincias de la comunidad autónoma",
-     *         @OA\JsonContent(type="array", @OA\Items())
-     *     )
-     * )
-     */
-    public function byAutonomousCommunity($slug, Request $request)
-    {
-        $with = ['autonomousCommunity', 'country'];
-        
-        // Opcionalmente incluir municipios
-        if ($request->boolean('include_municipalities', false)) {
-            $with[] = 'municipalities';
-        }
-
-        $provinces = Province::with($with)
-            ->whereHas('autonomousCommunity', fn($q) => $q->where('slug', $slug))
+        $perPage = min($request->get('per_page', 20), 100);
+        $provinces = Province::where('autonomous_community_id', $request->autonomous_community_id)
             ->orderBy('name')
-            ->get();
+            ->paginate($perPage);
 
-        return response()->json($provinces);
+        return response()->json([
+            'data' => $provinces->items(),
+            'meta' => [
+                'current_page' => $provinces->currentPage(),
+                'last_page' => $provinces->lastPage(),
+                'per_page' => $provinces->perPage(),
+                'total' => $provinces->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/search",
-     *     summary="Búsqueda avanzada de provincias",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="query",
-     *         description="Búsqueda parcial por nombre",
-     *         @OA\Schema(type="string", example="Madrid")
-     *     ),
-     *     @OA\Parameter(
-     *         name="autonomous_community_slug",
-     *         in="query",
-     *         description="Slug de la comunidad autónoma",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="min_area",
-     *         in="query",
-     *         description="Superficie mínima en km²",
-     *         @OA\Schema(type="number", format="float")
-     *     ),
-     *     @OA\Parameter(
-     *         name="sort_by",
-     *         in="query",
-     *         description="Campo para ordenar: name, area_km2, altitude_m",
-     *         @OA\Schema(type="string", enum={"name", "area_km2", "altitude_m"}, example="name")
-     *     ),
-     *     @OA\Parameter(
-     *         name="sort_direction",
-     *         in="query",
-     *         description="Dirección de ordenamiento",
-     *         @OA\Schema(type="string", enum={"asc", "desc"}, example="asc")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Resultados de búsqueda",
-     *         @OA\JsonContent(type="array", @OA\Items())
-     *     )
-     * )
+     * Search provinces
+     *
+     * Busca provincias por nombre o código INE.
+     *
+     * @queryParam q string Término de búsqueda. Example: barcelona
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Barcelona",
+     *       "slug": "barcelona",
+     *       "ine_code": "08"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
      */
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
-        $query = Province::with(['autonomousCommunity', 'country']);
+        $request->validate([
+            'q' => 'required|string|max:255',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
 
-        // Búsqueda por nombre (parcial)
-        if ($request->has('name') && !empty($request->name)) {
-            $query->where('name', 'LIKE', '%' . $request->name . '%');
-        }
+        $perPage = min($request->get('per_page', 20), 100);
+        $searchTerm = $request->q;
 
-        // Filtro por comunidad autónoma
-        if ($request->has('autonomous_community_slug')) {
-            $query->whereHas('autonomousCommunity', fn($q) => $q->where('slug', $request->autonomous_community_slug));
-        }
-
-        // Filtro por superficie mínima
-        if ($request->has('min_area')) {
-            $query->where('area_km2', '>=', (float)$request->min_area);
-        }
-
-        // Ordenamiento
-        $sortBy = $request->get('sort_by', 'name');
-        $sortDirection = $request->get('sort_direction', 'asc');
-        
-        // Validar campos de ordenamiento
-        $allowedSortFields = ['name', 'area_km2', 'altitude_m', 'ine_code'];
-        if (!in_array($sortBy, $allowedSortFields)) {
-            $sortBy = 'name';
-        }
-        
-        if (!in_array($sortDirection, ['asc', 'desc'])) {
-            $sortDirection = 'asc';
-        }
-
-        $query->orderBy($sortBy, $sortDirection);
-
-        $provinces = $query->paginate(20);
-        
-        return response()->json($provinces);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/v1/provinces/largest/{limit}",
-     *     summary="Obtener las provincias más grandes por superficie",
-     *     tags={"Provinces"},
-     *     @OA\Parameter(
-     *         name="limit",
-     *         in="path",
-     *         description="Número de provincias a retornar",
-     *         required=true,
-     *         @OA\Schema(type="integer", minimum=1, maximum=100, example=10)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Provincias más grandes por superficie",
-     *         @OA\JsonContent(type="array", @OA\Items())
-     *     )
-     * )
-     */
-    public function largest($limit = 10)
-    {
-        $limit = min(max((int)$limit, 1), 100); // Entre 1 y 100
-        
         $provinces = Province::with(['autonomousCommunity', 'country'])
-            ->whereNotNull('area_km2')
-            ->where('area_km2', '>', 0)
-            ->orderBy('area_km2', 'desc')
-            ->limit($limit)
-            ->get();
+            ->where('name', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('ine_code', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('name')
+            ->paginate($perPage);
 
-        return response()->json($provinces);
+        return response()->json([
+            'data' => $provinces->items(),
+            'meta' => [
+                'current_page' => $provinces->currentPage(),
+                'last_page' => $provinces->lastPage(),
+                'per_page' => $provinces->perPage(),
+                'total' => $provinces->total(),
+            ]
+        ]);
     }
 }
-
-
