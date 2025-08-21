@@ -7,90 +7,115 @@ use App\Models\Profession;
 use App\Http\Requests\StoreProfessionRequest;
 use App\Http\Resources\V1\ProfessionResource;
 use App\Services\ProfessionsService;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Professions
+ *
+ * APIs para la gestión de profesiones y oficios.
+ * Permite crear, consultar y gestionar profesiones del sistema.
+ */
 class ProfessionController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/professions",
-     *     summary="Obtener listado de profesiones",
-     *     tags={"Professions"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Listado de profesiones",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Profession"))
-     *         )
-     *     )
-     * )
+     * Display a listing of professions
+     *
+     * Obtiene una lista de todas las profesiones disponibles.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Ingeniero de Software",
+     *       "slug": "ingeniero-de-software",
+     *       "category": "Tecnología",
+     *       "is_public_facing": true
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\ProfessionResource
+     * @apiResourceModel App\Models\Profession
      */
-    public function index(ProfessionsService $service)
+    public function index(ProfessionsService $service): JsonResponse
     {
         $professions = $service->list();
-        return ProfessionResource::collection($professions);
+        
+        return response()->json([
+            'data' => ProfessionResource::collection($professions)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/professions/{idOrSlug}",
-     *     summary="Mostrar detalles de una profesión",
-     *     tags={"Professions"},
-     *     @OA\Parameter(
-     *         name="idOrSlug",
-     *         in="path",
-     *         required=true,
-     *         description="ID o slug de la profesión",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Profesión encontrada",
-     *         @OA\JsonContent(ref="#/components/schemas/Profession")
-     *     ),
-     *     @OA\Response(response=404, description="Profesión no encontrada")
-     * )
+     * Display the specified profession
+     *
+     * Obtiene los detalles de una profesión específica por ID o slug.
+     *
+     * @urlParam idOrSlug integer|string ID o slug de la profesión. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Ingeniero de Software",
+     *       "slug": "ingeniero-de-software",
+     *       "category": "Tecnología",
+     *       "is_public_facing": true
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Profesión no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\Profession
      */
-    public function show($idOrSlug, ProfessionsService $service)
+    public function show($idOrSlug, ProfessionsService $service): JsonResponse
     {
         $profession = $service->findByIdOrSlug($idOrSlug);
 
-        return new ProfessionResource($profession);
+        return response()->json([
+            'data' => new ProfessionResource($profession)
+        ]);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/v1/professions",
-     *     summary="Crear una nueva profesión",
-     *     tags={"Professions"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name", "slug", "category", "is_public_facing"},
-     *             @OA\Property(property="name", type="string", example="Ingeniero de Software"),
-     *             @OA\Property(property="slug", type="string", example="ingeniero-de-software"),
-     *             @OA\Property(property="category", type="string", example="Tecnología"),
-     *             @OA\Property(property="is_public_facing", type="boolean", example=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Profesión creada exitosamente",
-     *         @OA\JsonContent(ref="#/components/schemas/Profession")
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Error de validación"
-     *     )
-     * )
+     * Store a newly created profession
+     *
+     * Crea una nueva profesión en el sistema.
+     *
+     * @bodyParam name string required Nombre de la profesión. Example: Ingeniero de Software
+     * @bodyParam slug string required Slug único de la profesión. Example: ingeniero-de-software
+     * @bodyParam category string required Categoría de la profesión. Example: Tecnología
+     * @bodyParam is_public_facing boolean required Si la profesión es visible públicamente. Example: true
+     * @bodyParam description string Descripción de la profesión. Example: Desarrollador de aplicaciones informáticas
+     * @bodyParam requirements string Requisitos para ejercer la profesión. Example: Grado en Ingeniería Informática
+     * @bodyParam salary_range string Rango salarial típico. Example: 30,000-60,000€
+     * @bodyParam is_active boolean Si la profesión está activa. Example: true
+     *
+     * @response 201 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Ingeniero de Software",
+     *       "slug": "ingeniero-de-software",
+     *       "category": "Tecnología",
+     *       "is_public_facing": true
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
+     * @apiResourceModel App\Models\Profession
+     * @authenticated
      */
-    public function store(StoreProfessionRequest $request, ProfessionsService $service)
+    public function store(StoreProfessionRequest $request, ProfessionsService $service): JsonResponse
     {
         $profession = $service->create($request->validated());
 
-        return new ProfessionResource($profession);
+        return response()->json([
+            'data' => new ProfessionResource($profession)
+        ], 201);
     }
 }
-
-
