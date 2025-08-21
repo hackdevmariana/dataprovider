@@ -6,51 +6,73 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\AppSettingResource;
 use App\Models\AppSetting;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * @group App Settings
+ *
+ * APIs para la gestión de configuraciones globales de la aplicación.
+ * Permite consultar configuraciones del sistema.
+ */
 class AppSettingController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/app-settings",
-     *     summary="Obtener configuración global de la app",
-     *     tags={"AppSettings"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Configuración de la aplicación",
-     *         @OA\JsonContent(ref="#/components/schemas/AppSetting")
-     *     )
-     * )
+     * Display a listing of app settings
+     *
+     * Obtiene la configuración global de la aplicación.
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "app_name": "DataProvider",
+     *     "app_version": "1.0.0",
+     *     "maintenance_mode": false,
+     *     "organization": {...}
+     *   }
+     * }
+     *
+     * @apiResourceModel App\Models\AppSetting
+     * @authenticated
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $settings = AppSetting::with('organization')->first(); // asumiendo que sólo hay uno
-        return new AppSettingResource($settings);
+        
+        return response()->json([
+            'data' => new AppSettingResource($settings)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/app-settings/{id}",
-     *     summary="Mostrar configuración por ID",
-     *     tags={"AppSettings"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Configuración encontrada",
-     *         @OA\JsonContent(ref="#/components/schemas/AppSetting")
-     *     ),
-     *     @OA\Response(response=404, description="No encontrado")
-     * )
+     * Display the specified app setting
+     *
+     * Obtiene los detalles de una configuración específica por ID.
+     *
+     * @urlParam id integer ID de la configuración. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "app_name": "DataProvider",
+     *       "app_version": "1.0.0",
+     *       "maintenance_mode": false,
+     *       "organization": {...}
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Configuración no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\AppSetting
+     * @authenticated
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         $setting = AppSetting::with('organization')->findOrFail($id);
-        return new AppSettingResource($setting);
+        
+        return response()->json([
+            'data' => new AppSettingResource($setting)
+        ]);
     }
 }
