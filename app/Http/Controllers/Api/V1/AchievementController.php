@@ -8,32 +8,51 @@ use App\Http\Resources\V1\AchievementResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Achievements
+ *
+ * APIs para la gestión de logros y conquistas.
+ * Permite consultar información de logros del sistema.
+ */
 class AchievementController extends Controller
 {
     /**
-     * Display a listing of achievements.
-     * 
-     * @OA\Get(
-     *     path="/api/v1/achievements",
-     *     summary="Get all achievements",
-     *     tags={"Achievements"},
-     *     @OA\Parameter(
-     *         name="type",
-     *         in="query",
-     *         description="Filter by achievement type",
-     *         @OA\Schema(type="string", enum={"single", "progressive", "recurring"})
-     *     ),
-     *     @OA\Parameter(
-     *         name="difficulty",
-     *         in="query", 
-     *         description="Filter by difficulty level",
-     *         @OA\Schema(type="string", enum={"bronze", "silver", "gold", "legendary"})
-     *     ),
-     *     @OA\Response(response=200, description="Success")
-     * )
+     * Display a listing of achievements
+     *
+     * Obtiene una lista de todos los logros disponibles.
+     *
+     * @queryParam type string Filtrar por tipo de logro (single, progressive, recurring). Example: single
+     * @queryParam difficulty string Filtrar por nivel de dificultad (bronze, silver, gold, legendary). Example: gold
+     * @queryParam is_secret boolean Filtrar por logros secretos. Example: false
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Primer Paso",
+     *       "description": "Completa tu primera actividad",
+     *       "type": "single",
+     *       "difficulty": "bronze",
+     *       "points": 10,
+     *       "is_secret": false
+     *     }
+     *   ],
+     *   "meta": {
+     *     "total": 1
+     *   }
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\AchievementResource
+     * @apiResourceModel App\Models\Achievement
      */
     public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'type' => 'sometimes|string|in:single,progressive,recurring',
+            'difficulty' => 'sometimes|string|in:bronze,silver,gold,legendary',
+            'is_secret' => 'sometimes|boolean'
+        ]);
+
         $query = Achievement::where('is_active', true);
 
         if ($request->has('type')) {
@@ -61,16 +80,25 @@ class AchievementController extends Controller
     }
 
     /**
-     * Display the specified achievement.
-     * 
-     * @OA\Get(
-     *     path="/api/v1/achievements/{id}",
-     *     summary="Get achievement by ID",
-     *     tags={"Achievements"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Success"),
-     *     @OA\Response(response=404, description="Achievement not found")
-     * )
+     * Display the specified achievement
+     *
+     * Obtiene los detalles de un logro específico.
+     *
+     * @urlParam achievement integer ID del logro. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Primer Paso",
+     *       "description": "Completa tu primera actividad",
+     *       "type": "single",
+     *       "difficulty": "bronze",
+     *       "points": 10,
+     *       "is_secret": false
+     *   }
+     * }
+     *
+     * @apiResourceModel App\Models\Achievement
      */
     public function show(Achievement $achievement): JsonResponse
     {
