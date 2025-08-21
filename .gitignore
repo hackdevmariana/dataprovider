@@ -23,3 +23,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 SOCIAL_SERVICES_PROPOSAL.md
+convert_multiple_openapi.php
+convert_openapi_to_phpdoc.php
