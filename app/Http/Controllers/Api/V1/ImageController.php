@@ -8,166 +8,194 @@ use App\Http\Resources\V1\ImageResource;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Services\ImagesService;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="Images",
- *     description="API Endpoints para gestión de imágenes"
- * )
+ * @group Images
+ *
+ * APIs para la gestión de imágenes y recursos visuales.
+ * Permite crear, consultar y gestionar imágenes del sistema.
  */
 class ImageController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/images",
-     *     tags={"Images"},
-     *     summary="Lista paginada de imágenes",
-     *     description="Devuelve una lista paginada de imágenes",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista paginada de imágenes",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(ref="#/components/schemas/Image")
-     *             ),
-     *             @OA\Property(property="links", type="object"),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     )
-     * )
+     * Display a listing of images
+     *
+     * Devuelve una lista paginada de imágenes.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "slug": "imagen-ejemplo",
+     *       "url": "https://example.com/image.jpg",
+     *       "alt_text": "Texto alternativo",
+     *       "source": "Wikimedia",
+     *       "width": 800,
+     *       "height": 600
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\ImageResource
+     * @apiResourceModel App\Models\Image
      */
-    public function index(ImagesService $service)
+    public function index(ImagesService $service): JsonResponse
     {
         $images = $service->paginate(20);
-        return ImageResource::collection($images);
+        
+        return response()->json([
+            'data' => ImageResource::collection($images),
+            'meta' => [
+                'current_page' => $images->currentPage(),
+                'last_page' => $images->lastPage(),
+                'per_page' => $images->perPage(),
+                'total' => $images->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/images/{id}",
-     *     tags={"Images"},
-     *     summary="Mostrar imagen",
-     *     description="Devuelve los detalles de una imagen por ID",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID de la imagen",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Detalles de la imagen",
-     *         @OA\JsonContent(ref="#/components/schemas/Image")
-     *     ),
-     *     @OA\Response(response=404, description="Imagen no encontrada")
-     * )
+     * Display the specified image
+     *
+     * Devuelve los detalles de una imagen por ID.
+     *
+     * @urlParam id integer ID de la imagen. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "slug": "imagen-ejemplo",
+     *     "url": "https://example.com/image.jpg",
+     *     "alt_text": "Texto alternativo",
+     *     "source": "Wikimedia",
+     *     "width": 800,
+     *     "height": 600
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Imagen no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\Image
      */
-    public function show($id, ImagesService $service)
+    public function show($id, ImagesService $service): JsonResponse
     {
         $image = $service->findById((int) $id);
-        return new ImageResource($image);
+        
+        return response()->json([
+            'data' => new ImageResource($image)
+        ]);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/v1/images",
-     *     tags={"Images"},
-     *     summary="Crear imagen",
-     *     description="Crea una nueva imagen",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"url"},
-     *             @OA\Property(property="slug", type="string", example="imagen-ejemplo"),
-     *             @OA\Property(property="url", type="string", format="url", example="https://example.com/image.jpg"),
-     *             @OA\Property(property="alt_text", type="string", example="Texto alternativo"),
-     *             @OA\Property(property="source", type="string", example="Wikimedia"),
-     *             @OA\Property(property="width", type="integer", example=800),
-     *             @OA\Property(property="height", type="integer", example=600)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Imagen creada",
-     *         @OA\JsonContent(ref="#/components/schemas/Image")
-     *     ),
-     *     @OA\Response(response=422, description="Error de validación")
-     * )
+     * Store a newly created image
+     *
+     * Crea una nueva imagen en el sistema.
+     *
+     * @bodyParam slug string Slug único de la imagen. Example: imagen-ejemplo
+     * @bodyParam url string required URL de la imagen. Example: https://example.com/image.jpg
+     * @bodyParam alt_text string Texto alternativo de la imagen. Example: Texto alternativo
+     * @bodyParam source string Fuente de la imagen. Example: Wikimedia
+     * @bodyParam width integer Ancho de la imagen en píxeles. Example: 800
+     * @bodyParam height integer Alto de la imagen en píxeles. Example: 600
+     *
+     * @response 201 {
+     *   "data": {
+     *     "id": 1,
+     *     "slug": "imagen-ejemplo",
+     *     "url": "https://example.com/image.jpg",
+     *     "alt_text": "Texto alternativo",
+     *     "source": "Wikimedia",
+     *     "width": 800,
+     *     "height": 600
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
+     * @apiResourceModel App\Models\Image
      */
-    public function store(StoreImageRequest $request, ImagesService $service)
+    public function store(StoreImageRequest $request, ImagesService $service): JsonResponse
     {
         $image = $service->create($request->validated());
-
-        return (new ImageResource($image))->response()->setStatusCode(201);
+        
+        return response()->json([
+            'data' => new ImageResource($image)
+        ], 201);
     }
 
     /**
-     * @OA\Put(
-     *     path="/api/v1/images/{id}",
-     *     tags={"Images"},
-     *     summary="Actualizar imagen",
-     *     description="Actualiza una imagen existente",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID de la imagen",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="slug", type="string", example="imagen-ejemplo"),
-     *             @OA\Property(property="url", type="string", format="url", example="https://example.com/image.jpg"),
-     *             @OA\Property(property="alt_text", type="string", example="Texto alternativo"),
-     *             @OA\Property(property="source", type="string", example="Wikimedia"),
-     *             @OA\Property(property="width", type="integer", example=800),
-     *             @OA\Property(property="height", type="integer", example=600)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Imagen actualizada",
-     *         @OA\JsonContent(ref="#/components/schemas/Image")
-     *     ),
-     *     @OA\Response(response=404, description="Imagen no encontrada"),
-     *     @OA\Response(response=422, description="Error de validación")
-     * )
+     * Update the specified image
+     *
+     * Actualiza una imagen existente.
+     *
+     * @urlParam id integer ID de la imagen. Example: 1
+     * @bodyParam slug string Slug único de la imagen. Example: imagen-ejemplo
+     * @bodyParam url string URL de la imagen. Example: https://example.com/image.jpg
+     * @bodyParam alt_text string Texto alternativo de la imagen. Example: Texto alternativo
+     * @bodyParam source string Fuente de la imagen. Example: Wikimedia
+     * @bodyParam width integer Ancho de la imagen en píxeles. Example: 800
+     * @bodyParam height integer Alto de la imagen en píxeles. Example: 600
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "slug": "imagen-ejemplo",
+     *     "url": "https://example.com/image.jpg",
+     *     "alt_text": "Texto alternativo actualizado"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Imagen no encontrada"
+     * }
+     *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
+     * @apiResourceModel App\Models\Image
      */
-    public function update(UpdateImageRequest $request, $id, ImagesService $service)
+    public function update(UpdateImageRequest $request, $id, ImagesService $service): JsonResponse
     {
-        $image = $service->findById((int) $id);
-        $image = $service->update($image, $request->validated());
-
-        return new ImageResource($image);
+        $image = $service->update((int) $id, $request->validated());
+        
+        return response()->json([
+            'data' => new ImageResource($image)
+        ]);
     }
 
     /**
-     * @OA\Delete(
-     *     path="/api/v1/images/{id}",
-     *     tags={"Images"},
-     *     summary="Eliminar imagen",
-     *     description="Elimina una imagen por ID",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID de la imagen",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=204, description="Imagen eliminada"),
-     *     @OA\Response(response=404, description="Imagen no encontrada")
-     * )
+     * Remove the specified image
+     *
+     * Elimina una imagen del sistema.
+     *
+     * @urlParam id integer ID de la imagen. Example: 1
+     *
+     * @response 204 {
+     *   "message": "Imagen eliminada exitosamente"
+     * }
+     *
+     * @response 404 {
+     *   "message": "Imagen no encontrada"
+     * }
      */
-    public function destroy($id, ImagesService $service)
+    public function destroy($id, ImagesService $service): JsonResponse
     {
-        $image = $service->findById((int) $id);
-        $service->delete($image);
-
-        return response()->json(null, 204);
+        $service->delete((int) $id);
+        
+        return response()->json([
+            'message' => 'Imagen eliminada exitosamente'
+        ], 204);
     }
 }
-
-
