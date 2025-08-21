@@ -6,61 +6,78 @@ use App\Http\Controllers\Controller;
 use App\Models\FamilyMember;
 use App\Http\Resources\V1\FamilyMemberResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="Family Members",
- *     description="Relaciones familiares entre personas"
- * )
+ * @group Family Members
+ *
+ * APIs para la gestión de relaciones familiares entre personas.
+ * Permite consultar información de miembros familiares y sus relaciones.
  */
 class FamilyMemberController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/family-members",
-     *     summary="Listado de relaciones familiares",
-     *     tags={"Family Members"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista de relaciones familiares",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/FamilyMember")
-     *         )
-     *     )
-     * )
+     * Display a listing of family members
+     *
+
+     * Obtiene una lista de todas las relaciones familiares.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "person_id": 1,
+     *       "relative_id": 2,
+     *       "relationship_type": "parent",
+     *       "person": {...},
+     *       "relative": {...}
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\FamilyMemberResource
+     * @apiResourceModel App\Models\FamilyMember
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $family = FamilyMember::with(['person', 'relative'])->get();
-        return FamilyMemberResource::collection($family);
+        
+        return response()->json([
+            'data' => FamilyMemberResource::collection($family)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/family-members/{id}",
-     *     summary="Mostrar relación familiar por ID",
-     *     tags={"Family Members"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la relación familiar",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Relación encontrada",
-     *         @OA\JsonContent(ref="#/components/schemas/FamilyMember")
-     *     ),
-     *     @OA\Response(response=404, description="No encontrado")
-     * )
+     * Display the specified family member
+     *
+
+     * Obtiene los detalles de una relación familiar específica por ID.
+     *
+     * @urlParam id integer ID de la relación familiar. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "person_id": 1,
+     *       "relative_id": 2,
+     *       "relationship_type": "parent",
+     *       "person": {...},
+     *       "relative": {...}
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Relación familiar no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\FamilyMember
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         $family = FamilyMember::with(['person', 'relative'])->findOrFail($id);
-        return new FamilyMemberResource($family);
+        
+        return response()->json([
+            'data' => new FamilyMemberResource($family)
+        ]);
     }
 }
-
-
