@@ -6,64 +6,120 @@ use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Http\Resources\V1\GroupResource;
 use App\Http\Requests\StoreGroupRequest;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="Groups",
- *     description="Group management"
- * )
+ * @group Groups
+ *
+ * APIs para la gestión de grupos y organizaciones.
+ * Permite crear, consultar y gestionar grupos del sistema.
  */
 class GroupController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/groups",
-     *     summary="Get all groups",
-     *     tags={"Groups"},
-     *     @OA\Response(response=200, description="List of groups")
-     * )
+     * Display a listing of groups
+     *
+
+     * Obtiene una lista paginada de todos los grupos disponibles.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 20
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Grupo de Desarrollo",
+     *       "description": "Grupo de desarrolladores de software",
+     *       "slug": "grupo-desarrollo"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\GroupResource
+     * @apiResourceModel App\Models\Group
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return GroupResource::collection(Group::paginate(20));
+        $groups = Group::paginate(20);
+        
+        return response()->json([
+            'data' => GroupResource::collection($groups),
+            'meta' => [
+                'current_page' => $groups->currentPage(),
+                'last_page' => $groups->lastPage(),
+                'per_page' => $groups->perPage(),
+                'total' => $groups->total(),
+            ]
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/groups/{id}",
-     *     summary="Get a group by ID",
-     *     tags={"Groups"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Group found"),
-     *     @OA\Response(response=404, description="Group not found")
-     * )
+     * Display the specified group
+     *
+
+     * Obtiene los detalles de un grupo específico por ID.
+     *
+     * @urlParam id integer ID del grupo. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Grupo de Desarrollo",
+     *       "description": "Grupo de desarrolladores de software",
+     *       "slug": "grupo-desarrollo"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Grupo no encontrado"
+     * }
+     *
+     * @apiResourceModel App\Models\Group
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         $group = Group::findOrFail($id);
-        return new GroupResource($group);
+        
+        return response()->json([
+            'data' => new GroupResource($group)
+        ]);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/v1/groups",
-     *     summary="Create a new group (public)",
-     *     tags={"Groups"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name"},
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="description", type="string"),
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Group created"),
-     *     @OA\Response(response=422, description="Validation error")
-     * )
+     * Store a newly created group
+     *
+
+     * Crea un nuevo grupo en el sistema (público).
+     *
+     * @bodyParam name string required Nombre del grupo. Example: Grupo de Desarrollo
+     * @bodyParam description string Descripción del grupo. Example: Grupo de desarrolladores de software
+     * @bodyParam slug string Slug único del grupo. Example: grupo-desarrollo
+     * @bodyParam is_active boolean Si el grupo está activo. Example: true
+     *
+     * @response 201 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Grupo de Desarrollo",
+     *       "description": "Grupo de desarrolladores de software",
+     *       "slug": "grupo-desarrollo"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
+     * @apiResourceModel App\Models\Group
      */
-    public function store(StoreGroupRequest $request)
+    public function store(StoreGroupRequest $request): JsonResponse
     {
-        $group = \App\Models\Group::create($request->validated());
-        return (new GroupResource($group))->response()->setStatusCode(201);
+        $group = Group::create($request->validated());
+        
+        return response()->json([
+            'data' => new GroupResource($group)
+        ], 201);
     }
 }
