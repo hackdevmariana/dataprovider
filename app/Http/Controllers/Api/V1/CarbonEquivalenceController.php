@@ -7,17 +7,51 @@ use App\Http\Resources\V1\CarbonEquivalenceResource;
 use App\Models\CarbonEquivalence;
 use App\Models\CarbonCalculation;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="Carbon Equivalences",
- *     description="API endpoints para calculadora de huella de carbono"
- * )
+ * @group Carbon Equivalences
+ *
+ * APIs para la calculadora de huella de carbono.
+ * Permite consultar equivalencias y calcular impactos ambientales.
  */
 class CarbonEquivalenceController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of carbon equivalences
+     *
+     * Obtiene una lista paginada de equivalencias de carbono.
+     *
+     * @queryParam category string Filtrar por categoría. Example: energy
+     * @queryParam verified boolean Filtrar por equivalencias verificadas. Example: true
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     * @queryParam page int Número de página. Example: 1
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Electricidad",
+     *       "category": "energy",
+     *       "co2_kg_equivalent": 0.5,
+     *       "unit": "kWh"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\CarbonEquivalenceResource
+     * @apiResourceModel App\Models\CarbonEquivalence
+     */
+    public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'category' => 'sometimes|string|max:100',
+            'verified' => 'sometimes|boolean',
+            'per_page' => 'sometimes|integer|min:1|max:100',
+            'page' => 'sometimes|integer|min:1'
+        ]);
+
         $equivalences = CarbonEquivalence::query()
             ->when($request->category, function($query, $category) {
                 return $query->ofCategory($category);
@@ -28,33 +62,172 @@ class CarbonEquivalenceController extends Controller
             ->orderBy('co2_kg_equivalent')
             ->paginate($request->get('per_page', 15));
 
-        return CarbonEquivalenceResource::collection($equivalences);
+        return response()->json([
+            'data' => CarbonEquivalenceResource::collection($equivalences),
+            'meta' => [
+                'current_page' => $equivalences->currentPage(),
+                'last_page' => $equivalences->lastPage(),
+                'per_page' => $equivalences->perPage(),
+                'total' => $equivalences->total(),
+            ]
+        ]);
     }
 
-    public function show(CarbonEquivalence $carbonEquivalence)
+    /**
+     * Display the specified carbon equivalence
+     *
+
+     * Obtiene los detalles de una equivalencia de carbono específica.
+     *
+     * @urlParam carbonEquivalence integer ID de la equivalencia. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Electricidad",
+     *       "category": "energy",
+     *       "co2_kg_equivalent": 0.5,
+     *       "unit": "kWh"
+     *   }
+     * }
+     *
+     * @apiResourceModel App\Models\CarbonEquivalence
+     */
+    public function show(CarbonEquivalence $carbonEquivalence): JsonResponse
     {
-        return new CarbonEquivalenceResource($carbonEquivalence);
+        return response()->json([
+            'data' => new CarbonEquivalenceResource($carbonEquivalence)
+        ]);
     }
 
-    public function energy()
+    /**
+     * Get energy equivalences
+     *
+
+     * Obtiene equivalencias relacionadas con energía.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Electricidad",
+     *       "category": "energy",
+     *       "co2_kg_equivalent": 0.5,
+     *       "unit": "kWh"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\CarbonEquivalenceResource
+     * @apiResourceModel App\Models\CarbonEquivalence
+     */
+    public function energy(Request $request): JsonResponse
     {
+        $request->validate([
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
+        $perPage = min($request->get('per_page', 15), 100);
         $equivalences = CarbonEquivalence::energy()
             ->orderBy('co2_kg_equivalent')
-            ->paginate(15);
+            ->paginate($perPage);
 
-        return CarbonEquivalenceResource::collection($equivalences);
+        return response()->json([
+            'data' => CarbonEquivalenceResource::collection($equivalences),
+            'meta' => [
+                'current_page' => $equivalences->currentPage(),
+                'last_page' => $equivalences->lastPage(),
+                'per_page' => $equivalences->perPage(),
+                'total' => $equivalences->total(),
+            ]
+        ]);
     }
 
-    public function transport()
+    /**
+     * Get transport equivalences
+     *
+
+     * Obtiene equivalencias relacionadas con transporte.
+     *
+     * @queryParam page int Número de página. Example: 1
+     * @queryParam per_page int Cantidad por página (máx 100). Example: 15
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 2,
+     *       "name": "Coche",
+     *       "category": "transport",
+     *       "co2_kg_equivalent": 0.2,
+     *       "unit": "km"
+     *     }
+     *   ],
+     *   "meta": {...}
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\CarbonEquivalenceResource
+     * @apiResourceModel App\Models\CarbonEquivalence
+     */
+    public function transport(Request $request): JsonResponse
     {
+        $request->validate([
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100'
+        ]);
+
+        $perPage = min($request->get('per_page', 15), 100);
         $equivalences = CarbonEquivalence::transport()
             ->orderBy('co2_kg_equivalent')
-            ->paginate(15);
+            ->paginate($perPage);
 
-        return CarbonEquivalenceResource::collection($equivalences);
+        return response()->json([
+            'data' => CarbonEquivalenceResource::collection($equivalences),
+            'meta' => [
+                'current_page' => $equivalences->currentPage(),
+                'last_page' => $equivalences->lastPage(),
+                'per_page' => $equivalences->perPage(),
+                'total' => $equivalences->total(),
+            ]
+        ]);
     }
 
-    public function calculate(Request $request)
+    /**
+     * Calculate carbon footprint
+     *
+
+     * Calcula la huella de carbono basada en una equivalencia.
+     *
+     * @bodyParam equivalence_id integer required ID de la equivalencia. Example: 1
+     * @bodyParam quantity number required Cantidad a calcular. Example: 100
+     * @bodyParam context string Contexto del cálculo. Example: Consumo mensual
+     * @bodyParam save_calculation boolean Si guardar el cálculo. Example: true
+     *
+     * @response 200 {
+     *   "data": {
+     *     "equivalence": {...},
+     *     "quantity": 100,
+     *     "co2_result": 50,
+     *     "impact_level": "medium",
+     *     "compensation_recommendations": {
+     *       "trees_needed": 3,
+     *       "planting_cost_eur": 6
+     *     }
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "Los datos proporcionados no son válidos.",
+     *   "errors": {...}
+     * }
+     *
+     * @authenticated
+     */
+    public function calculate(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'equivalence_id' => 'required|exists:carbon_equivalences,id',
@@ -91,25 +264,51 @@ class CarbonEquivalenceController extends Controller
         ]);
     }
 
-    public function statistics()
+    /**
+     * Get carbon equivalence statistics
+     *
+
+     * Obtiene estadísticas de equivalencias de carbono.
+     *
+     * @response 200 {
+     *   "data": {
+     *     "total_equivalences": 50,
+     *     "verified_equivalences": 45,
+     *     "categories": [
+     *       {
+     *         "category": "energy",
+     *         "count": 20
+     *       }
+     *     ]
+     *   }
+     * }
+     */
+    public function statistics(): JsonResponse
     {
         $stats = [
             'total_equivalences' => CarbonEquivalence::count(),
             'verified_equivalences' => CarbonEquivalence::verified()->count(),
             'categories' => CarbonEquivalence::selectRaw('category, COUNT(*) as count')
                 ->groupBy('category')
-                ->get(),
-            'total_calculations' => CarbonCalculation::count(),
+                ->get()
         ];
 
-        return response()->json(['data' => $stats]);
+        return response()->json([
+            'data' => $stats
+        ]);
     }
 
-    private function getImpactLevel($co2)
+    /**
+     * Get impact level based on CO2 result
+     *
+     * @param float $co2Result
+     * @return string
+     */
+    private function getImpactLevel(float $co2Result): string
     {
-        if ($co2 < 1) return 'bajo';
-        elseif ($co2 < 5) return 'medio';
-        elseif ($co2 < 10) return 'alto';
-        else return 'muy_alto';
+        if ($co2Result < 10) return 'low';
+        if ($co2Result < 50) return 'medium';
+        if ($co2Result < 100) return 'high';
+        return 'very_high';
     }
 }
