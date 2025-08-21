@@ -4,100 +4,150 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\AutonomousCommunity;
-use Illuminate\Http\Request;
 use App\Http\Resources\V1\AutonomousCommunityResource;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * @group Autonomous Communities
+ *
+ * APIs para la gestión de comunidades autónomas.
+ * Permite consultar información de comunidades autónomas, provincias y municipios.
+ */
 class AutonomousCommunityController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/autonomous-communities",
-     *     summary="Obtener listado de comunidades autónomas",
-     *     tags={"Autonomous Communities"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista de comunidades autónomas",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AutonomousCommunity")),
-     *             @OA\Property(property="links", type="object"),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     )
-     * )
+     * Display a listing of autonomous communities
+     *
+     * Obtiene una lista de todas las comunidades autónomas.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Cataluña",
+     *       "slug": "cataluna",
+     *       "ine_code": "09",
+     *       "capital": "Barcelona"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\AutonomousCommunityResource
+     * @apiResourceModel App\Models\AutonomousCommunity
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return AutonomousCommunityResource::collection(AutonomousCommunity::all());
+        $communities = AutonomousCommunity::all();
+        
+        return response()->json([
+            'data' => AutonomousCommunityResource::collection($communities)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/autonomous-communities/{slug}",
-     *     summary="Mostrar detalles de una comunidad autónoma",
-     *     tags={"Autonomous Communities"},
-     *     @OA\Parameter(
-     *         name="slug",
-     *         in="path",
-     *         required=true,
-     *         description="Slug de la comunidad autónoma",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Comunidad autónoma encontrada",
-     *         @OA\JsonContent(ref="#/components/schemas/AutonomousCommunity")
-     *     ),
-     *     @OA\Response(response=404, description="Comunidad autónoma no encontrada")
-     * )
+     * Display the specified autonomous community
+     *
+     * Obtiene los detalles de una comunidad autónoma específica.
+     *
+     * @urlParam slug string Slug de la comunidad autónoma. Example: cataluna
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Cataluña",
+     *     "slug": "cataluna",
+     *     "ine_code": "09",
+     *     "capital": "Barcelona"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Comunidad autónoma no encontrada"
+     * }
+     *
+     * @apiResourceModel App\Models\AutonomousCommunity
      */
-    public function show($slug)
+    public function show($slug): JsonResponse
     {
         $community = AutonomousCommunity::where('slug', $slug)->firstOrFail();
-        return new AutonomousCommunityResource($community);
+        
+        return response()->json([
+            'data' => new AutonomousCommunityResource($community)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/autonomous-communities/with-provinces",
-     *     summary="Obtener comunidades autónomas con sus provincias",
-     *     tags={"Autonomous Communities"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Listado de comunidades autónomas con provincias",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AutonomousCommunityWithProvinces"))
-     *         )
-     *     )
-     * )
+     * Get autonomous communities with provinces
+     *
+     * Obtiene las comunidades autónomas con sus provincias.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Cataluña",
+     *       "slug": "cataluna",
+     *       "provinces": [
+     *         {
+     *           "id": 1,
+     *           "name": "Barcelona",
+     *           "slug": "barcelona"
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\AutonomousCommunityResource
+     * @apiResourceModel App\Models\AutonomousCommunity
      */
-    public function withProvinces()
+    public function withProvinces(): JsonResponse
     {
         $communities = AutonomousCommunity::with('provinces')->get();
-        return AutonomousCommunityResource::collection($communities);
+        
+        return response()->json([
+            'data' => AutonomousCommunityResource::collection($communities)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/autonomous-communities/with-provinces-and-municipalities",
-     *     summary="Obtener comunidades autónomas con provincias y municipios",
-     *     tags={"Autonomous Communities"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Listado de comunidades autónomas con provincias y municipios",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AutonomousCommunityWithProvincesAndMunicipalities"))
-     *         )
-     *     )
-     * )
+     * Get autonomous communities with provinces and municipalities
+     *
+     * Obtiene las comunidades autónomas con provincias y municipios.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Cataluña",
+     *       "slug": "cataluna",
+     *       "provinces": [
+     *         {
+     *           "id": 1,
+     *           "name": "Barcelona",
+     *           "slug": "barcelona",
+     *           "municipalities": [
+     *             {
+     *               "id": 1,
+     *               "name": "Barcelona",
+     *               "slug": "barcelona"
+     *             }
+     *           ]
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\AutonomousCommunityResource
+     * @apiResourceModel App\Models\AutonomousCommunity
      */
-    public function withProvincesAndMunicipalities()
+    public function withProvincesAndMunicipalities(): JsonResponse
     {
         $communities = AutonomousCommunity::with('provinces.municipalities')->get();
-        return AutonomousCommunityResource::collection($communities);
+        
+        return response()->json([
+            'data' => AutonomousCommunityResource::collection($communities)
+        ]);
     }
 }
-
-
