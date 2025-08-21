@@ -6,86 +6,117 @@ use App\Http\Controllers\Controller;
 use App\Models\CalendarHoliday;
 use App\Http\Resources\V1\CalendarHolidayResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Tag(
- *     name="CalendarHolidays",
- *     description="API for managing calendar holidays (festivos)"
- * )
+ * @group Calendar Holidays
+ *
+ * APIs para la gestión de festivos y días festivos del calendario.
+ * Permite consultar información de festivos y días especiales.
  */
 class CalendarHolidayController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/v1/calendar-holidays",
-     *     summary="Get all calendar holidays",
-     *     tags={"CalendarHolidays"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of calendar holidays",
-     *         @OA\JsonContent(type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/CalendarHoliday"))
-     *         )
-     *     )
-     * )
+     * Display a listing of calendar holidays
+     *
+     * Obtiene una lista de todos los festivos del calendario.
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Navidad",
+     *       "slug": "navidad",
+     *       "description": "Celebración de la Navidad",
+     *       "date": "2024-12-25",
+     *       "type": "national"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\CalendarHolidayResource
+     * @apiResourceModel App\Models\CalendarHoliday
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return CalendarHolidayResource::collection(CalendarHoliday::all());
+        $holidays = CalendarHoliday::all();
+        
+        return response()->json([
+            'data' => CalendarHolidayResource::collection($holidays)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/calendar-holidays/{idOrSlug}",
-     *     summary="Get calendar holiday by ID or slug",
-     *     tags={"CalendarHolidays"},
-     *     @OA\Parameter(
-     *         name="idOrSlug",
-     *         in="path",
-     *         required=true,
-     *         description="ID or slug of the holiday",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Holiday found",
-     *         @OA\JsonContent(ref="#/components/schemas/CalendarHoliday")
-     *     ),
-     *     @OA\Response(response=404, description="Holiday not found")
-     * )
+     * Display the specified calendar holiday
+     *
+
+     * Obtiene los detalles de un festivo específico por ID o slug.
+     *
+     * @urlParam idOrSlug integer|string ID o slug del festivo. Example: 1
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *       "name": "Navidad",
+     *       "slug": "navidad",
+     *       "description": "Celebración de la Navidad",
+     *       "date": "2024-12-25",
+     *       "type": "national"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "message": "Festivo no encontrado"
+     * }
+     *
+     * @apiResourceModel App\Models\CalendarHoliday
      */
-    public function show($idOrSlug)
+    public function show($idOrSlug): JsonResponse
     {
         $holiday = CalendarHoliday::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
-        return new CalendarHolidayResource($holiday);
+        
+        return response()->json([
+            'data' => new CalendarHolidayResource($holiday)
+        ]);
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/v1/calendar-holidays/date/{date}",
-     *     summary="Get holidays by date (YYYY-MM-DD)",
-     *     tags={"CalendarHolidays"},
-     *     @OA\Parameter(
-     *         name="date",
-     *         in="path",
-     *         required=true,
-     *         description="Date in YYYY-MM-DD format",
-     *         @OA\Schema(type="string", example="2024-12-25")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Holidays for the given date",
-     *         @OA\JsonContent(type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/CalendarHoliday"))
-     *         )
-     *     )
-     * )
+     * Get holidays by date
+     *
+
+     * Obtiene festivos para una fecha específica (formato YYYY-MM-DD).
+     *
+     * @urlParam date string Fecha en formato YYYY-MM-DD. Example: 2024-12-25
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Navidad",
+     *       "slug": "navidad",
+     *       "description": "Celebración de la Navidad",
+     *       "date": "2024-12-25",
+     *       "type": "national"
+     *     }
+     *   ]
+     * }
+     *
+     * @apiResourceCollection App\Http\Resources\V1\CalendarHolidayResource
+     * @apiResourceModel App\Models\CalendarHoliday
      */
-    public function byDate($date)
+    public function byDate($date): JsonResponse
     {
+        $request = new Request();
+        $request->validate([
+            'date' => 'required|date_format:Y-m-d'
+        ]);
+
         $holidays = CalendarHoliday::where('date', $date)->get();
-        return CalendarHolidayResource::collection($holidays);
+        
+        return response()->json([
+            'data' => CalendarHolidayResource::collection($holidays)
+        ]);
     }
 }
