@@ -16,7 +16,7 @@ class ProjectInvestmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
 
-    protected static ?string $navigationGroup = 'Proyectos';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Inversión';
 

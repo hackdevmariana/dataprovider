@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PriceUnitResource extends Resource
 {
     protected static ?string $model = PriceUnit::class;
-    protected static ?string $navigationGroup = 'Mercado energético';
+    protected static ?string $navigationGroup = 'Energy & Environment';
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
     public static function form(Form $form): Form

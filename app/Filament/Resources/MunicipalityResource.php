@@ -25,7 +25,7 @@ class MunicipalityResource extends Resource
     protected static ?string $model = Municipality::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
-    protected static ?string $navigationGroup = 'Lugares';
+    protected static ?string $navigationGroup = 'Locations';
 
     public static function form(Form $form): Form
     {

@@ -23,7 +23,7 @@ class ElectricityPriceIntervalResource extends Resource
     protected static ?string $model = ElectricityPriceInterval::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationGroup = 'Mercado energético';
+    protected static ?string $navigationGroup = 'Energy & Environment';
 
     public static function form(Form $form): Form
     {

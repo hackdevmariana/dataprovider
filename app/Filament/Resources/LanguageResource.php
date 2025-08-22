@@ -22,7 +22,7 @@ class LanguageResource extends Resource
     protected static ?string $model = Language::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-language';
-    protected static ?string $navigationGroup = 'Lugares';
+    protected static ?string $navigationGroup = 'Locations';
 
 
     public static function form(Form $form): Form

@@ -16,7 +16,7 @@ class UserBookmarkResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Marcador';
 

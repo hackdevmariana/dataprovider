@@ -22,7 +22,7 @@ class RegionResource extends Resource
 
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
-    protected static ?string $navigationGroup = 'Lugares';
+    protected static ?string $navigationGroup = 'Locations';
 
     public static function form(Form $form): Form
     {

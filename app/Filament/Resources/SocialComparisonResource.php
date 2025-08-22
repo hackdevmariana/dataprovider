@@ -16,7 +16,7 @@ class SocialComparisonResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Comparación Social';
 

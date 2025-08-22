@@ -16,7 +16,7 @@ class ProjectUpdateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static ?string $navigationGroup = 'Proyectos';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Actualización';
 

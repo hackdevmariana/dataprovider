@@ -23,7 +23,7 @@ class OrganizationResource extends Resource
     protected static ?string $model = Organization::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'Sociedades';
+    protected static ?string $navigationGroup = 'People & Organizations';
     protected static ?string $navigationLabel = 'Organizations';
     protected static ?string $pluralModelLabel = 'Organizations';
     protected static ?string $modelLabel = 'Organization';

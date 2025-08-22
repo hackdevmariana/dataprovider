@@ -20,7 +20,7 @@ class LinkResource extends Resource
     protected static ?string $model = Link::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
-    protected static ?string $navigationGroup = 'General';
+    protected static ?string $navigationGroup = 'General & Stats';
     public static function form(Form $form): Form
     {
         return $form->schema([

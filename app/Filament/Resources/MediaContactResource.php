@@ -17,7 +17,7 @@ class MediaContactResource extends Resource
 {
     protected static ?string $model = MediaContact::class;
 
-    protected static ?string $navigationGroup = 'Noticias y medios';
+    protected static ?string $navigationGroup = 'Content & Media';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
     protected static ?string $label = 'Contacto del medio de comunicación';
     protected static ?string $pluralLabel = 'Contactos del medio de comunicación';

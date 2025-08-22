@@ -16,7 +16,7 @@ class TopicMembershipResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationGroup = 'Comunidades';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Membresía';
 

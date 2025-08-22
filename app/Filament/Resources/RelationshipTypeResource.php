@@ -23,7 +23,7 @@ class RelationshipTypeResource extends Resource
     protected static ?string $model = RelationshipType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
-    protected static ?string $navigationGroup = 'Personas';
+    protected static ?string $navigationGroup = 'People & Organizations';
 
     protected static ?int $navigationSort = 10;
     public static function form(Form $form): Form

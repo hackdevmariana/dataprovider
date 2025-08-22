@@ -18,7 +18,7 @@ class UserSubscriptionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Monetización';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Suscripción de Usuario';
 

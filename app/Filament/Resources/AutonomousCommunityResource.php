@@ -23,7 +23,7 @@ class AutonomousCommunityResource extends Resource
     protected static ?string $model = AutonomousCommunity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
-    protected static ?string $navigationGroup = 'Lugares';
+    protected static ?string $navigationGroup = 'Locations';
 
     public static function form(Form $form): Form
     {

@@ -16,7 +16,7 @@ class CooperativePostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Post de Cooperativa';
 

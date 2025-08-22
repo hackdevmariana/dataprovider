@@ -18,7 +18,7 @@ class ConsultationServiceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationGroup = 'Monetización';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Servicio de Consultoría';
 

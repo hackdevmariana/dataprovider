@@ -19,7 +19,7 @@ class UserGeneratedContentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     
-    protected static ?string $navigationGroup = 'Contenido';
+    protected static ?string $navigationGroup = 'Content & Media';
     
     protected static ?int $navigationSort = 1;
     

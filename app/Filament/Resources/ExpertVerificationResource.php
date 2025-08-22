@@ -18,7 +18,7 @@ class ExpertVerificationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Verificación de Experto';
 

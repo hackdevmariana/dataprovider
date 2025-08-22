@@ -16,7 +16,7 @@ class ProjectProposalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
 
-    protected static ?string $navigationGroup = 'Proyectos';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Propuesta de Proyecto';
 

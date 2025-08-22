@@ -19,7 +19,7 @@ class CalendarHolidayLocationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
     
-    protected static ?string $navigationGroup = 'Calendario';
+    protected static ?string $navigationGroup = 'Events & Calendar';
     
     protected static ?int $navigationSort = 2;
     

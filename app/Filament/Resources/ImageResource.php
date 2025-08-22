@@ -18,7 +18,7 @@ class ImageResource extends Resource
     protected static ?string $model = Image::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
-    protected static ?string $navigationGroup = 'General';
+    protected static ?string $navigationGroup = 'General & Stats';
     protected static ?string $label = 'Image';
     protected static ?string $pluralLabel = 'Images';
     public static function form(Form $form): Form

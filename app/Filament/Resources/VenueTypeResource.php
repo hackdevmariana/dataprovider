@@ -18,7 +18,7 @@ class VenueTypeResource extends Resource
     protected static ?string $model = VenueType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Calendario y eventos';
+    protected static ?string $navigationGroup = 'Events & Calendar';
 
 
     protected static ?string $label = 'Venue Type';

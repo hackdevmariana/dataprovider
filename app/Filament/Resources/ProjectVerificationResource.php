@@ -18,7 +18,7 @@ class ProjectVerificationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $navigationGroup = 'Monetización';
+    protected static ?string $navigationGroup = 'Projects & Monetization';
 
     protected static ?string $modelLabel = 'Verificación de Proyecto';
 

@@ -16,7 +16,7 @@ class TopicPostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Comunidades';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Post del Tema';
 

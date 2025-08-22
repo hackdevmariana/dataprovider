@@ -18,7 +18,7 @@ class AwardWinnerResource extends Resource
     protected static ?string $model = AwardWinner::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $navigationGroup = 'Personas';
+    protected static ?string $navigationGroup = 'People & Organizations';
 
 
 

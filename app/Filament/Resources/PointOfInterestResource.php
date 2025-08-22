@@ -25,7 +25,7 @@ class PointOfInterestResource extends Resource
     protected static ?string $model = PointOfInterest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
-    protected static ?string $navigationGroup = 'Lugares';
+    protected static ?string $navigationGroup = 'Locations';
 
 
     public static function form(Form $form): Form

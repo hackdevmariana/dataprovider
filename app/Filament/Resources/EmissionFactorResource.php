@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class EmissionFactorResource extends Resource
 {
     protected static ?string $model = EmissionFactor::class;
-    protected static ?string $navigationGroup = 'Economía medioambiental';
+    protected static ?string $navigationGroup = 'Energy & Environment';
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     public static function form(Form $form): Form

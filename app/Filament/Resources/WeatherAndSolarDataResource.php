@@ -19,7 +19,7 @@ class WeatherAndSolarDataResource extends Resource
     protected static ?string $model = WeatherAndSolarData::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sun';
-    protected static ?string $navigationGroup = 'Economía medioambiental';
+    protected static ?string $navigationGroup = 'Energy & Environment';
     protected static ?string $label = 'Dato Meteorológico y Solar';
     protected static ?string $pluralLabel = 'Datos Meteorológicos y Solares';
     public static function form(Form $form): Form

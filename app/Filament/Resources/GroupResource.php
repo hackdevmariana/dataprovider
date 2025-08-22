@@ -20,7 +20,7 @@ class GroupResource extends Resource
     protected static ?string $model = Group::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
-    protected static ?string $navigationGroup = 'Calendario y eventos';
+    protected static ?string $navigationGroup = 'Events & Calendar';
 
 
 

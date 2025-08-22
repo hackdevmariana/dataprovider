@@ -16,7 +16,7 @@ class TopicFollowingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Seguimiento de Tema';
 

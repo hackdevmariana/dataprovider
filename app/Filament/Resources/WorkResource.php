@@ -18,7 +18,7 @@ class WorkResource extends Resource
     protected static ?string $model = Work::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Personas';
+    protected static ?string $navigationGroup = 'People & Organizations';
     protected static ?string $label = 'Work';
     protected static ?string $pluralLabel = 'Works';
 

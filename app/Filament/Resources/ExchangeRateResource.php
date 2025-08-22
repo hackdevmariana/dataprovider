@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ExchangeRateResource extends Resource
 {
     protected static ?string $model = ExchangeRate::class;
-    protected static ?string $navigationGroup = 'Mercado energético';
+    protected static ?string $navigationGroup = 'Energy & Environment';
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 

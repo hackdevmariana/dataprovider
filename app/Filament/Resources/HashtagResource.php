@@ -16,7 +16,7 @@ class HashtagResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-hashtag';
 
-    protected static ?string $navigationGroup = 'Sistema Social';
+    protected static ?string $navigationGroup = 'Social System';
 
     protected static ?string $modelLabel = 'Hashtag';
 
