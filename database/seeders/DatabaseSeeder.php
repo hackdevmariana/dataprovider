@@ -74,6 +74,7 @@ class DatabaseSeeder extends Seeder
             
             // Sustainability data
             CarbonEquivalenceSeeder::class,
+            CarbonCalculationSeeder::class,
             PlantSpeciesSeeder::class,
             WeatherAndSolarDataSeeder::class,
             
