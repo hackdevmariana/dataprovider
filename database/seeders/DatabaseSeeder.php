@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             PersonSeeder::class,
             FamilyMemberSeeder::class,
             AliasSeeder::class,
+            AppearanceSeeder::class,
             
             // Cultural and artistic data
             ArtistSeeder::class,
