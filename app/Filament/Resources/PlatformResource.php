@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PlatformResource extends Resource
 {
+    protected static ?string $navigationGroup = 'General & Stats';
     protected static ?string $model = Platform::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

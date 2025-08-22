@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserListResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Admin';
     protected static ?string $model = UserList::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

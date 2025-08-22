@@ -19,7 +19,7 @@ class CurrencyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     
-    protected static ?string $navigationGroup = 'Configuración';
+    protected static ?string $navigationGroup = 'General & Stats';
     
     protected static ?int $navigationSort = 2;
     

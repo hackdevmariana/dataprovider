@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RoofMarketplaceResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Projects & Monetization';
     protected static ?string $model = RoofMarketplace::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CarbonSavingRequestResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Energy & Environment';
     protected static ?string $model = CarbonSavingRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

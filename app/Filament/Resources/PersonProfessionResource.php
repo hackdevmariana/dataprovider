@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PersonProfessionResource extends Resource
 {
+    protected static ?string $navigationGroup = 'People & Organizations';
     protected static ?string $model = PersonProfession::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

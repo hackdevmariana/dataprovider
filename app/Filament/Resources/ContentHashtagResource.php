@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ContentHashtagResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Content & Media';
     protected static ?string $model = ContentHashtag::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

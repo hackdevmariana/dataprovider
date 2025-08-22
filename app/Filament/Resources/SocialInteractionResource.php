@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SocialInteractionResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Social System';
     protected static ?string $model = SocialInteraction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
