@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // Core system data
             RolesAndAdminSeeder::class,
+            UserRolesSeeder::class,
             AppSettingSeeder::class,
             
             // Reference data - Geographic

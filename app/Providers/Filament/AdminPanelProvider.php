@@ -60,17 +60,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Admin',
-                'General',
-                'Usuarios',
-                'Contenido',
-                'Identidad visual',
-                'Personas',
-                'Lugares',
-                'Calendario y eventos',
-                'Noticias y medios',
-                'Sociedades',
-                'Mercado energético',
-                'Economía medioambiental',
-            ]);;
+                'People & Organizations',
+                'Energy & Environment',
+                'Content & Media',
+                'Events & Calendar',
+                'Locations',
+                'Projects & Monetization',
+                'Social System',
+                'General & Stats',
+            ]);
     }
 }

@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
 
 class UserResource extends Resource
 {
@@ -58,6 +59,16 @@ class UserResource extends Resource
                             ->label('2FA Confirmado')
                             ->nullable(),
                     ])->columns(2),
+                    
+                Forms\Components\Section::make('Roles y Permisos')
+                    ->schema([
+                        Forms\Components\Select::make('roles')
+                            ->label('Roles')
+                            ->multiple()
+                            ->relationship('roles', 'name')
+                            ->preload()
+                            ->searchable(),
+                    ])->columns(1),
             ]);
     }
 
@@ -65,6 +76,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable()
@@ -73,6 +87,11 @@ class UserResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Roles')
+                    ->badge()
+                    ->separator(',')
+                    ->color('success'),
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('Email Verificado')
                     ->boolean()
@@ -101,17 +120,55 @@ class UserResource extends Resource
                 Tables\Filters\Filter::make('two_factor_enabled')
                     ->label('2FA activo')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('two_factor_confirmed_at')),
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('assign_role')
+                    ->label('Asignar Rol')
+                    ->icon('heroicon-o-user-plus')
+                    ->form([
+                        Forms\Components\Select::make('role')
+                            ->label('Rol')
+                            ->options(\Spatie\Permission\Models\Role::pluck('name', 'id'))
+                            ->required(),
+                    ])
+                    ->action(function (User $user, array $data): void {
+                        $user->assignRole($data['role']);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Rol asignado correctamente')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('assign_role_bulk')
+                        ->label('Asignar Rol')
+                        ->icon('heroicon-o-user-plus')
+                        ->form([
+                            Forms\Components\Select::make('role')
+                                ->label('Rol')
+                                ->options(\Spatie\Permission\Models\Role::pluck('name', 'id'))
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $records->each(fn (User $user) => $user->assignRole($data['role']));
+                            \Filament\Notifications\Notification::make()
+                                ->title('Rol asignado a ' . $records->count() . ' usuarios')
+                                ->success()
+                                ->send();
+                        }),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('roles'));
     }
 
     public static function getRelations(): array
