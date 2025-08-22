@@ -80,6 +80,7 @@ class DatabaseSeeder extends Seeder
             UserDeviceSeeder::class,
             NotificationSettingSeeder::class,
             StatSeeder::class,
+            ApiKeySeeder::class,
             
             // Visual identity and branding data
             ColorSeeder::class,
