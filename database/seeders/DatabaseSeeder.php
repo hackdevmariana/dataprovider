@@ -82,6 +82,7 @@ class DatabaseSeeder extends Seeder
             MediaOutletSeeder::class,
             MediaContactSeeder::class,
             ScrapingSourceSeeder::class,
+            ContentHashtagSeeder::class,
             
             // Technology and analytics data
             UserDeviceSeeder::class,
