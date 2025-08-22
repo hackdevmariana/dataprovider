@@ -16,4 +16,18 @@ class ListCarbonCalculations extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            // Se pueden agregar widgets de estadísticas aquí en el futuro
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            // Se pueden agregar widgets de resumen aquí en el futuro
+        ];
+    }
 }
