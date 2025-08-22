@@ -87,6 +87,7 @@ class DatabaseSeeder extends Seeder
             ColorSeeder::class,
             FontSeeder::class,
             VisualIdentitySeeder::class,
+            TagGroupSeeder::class,
             
             // Gamification data
             AchievementSeeder::class,
