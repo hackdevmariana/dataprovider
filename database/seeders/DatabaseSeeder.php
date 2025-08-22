@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
             // Reference data - People
             ProfessionSeeder::class,
             PersonSeeder::class,
+            RelationshipTypeSeeder::class,
             FamilyMemberSeeder::class,
             AliasSeeder::class,
             AppearanceSeeder::class,
