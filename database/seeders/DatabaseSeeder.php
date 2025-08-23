@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
             CarbonCalculationSeeder::class,
             CarbonSavingRequestSeeder::class,
             CarbonSavingLogSeeder::class,
+            EmissionFactorSeeder::class,
             PlantSpeciesSeeder::class,
             WeatherAndSolarDataSeeder::class,
             
