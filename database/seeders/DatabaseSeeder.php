@@ -60,6 +60,7 @@ class DatabaseSeeder extends Seeder
             AwardSeeder::class,
             AnniversarySeeder::class,
             CalendarHolidaySeeder::class,
+            CatholicSaintSeeder::class,
             
             // Energy sector data
             EnergyCompanySeeder::class,

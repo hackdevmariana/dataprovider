@@ -351,6 +351,6 @@ class CatholicSaint extends Model
      */
     public function getDaysUntilNextFeastAttribute(): int
     {
-        return Carbon::today()->diffInDays($this->next_feast_date, false);
+        return (int) Carbon::today()->diffInDays($this->next_feast_date, false);
     }
 }
