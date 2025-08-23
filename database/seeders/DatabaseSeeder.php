@@ -96,6 +96,9 @@ class DatabaseSeeder extends Seeder
             StatSeeder::class,
             ApiKeySeeder::class,
             
+            // Reputation and gamification data
+            ReputationTransactionSeeder::class,
+            
             // Visual identity and branding data
             ColorSeeder::class,
             FontSeeder::class,
