@@ -19,4 +19,9 @@ class CalendarHoliday extends Model
     {
         return $this->hasMany(CalendarHolidayLocation::class);
     }
+
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class);
+    }
 }

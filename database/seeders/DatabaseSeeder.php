@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             AwardSeeder::class,
             AnniversarySeeder::class,
+            CalendarHolidaySeeder::class,
             
             // Energy sector data
             EnergyCompanySeeder::class,
