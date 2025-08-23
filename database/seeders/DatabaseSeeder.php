@@ -72,6 +72,7 @@ class DatabaseSeeder extends Seeder
             ElectricityPriceIntervalSeeder::class,
             ElectricityOfferSeeder::class,
             EnergyInstallationSeeder::class,
+            EnergyTransactionSeeder::class,
             CooperativeSeeder::class,
             ExchangeRateSeeder::class,
             
