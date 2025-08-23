@@ -2,69 +2,560 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\PlantSpecies;
+use App\Models\Region;
+use Illuminate\Support\Str;
 
 class PlantSpeciesSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        // Árboles autóctonos españoles
-        $treesData = [
-            ['name' => 'Encina', 'scientific_name' => 'Quercus ilex', 'family' => 'Fagaceae', 
-             'co2_absorption_kg_per_year' => 22.5, 'plant_type' => 'tree', 'size_category' => 'large', 
-             'height_min' => 8, 'height_max' => 25, 'drought_resistant' => true, 'is_endemic' => true, 
-             'suitable_for_reforestation' => true, 'provides_timber' => true, 'planting_cost_eur' => 8],
-            ['name' => 'Roble común', 'scientific_name' => 'Quercus robur', 'family' => 'Fagaceae',
-             'co2_absorption_kg_per_year' => 28.0, 'plant_type' => 'tree', 'size_category' => 'large',
-             'height_min' => 15, 'height_max' => 40, 'frost_resistant' => true, 'is_endemic' => true,
-             'suitable_for_reforestation' => true, 'provides_timber' => true, 'planting_cost_eur' => 12],
-            ['name' => 'Pino marítimo', 'scientific_name' => 'Pinus pinaster', 'family' => 'Pinaceae',
-             'co2_absorption_kg_per_year' => 30.0, 'plant_type' => 'conifer', 'size_category' => 'large',
-             'height_min' => 20, 'height_max' => 35, 'drought_resistant' => true, 'is_endemic' => true,
-             'suitable_for_reforestation' => true, 'provides_timber' => true, 'planting_cost_eur' => 6],
-            ['name' => 'Olivo', 'scientific_name' => 'Olea europaea', 'family' => 'Oleaceae',
-             'co2_absorption_kg_per_year' => 12.0, 'plant_type' => 'tree', 'size_category' => 'medium',
-             'height_min' => 4, 'height_max' => 12, 'drought_resistant' => true, 'provides_food' => true,
-             'suitable_for_urban' => true, 'planting_cost_eur' => 25],
+        $this->command->info('🌱 Sembrando especies vegetales autóctonas españolas...');
+
+        // Obtener regiones disponibles para asignar especies nativas
+        $regions = Region::take(10)->get();
+        $defaultRegion = $regions->first();
+
+        $plantSpecies = [
+            // ===== ÁRBOLES AUTÓCTONOS =====
+            [
+                'name' => 'Encina',
+                'scientific_name' => 'Quercus ilex',
+                'family' => 'Fagaceae',
+                'co2_absorption_kg_per_year' => 22.5,
+                'plant_type' => 'tree',
+                'size_category' => 'large',
+                'height_min' => 8.0,
+                'height_max' => 25.0,
+                'lifespan_years' => 800,
+                'growth_rate_cm_year' => 25,
+                'climate_zones' => ['mediterráneo', 'continental'],
+                'soil_types' => 'Suelos calcáreos, arcillosos, bien drenados',
+                'water_needs_mm_year' => 450.0,
+                'drought_resistant' => true,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => true,
+                'medicinal_use' => false,
+                'planting_cost_eur' => 8.50,
+                'maintenance_cost_eur_year' => 1.20,
+                'survival_rate_percent' => 90,
+                'description' => 'Árbol emblemático de la península ibérica, muy resistente a la sequía y adaptado al clima mediterráneo. Sus bellotas son alimento fundamental para la fauna silvestre.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Roble común',
+                'scientific_name' => 'Quercus robur',
+                'family' => 'Fagaceae',
+                'co2_absorption_kg_per_year' => 28.0,
+                'plant_type' => 'tree',
+                'size_category' => 'giant',
+                'height_min' => 15.0,
+                'height_max' => 40.0,
+                'lifespan_years' => 1000,
+                'growth_rate_cm_year' => 30,
+                'climate_zones' => ['atlántico', 'continental'],
+                'soil_types' => 'Suelos profundos, húmedos, ricos en materia orgánica',
+                'water_needs_mm_year' => 800.0,
+                'drought_resistant' => false,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => true,
+                'medicinal_use' => false,
+                'planting_cost_eur' => 12.00,
+                'maintenance_cost_eur_year' => 1.80,
+                'survival_rate_percent' => 85,
+                'description' => 'Roble majestuoso de las zonas húmedas del norte de España, muy valorado por su madera noble y su longevidad excepcional.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Pino marítimo',
+                'scientific_name' => 'Pinus pinaster',
+                'family' => 'Pinaceae',
+                'co2_absorption_kg_per_year' => 30.0,
+                'plant_type' => 'conifer',
+                'size_category' => 'large',
+                'height_min' => 20.0,
+                'height_max' => 35.0,
+                'lifespan_years' => 300,
+                'growth_rate_cm_year' => 40,
+                'climate_zones' => ['mediterráneo', 'atlántico'],
+                'soil_types' => 'Suelos arenosos, ácidos, bien drenados',
+                'water_needs_mm_year' => 600.0,
+                'drought_resistant' => true,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño-Invierno',
+                'provides_food' => false,
+                'provides_timber' => true,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 6.00,
+                'maintenance_cost_eur_year' => 0.80,
+                'survival_rate_percent' => 95,
+                'description' => 'Pino autóctono muy resistente, ideal para reforestación en suelos pobres. Su resina tiene propiedades medicinales.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Olivo',
+                'scientific_name' => 'Olea europaea',
+                'family' => 'Oleaceae',
+                'co2_absorption_kg_per_year' => 12.0,
+                'plant_type' => 'tree',
+                'size_category' => 'medium',
+                'height_min' => 4.0,
+                'height_max' => 12.0,
+                'lifespan_years' => 2000,
+                'growth_rate_cm_year' => 15,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos calcáreos, arcillosos, bien drenados',
+                'water_needs_mm_year' => 300.0,
+                'drought_resistant' => true,
+                'frost_resistant' => false,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 25.00,
+                'maintenance_cost_eur_year' => 3.50,
+                'survival_rate_percent' => 98,
+                'description' => 'Árbol milenario símbolo de la cultura mediterránea, muy resistente a la sequía y de gran valor económico y cultural.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Alcornoque',
+                'scientific_name' => 'Quercus suber',
+                'family' => 'Fagaceae',
+                'co2_absorption_kg_per_year' => 18.5,
+                'plant_type' => 'tree',
+                'size_category' => 'large',
+                'height_min' => 10.0,
+                'height_max' => 20.0,
+                'lifespan_years' => 500,
+                'growth_rate_cm_year' => 20,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos ácidos, arenosos, bien drenados',
+                'water_needs_mm_year' => 500.0,
+                'drought_resistant' => true,
+                'frost_resistant' => false,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => false,
+                'medicinal_use' => false,
+                'planting_cost_eur' => 15.00,
+                'maintenance_cost_eur_year' => 2.00,
+                'survival_rate_percent' => 88,
+                'description' => 'Árbol emblemático del suroeste peninsular, productor de corcho y bellotas dulces para la ganadería.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Haya',
+                'scientific_name' => 'Fagus sylvatica',
+                'family' => 'Fagaceae',
+                'co2_absorption_kg_per_year' => 32.0,
+                'plant_type' => 'tree',
+                'size_category' => 'giant',
+                'height_min' => 20.0,
+                'height_max' => 45.0,
+                'lifespan_years' => 400,
+                'growth_rate_cm_year' => 35,
+                'climate_zones' => ['atlántico', 'continental'],
+                'soil_types' => 'Suelos frescos, húmedos, ricos en materia orgánica',
+                'water_needs_mm_year' => 1000.0,
+                'drought_resistant' => false,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => true,
+                'medicinal_use' => false,
+                'planting_cost_eur' => 18.00,
+                'maintenance_cost_eur_year' => 2.50,
+                'survival_rate_percent' => 80,
+                'description' => 'Árbol majestuoso de los bosques húmedos del norte, muy valorado por su madera y su belleza paisajística.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+
+            // ===== ARBUSTOS AUTÓCTONOS =====
+            [
+                'name' => 'Romero',
+                'scientific_name' => 'Rosmarinus officinalis',
+                'family' => 'Lamiaceae',
+                'co2_absorption_kg_per_year' => 3.5,
+                'plant_type' => 'shrub',
+                'size_category' => 'small',
+                'height_min' => 0.5,
+                'height_max' => 2.0,
+                'lifespan_years' => 30,
+                'growth_rate_cm_year' => 15,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos calcáreos, pedregosos, bien drenados',
+                'water_needs_mm_year' => 200.0,
+                'drought_resistant' => true,
+                'frost_resistant' => false,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Todo el año',
+                'fruit_season' => 'Verano',
+                'provides_food' => true,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 2.50,
+                'maintenance_cost_eur_year' => 0.50,
+                'survival_rate_percent' => 95,
+                'description' => 'Arbusto aromático muy resistente a la sequía, de gran valor medicinal y culinario.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Lavanda',
+                'scientific_name' => 'Lavandula angustifolia',
+                'family' => 'Lamiaceae',
+                'co2_absorption_kg_per_year' => 2.8,
+                'plant_type' => 'shrub',
+                'size_category' => 'small',
+                'height_min' => 0.3,
+                'height_max' => 1.0,
+                'lifespan_years' => 15,
+                'growth_rate_cm_year' => 10,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos calcáreos, pedregosos, bien drenados',
+                'water_needs_mm_year' => 150.0,
+                'drought_resistant' => true,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Verano',
+                'fruit_season' => 'Otoño',
+                'provides_food' => false,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 3.00,
+                'maintenance_cost_eur_year' => 0.80,
+                'survival_rate_percent' => 90,
+                'description' => 'Planta aromática muy apreciada por sus propiedades medicinales y su belleza ornamental.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Jara',
+                'scientific_name' => 'Cistus ladanifer',
+                'family' => 'Cistaceae',
+                'co2_absorption_kg_per_year' => 4.2,
+                'plant_type' => 'shrub',
+                'size_category' => 'medium',
+                'height_min' => 1.0,
+                'height_max' => 3.0,
+                'lifespan_years' => 25,
+                'growth_rate_cm_year' => 20,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos ácidos, pedregosos, pobres',
+                'water_needs_mm_year' => 180.0,
+                'drought_resistant' => true,
+                'frost_resistant' => false,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => false,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Verano',
+                'provides_food' => false,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 1.50,
+                'maintenance_cost_eur_year' => 0.30,
+                'survival_rate_percent' => 92,
+                'description' => 'Arbusto pionero muy resistente, ideal para la recuperación de suelos degradados.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Brezo',
+                'scientific_name' => 'Calluna vulgaris',
+                'family' => 'Ericaceae',
+                'co2_absorption_kg_per_year' => 1.8,
+                'plant_type' => 'shrub',
+                'size_category' => 'small',
+                'height_min' => 0.2,
+                'height_max' => 0.8,
+                'lifespan_years' => 20,
+                'growth_rate_cm_year' => 8,
+                'climate_zones' => ['atlántico', 'continental'],
+                'soil_types' => 'Suelos ácidos, pobres, húmedos',
+                'water_needs_mm_year' => 400.0,
+                'drought_resistant' => false,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Verano-Otoño',
+                'fruit_season' => 'Otoño',
+                'provides_food' => false,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 1.00,
+                'maintenance_cost_eur_year' => 0.20,
+                'survival_rate_percent' => 88,
+                'description' => 'Planta característica de los brezales atlánticos, muy resistente al frío y la humedad.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+
+            // ===== HIERBAS Y GRAMÍNEAS =====
+            [
+                'name' => 'Tomillo',
+                'scientific_name' => 'Thymus vulgaris',
+                'family' => 'Lamiaceae',
+                'co2_absorption_kg_per_year' => 1.2,
+                'plant_type' => 'herb',
+                'size_category' => 'small',
+                'height_min' => 0.1,
+                'height_max' => 0.4,
+                'lifespan_years' => 8,
+                'growth_rate_cm_year' => 5,
+                'climate_zones' => ['mediterráneo'],
+                'soil_types' => 'Suelos calcáreos, pedregosos, bien drenados',
+                'water_needs_mm_year' => 100.0,
+                'drought_resistant' => true,
+                'frost_resistant' => false,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera-Verano',
+                'fruit_season' => 'Verano',
+                'provides_food' => true,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 1.50,
+                'maintenance_cost_eur_year' => 0.40,
+                'survival_rate_percent' => 85,
+                'description' => 'Hierba aromática muy resistente a la sequía, de gran valor culinario y medicinal.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Orégano',
+                'scientific_name' => 'Origanum vulgare',
+                'family' => 'Lamiaceae',
+                'co2_absorption_kg_per_year' => 1.5,
+                'plant_type' => 'herb',
+                'size_category' => 'small',
+                'height_min' => 0.2,
+                'height_max' => 0.6,
+                'lifespan_years' => 10,
+                'growth_rate_cm_year' => 8,
+                'climate_zones' => ['mediterráneo', 'continental'],
+                'soil_types' => 'Suelos calcáreos, pedregosos, bien drenados',
+                'water_needs_mm_year' => 120.0,
+                'drought_resistant' => true,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => false,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Verano',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => false,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 1.80,
+                'maintenance_cost_eur_year' => 0.50,
+                'survival_rate_percent' => 90,
+                'description' => 'Hierba aromática muy versátil, resistente y de múltiples usos culinarios y medicinales.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+
+            // ===== ESPECIES ESPECIALES =====
+            [
+                'name' => 'Tejo',
+                'scientific_name' => 'Taxus baccata',
+                'family' => 'Taxaceae',
+                'co2_absorption_kg_per_year' => 15.0,
+                'plant_type' => 'conifer',
+                'size_category' => 'medium',
+                'height_min' => 5.0,
+                'height_max' => 15.0,
+                'lifespan_years' => 2000,
+                'growth_rate_cm_year' => 10,
+                'climate_zones' => ['atlántico', 'continental'],
+                'soil_types' => 'Suelos frescos, húmedos, ricos en materia orgánica',
+                'water_needs_mm_year' => 600.0,
+                'drought_resistant' => false,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Primavera',
+                'fruit_season' => 'Otoño',
+                'provides_food' => false,
+                'provides_timber' => true,
+                'medicinal_use' => true,
+                'planting_cost_eur' => 35.00,
+                'maintenance_cost_eur_year' => 4.00,
+                'survival_rate_percent' => 75,
+                'description' => 'Árbol sagrado de los celtas, muy longevo y de madera muy valorada. Especie protegida en muchas regiones.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
+            [
+                'name' => 'Castaño',
+                'scientific_name' => 'Castanea sativa',
+                'family' => 'Fagaceae',
+                'co2_absorption_kg_per_year' => 25.0,
+                'plant_type' => 'tree',
+                'size_category' => 'large',
+                'height_min' => 12.0,
+                'height_max' => 30.0,
+                'lifespan_years' => 600,
+                'growth_rate_cm_year' => 35,
+                'climate_zones' => ['atlántico', 'mediterráneo'],
+                'soil_types' => 'Suelos ácidos, frescos, bien drenados',
+                'water_needs_mm_year' => 700.0,
+                'drought_resistant' => false,
+                'frost_resistant' => true,
+                'is_endemic' => true,
+                'is_invasive' => false,
+                'suitable_for_reforestation' => true,
+                'suitable_for_urban' => true,
+                'flowering_season' => 'Verano',
+                'fruit_season' => 'Otoño',
+                'provides_food' => true,
+                'provides_timber' => true,
+                'medicinal_use' => false,
+                'planting_cost_eur' => 20.00,
+                'maintenance_cost_eur_year' => 2.80,
+                'survival_rate_percent' => 85,
+                'description' => 'Árbol muy valorado por sus frutos comestibles y su madera noble, típico de las zonas húmedas del norte.',
+                'source' => 'manual',
+                'is_verified' => true,
+                'verification_entity' => 'MITECO',
+            ],
         ];
 
-        $shrubsData = [
-            ['name' => 'Romero', 'scientific_name' => 'Rosmarinus officinalis', 'family' => 'Lamiaceae',
-             'co2_absorption_kg_per_year' => 3.5, 'plant_type' => 'shrub', 'size_category' => 'small',
-             'height_min' => 0.5, 'height_max' => 2, 'drought_resistant' => true, 'medicinal_use' => true,
-             'suitable_for_urban' => true, 'planting_cost_eur' => 2],
-            ['name' => 'Lavanda', 'scientific_name' => 'Lavandula angustifolia', 'family' => 'Lamiaceae',
-             'co2_absorption_kg_per_year' => 2.8, 'plant_type' => 'shrub', 'size_category' => 'small',
-             'height_min' => 0.3, 'height_max' => 1, 'drought_resistant' => true, 'medicinal_use' => true,
-             'suitable_for_urban' => true, 'planting_cost_eur' => 3],
-        ];
+        $createdCount = 0;
+        $updatedCount = 0;
 
-        $allSpecies = array_merge($treesData, $shrubsData);
+        foreach ($plantSpecies as $speciesData) {
+            // Generar slug único
+            $speciesData['slug'] = Str::slug($speciesData['name']);
+            
+            // Calcular rangos de absorción de CO2
+            $co2Base = $speciesData['co2_absorption_kg_per_year'];
+            $speciesData['co2_absorption_min'] = round($co2Base * 0.7, 1);
+            $speciesData['co2_absorption_max'] = round($co2Base * 1.3, 1);
+            
+            // Asignar región nativa si está disponible
+            if ($defaultRegion) {
+                $speciesData['native_region_id'] = $defaultRegion->id;
+            }
 
-        foreach ($allSpecies as $species) {
-            $species['slug'] = \Str::slug($species['name']);
-            $co2Base = $species['co2_absorption_kg_per_year'];
-            $species['co2_absorption_min'] = round($co2Base * 0.7, 1);
-            $species['co2_absorption_max'] = round($co2Base * 1.3, 1);
-            $species['description'] = "Especie {$species['name']} típica de España";
-            $species['lifespan_years'] = 100;
-            $species['growth_rate_cm_year'] = 30;
-            $species['climate_zones'] = ['mediterráneo'];
-            $species['soil_types'] = 'cualquier tipo de suelo';
-            $species['water_needs_mm_year'] = 500;
-            $species['survival_rate_percent'] = 85;
-            $species['maintenance_cost_eur_year'] = 1.0;
-            $species['source'] = 'manual';
-            $species['is_verified'] = true;
-            $species['verification_entity'] = 'MITECO';
+            $species = PlantSpecies::updateOrCreate(
+                [
+                    'slug' => $speciesData['slug'],
+                ],
+                $speciesData
+            );
 
-            PlantSpecies::firstOrCreate(['slug' => $species['slug']], $species);
+            if ($species->wasRecentlyCreated) {
+                $createdCount++;
+            } else {
+                $updatedCount++;
+            }
         }
 
-        // Crear especies adicionales con factory (comentado por duplicados)
-        // PlantSpecies::factory(8)->create();
+        // Mostrar estadísticas
+        $this->command->info("✅ Especies creadas: {$createdCount}");
+        $this->command->info("🔄 Especies actualizadas: {$updatedCount}");
+        $this->command->info("📊 Total de especies: " . PlantSpecies::count());
 
-        $this->command->info('Plant Species seeder completed: ' . PlantSpecies::count() . ' species created.');
+        // Mostrar resumen por tipo de planta
+        $this->command->info("\n📋 Resumen por tipo de planta:");
+        $types = PlantSpecies::all()->groupBy('plant_type');
+        foreach ($types as $type => $species) {
+            $totalCo2 = $species->sum('co2_absorption_kg_per_year');
+            $avgCost = $species->avg('planting_cost_eur');
+            $this->command->info("  {$type}: {$species->count()} especies, absorción total: {$totalCo2} kg CO2/año, coste medio: " . number_format($avgCost, 2) . " €");
+        }
+
+        // Mostrar resumen por categoría de tamaño
+        $this->command->info("\n📏 Resumen por categoría de tamaño:");
+        $sizes = PlantSpecies::all()->groupBy('size_category');
+        foreach ($sizes as $size => $species) {
+            $this->command->info("  {$size}: {$species->count()} especies");
+        }
+
+        // Mostrar algunas especies destacadas
+        $this->command->info("\n🔬 Especies destacadas:");
+        $highlightedSpecies = PlantSpecies::where('co2_absorption_kg_per_year', '>', 20)->take(3)->get();
+        foreach ($highlightedSpecies as $species) {
+            $this->command->info("  🌳 {$species->name} ({$species->scientific_name})");
+            $this->command->info("     💚 Absorción: {$species->co2_absorption_kg_per_year} kg CO2/año");
+            $this->command->info("     📏 Tamaño: {$species->size_category} ({$species->height_min}-{$species->height_max} m)");
+            $this->command->info("     💰 Coste: {$species->planting_cost_eur} €");
+            $this->command->info("     ---");
+        }
+
+        $this->command->info("\n🎯 Seeder de PlantSpecies completado exitosamente!");
     }
 }
