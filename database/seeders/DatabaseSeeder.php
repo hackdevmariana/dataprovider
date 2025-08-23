@@ -69,6 +69,7 @@ class DatabaseSeeder extends Seeder
             // Energy sector data
             EnergyCompanySeeder::class,
             ElectricityPriceSeeder::class,
+            ElectricityPriceIntervalSeeder::class,
             ElectricityOfferSeeder::class,
             EnergyInstallationSeeder::class,
             CooperativeSeeder::class,
