@@ -127,6 +127,11 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // Cooperatives (authenticated routes - only update/delete)
     Route::put('/cooperatives/{cooperative}', [CooperativeController::class, 'update']);
     Route::delete('/cooperatives/{cooperative}', [CooperativeController::class, 'destroy']);
+    
+    // Catholic Saints (authenticated routes - full CRUD)
+    Route::post('/catholic-saints', [\App\Http\Controllers\CatholicSaintController::class, 'store']);
+    Route::put('/catholic-saints/{id}', [\App\Http\Controllers\CatholicSaintController::class, 'update']);
+    Route::delete('/catholic-saints/{id}', [\App\Http\Controllers\CatholicSaintController::class, 'destroy']);
 });
 
 // Rutas públicas sin autenticación
@@ -188,6 +193,15 @@ Route::prefix('v1')->group(function () {
     Route::get('/calendar-holidays', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'index']);
     Route::get('/calendar-holidays/{idOrSlug}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'show']);
     Route::get('/calendar-holidays/date/{date}', [\App\Http\Controllers\Api\V1\CalendarHolidayController::class, 'byDate']);
+    
+    // Catholic Saints (Santoral Católico)
+    Route::get('/catholic-saints', [\App\Http\Controllers\CatholicSaintController::class, 'index']);
+    Route::get('/catholic-saints/{id}', [\App\Http\Controllers\CatholicSaintController::class, 'show']);
+    Route::get('/catholic-saints/today', [\App\Http\Controllers\CatholicSaintController::class, 'today']);
+    Route::get('/catholic-saints/by-date', [\App\Http\Controllers\CatholicSaintController::class, 'byDate']);
+    Route::get('/catholic-saints/by-category', [\App\Http\Controllers\CatholicSaintController::class, 'byCategory']);
+    Route::get('/catholic-saints/search', [\App\Http\Controllers\CatholicSaintController::class, 'search']);
+    Route::get('/catholic-saints/stats', [\App\Http\Controllers\CatholicSaintController::class, 'stats']);
     Route::get('/events', [\App\Http\Controllers\Api\V1\EventController::class, 'index']);
     Route::get('/events/filter/by-date-range', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByDateRange']);
     Route::get('/events/filter/by-location', [\App\Http\Controllers\Api\V1\EventController::class, 'filterByLocation']);
