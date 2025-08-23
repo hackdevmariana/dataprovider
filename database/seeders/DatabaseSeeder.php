@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             SpanishRapSeeder::class,
             EventSeeder::class,
+            CalendarHolidayLocationSeeder::class,
             AwardSeeder::class,
             AnniversarySeeder::class,
             CalendarHolidaySeeder::class,
