@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
             
             // Cultural and artistic data
             ArtistSeeder::class,
+            GroupSeeder::class,
             EventSeeder::class,
             AwardSeeder::class,
             AnniversarySeeder::class,
