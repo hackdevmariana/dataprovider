@@ -14,11 +14,22 @@ return new class extends Migration
         Schema::create('carbon_saving_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('carbon_equivalence_id')->nullable()->constrained()->nullOnDelete();
-            $table->decimal('amount_kg', 8, 2);
-            $table->string('activity_type')->nullable(); // e.g., 'tree_planting', 'energy_saving'
-            $table->json('metadata')->nullable(); // stores activity details
+            $table->foreignId('cooperative_id')->nullable()->constrained()->onDelete('set null');
+            $table->decimal('kw_installed', 8, 2); // Potencia instalada en kW
+            $table->decimal('production_kwh', 10, 2)->nullable(); // Producción en kWh
+            $table->decimal('co2_saved_kg', 10, 2)->nullable(); // CO2 ahorrado en kg
+            $table->date('date_range_start'); // Fecha de inicio del período
+            $table->date('date_range_end')->nullable(); // Fecha de fin del período
+            $table->string('estimation_source')->nullable(); // Fuente de la estimación
+            $table->string('carbon_saving_method')->nullable(); // Método de ahorro de carbono
+            $table->boolean('created_by_system')->default(false); // Si fue creado por el sistema
+            $table->json('metadata')->nullable(); // Metadatos adicionales
             $table->timestamps();
+            
+            // Índices para optimizar consultas
+            $table->index(['user_id', 'date_range_start']);
+            $table->index(['cooperative_id', 'date_range_start']);
+            $table->index(['date_range_start', 'date_range_end']);
         });
     }
 
