@@ -141,8 +141,8 @@ return new class extends Migration
             $table->index(['topic_id', 'reputation_score']);
             $table->index(['role', 'status']);
             $table->index(['last_activity_at', 'status']);
-            $table->index(['notifications_enabled', 'notification_frequency']);
-            $table->index(['show_in_main_feed', 'feed_weight']);
+            $table->index(['notifications_enabled', 'notification_frequency'], 'idx_notif_enabled_freq');
+            $table->index(['show_in_main_feed', 'feed_weight'], 'idx_feed_show_weight');
         });
     }
 
