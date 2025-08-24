@@ -106,6 +106,7 @@ class DatabaseSeeder extends Seeder
             // Project and business data
             ProjectVerificationSeeder::class,
             ConsultationServiceSeeder::class,
+            TopicMembershipSeeder::class,
             
             // Reputation and gamification data
             ReputationTransactionSeeder::class,
