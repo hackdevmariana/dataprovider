@@ -243,16 +243,15 @@ class ExpertVerificationResource extends Resource
                         'blue' => 'sustainability',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'solar' => 'Solar',
-                        'wind' => 'Eólica',
-                        'legal' => 'Legal',
-                        'financial' => 'Financiero',
-                        'technical' => 'Técnico',
-                        'installation' => 'Instalación',
-                        'grid' => 'Redes',
-                        'storage' => 'Almacenamiento',
-                        'efficiency' => 'Eficiencia',
-                        'sustainability' => 'Sostenibilidad',
+                        'solar_energy' => 'Energía Solar',
+                        'wind_energy' => 'Energía Eólica',
+                        'legal_consulting' => 'Consultoría Legal',
+                        'financial_consulting' => 'Consultoría Financiera',
+                        'technical_engineering' => 'Ingeniería Técnica',
+                        'energy_efficiency' => 'Eficiencia Energética',
+                        'battery_storage' => 'Almacenamiento de Baterías',
+                        'smart_grid' => 'Redes Inteligentes',
+                        default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
                 Tables\Columns\BadgeColumn::make('verification_level')
@@ -325,16 +324,14 @@ class ExpertVerificationResource extends Resource
                 Tables\Filters\SelectFilter::make('expertise_area')
                     ->label('Área de Expertise')
                     ->options([
-                        'solar' => 'Energía Solar',
-                        'wind' => 'Energía Eólica',
-                        'legal' => 'Legal y Regulatorio',
-                        'financial' => 'Financiero',
-                        'technical' => 'Técnico General',
-                        'installation' => 'Instalación y Mantenimiento',
-                        'grid' => 'Redes Eléctricas',
-                        'storage' => 'Almacenamiento',
-                        'efficiency' => 'Eficiencia Energética',
-                        'sustainability' => 'Sostenibilidad',
+                        'solar_energy' => 'Energía Solar',
+                        'wind_energy' => 'Energía Eólica',
+                        'legal_consulting' => 'Consultoría Legal',
+                        'financial_consulting' => 'Consultoría Financiera',
+                        'technical_engineering' => 'Ingeniería Técnica',
+                        'energy_efficiency' => 'Eficiencia Energética',
+                        'battery_storage' => 'Almacenamiento de Baterías',
+                        'smart_grid' => 'Redes Inteligentes',
                     ]),
                 
                 Tables\Filters\SelectFilter::make('verification_level')
