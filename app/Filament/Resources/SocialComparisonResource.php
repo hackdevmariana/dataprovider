@@ -151,15 +151,24 @@ class SocialComparisonResource extends Resource
                         'success' => 'energy_savings',
                         'info' => 'carbon_reduction',
                         'warning' => 'community_participation',
-                        'primary' => 'project_contributions',
+                        'primary' => 'project_contribution',
                         'gray' => 'knowledge_sharing',
+                        'purple' => 'renewable_energy_usage',
+                        'orange' => 'energy_efficiency',
+                        'blue' => 'sustainability_score',
+                        'yellow' => 'peer_engagement',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'energy_savings' => 'Ahorro Energía',
                         'carbon_reduction' => 'Reducción CO2',
-                        'community_participation' => 'Participación',
-                        'project_contributions' => 'Contribuciones',
-                        'knowledge_sharing' => 'Conocimiento',
+                        'community_participation' => 'Participación Comunitaria',
+                        'project_contribution' => 'Contribuciones a Proyectos',
+                        'knowledge_sharing' => 'Compartir Conocimiento',
+                        'renewable_energy_usage' => 'Uso Energía Renovable',
+                        'energy_efficiency' => 'Eficiencia Energética',
+                        'sustainability_score' => 'Puntuación Sostenibilidad',
+                        'peer_engagement' => 'Compromiso entre Pares',
+                        default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
                 Tables\Columns\BadgeColumn::make('period')
@@ -228,8 +237,12 @@ class SocialComparisonResource extends Resource
                         'energy_savings' => 'Ahorro de Energía',
                         'carbon_reduction' => 'Reducción de Carbono',
                         'community_participation' => 'Participación Comunitaria',
-                        'project_contributions' => 'Contribuciones a Proyectos',
+                        'project_contribution' => 'Contribuciones a Proyectos',
                         'knowledge_sharing' => 'Compartir Conocimiento',
+                        'renewable_energy_usage' => 'Uso de Energía Renovable',
+                        'energy_efficiency' => 'Eficiencia Energética',
+                        'sustainability_score' => 'Puntuación de Sostenibilidad',
+                        'peer_engagement' => 'Compromiso entre Pares',
                     ]),
                 
                 Tables\Filters\SelectFilter::make('period')
