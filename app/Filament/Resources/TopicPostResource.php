@@ -36,9 +36,9 @@ class TopicPostResource extends Resource
                             ->searchable()
                             ->required(),
                         
-                        Forms\Components\Select::make('author_id')
+                        Forms\Components\Select::make('user_id')
                             ->label('Autor')
-                            ->relationship('author', 'name')
+                            ->relationship('user', 'name')
                             ->searchable()
                             ->required(),
                         
@@ -132,8 +132,8 @@ class TopicPostResource extends Resource
                             ->keyLabel('Campo')
                             ->valueLabel('Valor'),
                         
-                        Forms\Components\DateTimePicker::make('published_at')
-                            ->label('Fecha de Publicación'),
+                        Forms\Components\DateTimePicker::make('created_at')
+                            ->label('Fecha de Creación'),
                     ]),
             ]);
     }
@@ -225,8 +225,8 @@ class TopicPostResource extends Resource
                     ->falseIcon('heroicon-o-check-circle')
                     ->toggleable(isToggledHiddenByDefault: true),
                 
-                Tables\Columns\TextColumn::make('published_at')
-                    ->label('Publicado')
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable(),
             ])
@@ -263,7 +263,7 @@ class TopicPostResource extends Resource
                 
                 Tables\Filters\Filter::make('recent')
                     ->label('Recientes (7 días)')
-                    ->query(fn ($query) => $query->where('published_at', '>=', now()->subWeek())),
+                    ->query(fn ($query) => $query->where('created_at', '>=', now()->subWeek())),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -298,12 +298,12 @@ class TopicPostResource extends Resource
                         ->icon('heroicon-o-eye')
                         ->action(function ($records) {
                             foreach ($records as $record) {
-                                $record->update(['status' => 'published', 'published_at' => now()]);
+                                $record->update(['status' => 'published']);
                             }
                         }),
                 ]),
             ])
-            ->defaultSort('published_at', 'desc');
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getPages(): array

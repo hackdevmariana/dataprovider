@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -203,7 +204,7 @@ class Topic extends Model
     /**
      * Comentarios en el tema (a través de posts)
      */
-    public function comments(): HasMany
+    public function comments(): HasManyThrough
     {
         return $this->hasManyThrough(TopicComment::class, TopicPost::class);
     }
@@ -500,7 +501,7 @@ class Topic extends Model
 
         // Factor de comentarios recientes
         $recentComments = $this->comments()
-                              ->where('created_at', '>=', now()->subDays(7))
+                              ->where('topic_comments.created_at', '>=', now()->subDays(7))
                               ->count();
         $score += $recentComments * 2;
 
