@@ -103,6 +103,9 @@ class DatabaseSeeder extends Seeder
             StatSeeder::class,
             ApiKeySeeder::class,
             
+            // Project and business data
+            ProjectVerificationSeeder::class,
+            
             // Reputation and gamification data
             ReputationTransactionSeeder::class,
             ContentVoteSeeder::class,
