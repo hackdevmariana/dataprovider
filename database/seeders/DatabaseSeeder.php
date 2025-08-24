@@ -73,6 +73,7 @@ class DatabaseSeeder extends Seeder
             ElectricityOfferSeeder::class,
             EnergyInstallationSeeder::class,
             EnergyTransactionSeeder::class,
+            ProductionRightSeeder::class,
             CooperativeSeeder::class,
             ExchangeRateSeeder::class,
             
