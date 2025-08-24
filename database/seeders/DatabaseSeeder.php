@@ -88,6 +88,7 @@ class DatabaseSeeder extends Seeder
             CarbonSavingLogSeeder::class,
             EmissionFactorSeeder::class,
             PlantSpeciesSeeder::class,
+            EnergyCertificateSeeder::class,
             WeatherAndSolarDataSeeder::class,
             
             // Media and communication data
