@@ -47,7 +47,7 @@ class TopicPostResource extends Resource
                             ->required()
                             ->maxLength(255),
                         
-                        Forms\Components\RichEditor::make('content')
+                        Forms\Components\RichEditor::make('body')
                             ->label('Contenido')
                             ->required()
                             ->columnSpanFull(),
@@ -55,17 +55,24 @@ class TopicPostResource extends Resource
 
                 Forms\Components\Section::make('Tipo y Estado')
                     ->schema([
-                        Forms\Components\Select::make('type')
+                        Forms\Components\Select::make('post_type')
                             ->label('Tipo')
                             ->options([
                                 'discussion' => 'Discusión',
                                 'question' => 'Pregunta',
                                 'announcement' => 'Anuncio',
                                 'poll' => 'Encuesta',
-                                'guide' => 'Guía',
+                                'tutorial' => 'Tutorial',
                                 'showcase' => 'Mostrar Trabajo',
                                 'news' => 'Noticia',
                                 'event' => 'Evento',
+                                'help' => 'Ayuda',
+                                'review' => 'Reseña',
+                                'resource' => 'Recurso',
+                                'job' => 'Trabajo',
+                                'marketplace' => 'Mercado',
+                                'case_study' => 'Caso de Estudio',
+                                'research' => 'Investigación',
                             ])
                             ->default('discussion')
                             ->required(),
@@ -154,28 +161,39 @@ class TopicPostResource extends Resource
                     ->badge()
                     ->color('info'),
                 
-                Tables\Columns\TextColumn::make('author.name')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label('Autor')
                     ->searchable(),
                 
-                Tables\Columns\BadgeColumn::make('type')
+                Tables\Columns\BadgeColumn::make('post_type')
                     ->label('Tipo')
                     ->colors([
                         'primary' => 'discussion',
                         'success' => 'question',
                         'warning' => 'announcement',
-                        'info' => 'guide',
+                        'info' => 'tutorial',
                         'gray' => 'showcase',
+                        'purple' => 'help',
+                        'orange' => 'review',
+                        'green' => 'resource',
+                        'blue' => 'job',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'discussion' => 'Discusión',
                         'question' => 'Pregunta',
                         'announcement' => 'Anuncio',
                         'poll' => 'Encuesta',
-                        'guide' => 'Guía',
+                        'tutorial' => 'Tutorial',
                         'showcase' => 'Mostrar',
                         'news' => 'Noticia',
                         'event' => 'Evento',
+                        'help' => 'Ayuda',
+                        'review' => 'Reseña',
+                        'resource' => 'Recurso',
+                        'job' => 'Trabajo',
+                        'marketplace' => 'Mercado',
+                        'case_study' => 'Caso de Estudio',
+                        'research' => 'Investigación',
                         default => ucfirst($state),
                     }),
                 
@@ -236,12 +254,22 @@ class TopicPostResource extends Resource
                     ->relationship('topic', 'name')
                     ->searchable(),
                 
-                Tables\Filters\SelectFilter::make('type')
+                Tables\Filters\SelectFilter::make('post_type')
                     ->options([
                         'discussion' => 'Discusión',
                         'question' => 'Pregunta',
                         'announcement' => 'Anuncio',
-                        'guide' => 'Guía',
+                        'tutorial' => 'Tutorial',
+                        'showcase' => 'Mostrar Trabajo',
+                        'news' => 'Noticia',
+                        'event' => 'Evento',
+                        'help' => 'Ayuda',
+                        'review' => 'Reseña',
+                        'resource' => 'Recurso',
+                        'job' => 'Trabajo',
+                        'marketplace' => 'Mercado',
+                        'case_study' => 'Caso de Estudio',
+                        'research' => 'Investigación',
                     ]),
                 
                 Tables\Filters\SelectFilter::make('status')
