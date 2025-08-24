@@ -89,15 +89,7 @@ class TopicPostResource extends Resource
                             ->default('draft')
                             ->required(),
                         
-                        Forms\Components\Select::make('priority')
-                            ->label('Prioridad')
-                            ->options([
-                                'low' => 'Baja',
-                                'normal' => 'Normal',
-                                'high' => 'Alta',
-                                'urgent' => 'Urgente',
-                            ])
-                            ->default('normal'),
+
                     ])->columns(3),
 
                 Forms\Components\Section::make('Configuración')
@@ -110,22 +102,13 @@ class TopicPostResource extends Resource
                             ->label('Destacado')
                             ->default(false),
                         
-                        Forms\Components\Toggle::make('is_anonymous')
-                            ->label('Anónimo')
-                            ->default(false),
+
                         
-                        Forms\Components\Toggle::make('allows_comments')
-                            ->label('Permite Comentarios')
-                            ->default(true),
+
                         
-                        Forms\Components\Toggle::make('is_solved')
-                            ->label('Resuelto')
-                            ->default(false)
-                            ->visible(fn (Forms\Get $get) => $get('type') === 'question'),
+
                         
-                        Forms\Components\Toggle::make('notify_followers')
-                            ->label('Notificar Seguidores')
-                            ->default(true),
+
                     ])->columns(3),
 
                 Forms\Components\Section::make('Metadatos')
@@ -134,8 +117,8 @@ class TopicPostResource extends Resource
                             ->label('Etiquetas')
                             ->placeholder('Añadir etiquetas'),
                         
-                        Forms\Components\KeyValue::make('metadata')
-                            ->label('Metadatos Adicionales')
+                        Forms\Components\KeyValue::make('creation_metadata')
+                            ->label('Metadatos de Creación')
                             ->keyLabel('Campo')
                             ->valueLabel('Valor'),
                         
@@ -236,12 +219,7 @@ class TopicPostResource extends Resource
                     ->trueIcon('heroicon-o-star')
                     ->falseIcon('heroicon-o-star'),
                 
-                Tables\Columns\IconColumn::make('is_solved')
-                    ->label('Resuelto')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-check-circle')
-                    ->toggleable(isToggledHiddenByDefault: true),
+
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
@@ -286,8 +264,7 @@ class TopicPostResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_featured')
                     ->label('Destacado'),
                 
-                Tables\Filters\TernaryFilter::make('is_solved')
-                    ->label('Resuelto'),
+
                 
                 Tables\Filters\Filter::make('recent')
                     ->label('Recientes (7 días)')
