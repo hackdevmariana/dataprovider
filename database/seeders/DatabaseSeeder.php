@@ -113,6 +113,9 @@ class DatabaseSeeder extends Seeder
             SocialComparisonSeeder::class,
             LeaderboardSeeder::class,
             UserBookmarkSeeder::class,
+            UserAchievementSeeder::class,
+            UserChallengeSeeder::class,
+            ActivityFeedSeeder::class,
             
             // Reputation and gamification data
             ReputationTransactionSeeder::class,
