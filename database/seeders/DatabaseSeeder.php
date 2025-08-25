@@ -111,6 +111,7 @@ class DatabaseSeeder extends Seeder
             ExpertVerificationSeeder::class,
             CooperativePostSeeder::class,
             SocialComparisonSeeder::class,
+            LeaderboardSeeder::class,
             
             // Reputation and gamification data
             ReputationTransactionSeeder::class,

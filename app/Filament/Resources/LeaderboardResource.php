@@ -154,13 +154,24 @@ class LeaderboardResource extends Resource
                         'warning' => 'contributions',
                         'info' => 'projects',
                         'gray' => 'community_engagement',
+                        'purple' => 'carbon_reduction',
+                        'orange' => 'knowledge_sharing',
+                        'blue' => 'innovation',
+                        'yellow' => 'sustainability_score',
+                        'pink' => 'peer_mentoring',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'energy_savings' => 'Ahorro Energía',
                         'reputation' => 'Reputación',
                         'contributions' => 'Contribuciones',
                         'projects' => 'Proyectos',
-                        'community_engagement' => 'Participación',
+                        'community_engagement' => 'Participación Comunitaria',
+                        'carbon_reduction' => 'Reducción de Carbono',
+                        'knowledge_sharing' => 'Compartir Conocimiento',
+                        'innovation' => 'Innovación',
+                        'sustainability_score' => 'Puntuación de Sostenibilidad',
+                        'peer_mentoring' => 'Mentoría entre Pares',
+                        default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
                 Tables\Columns\BadgeColumn::make('period')
@@ -246,6 +257,11 @@ class LeaderboardResource extends Resource
                         'contributions' => 'Contribuciones',
                         'projects' => 'Proyectos',
                         'community_engagement' => 'Participación Comunitaria',
+                        'carbon_reduction' => 'Reducción de Carbono',
+                        'knowledge_sharing' => 'Compartir Conocimiento',
+                        'innovation' => 'Innovación',
+                        'sustainability_score' => 'Puntuación de Sostenibilidad',
+                        'peer_mentoring' => 'Mentoría entre Pares',
                     ]),
                 
                 Tables\Filters\SelectFilter::make('period')
