@@ -108,7 +108,7 @@ class SocialComparisonResource extends JsonResource
             'age_group' => 'Grupo de Edad',
             'installation_type' => 'Tipo de Instalación',
             default => ucfirst(str_replace('_', ' ', $this->comparison_group)),
-        ];
+        };
     }
 
     /**
