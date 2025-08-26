@@ -65,12 +65,16 @@ class UserListResource extends Resource
                         Forms\Components\Select::make('list_type')
                             ->label('Tipo de Lista')
                             ->options([
-                                'personal' => 'Personal',
-                                'curated' => 'Curada',
-                                'collaborative' => 'Colaborativa',
-                                'template' => 'Plantilla',
+                                'mixed' => 'Mixto',
+                                'users' => 'Solo Usuarios',
+                                'posts' => 'Solo Posts',
+                                'projects' => 'Solo Proyectos',
+                                'companies' => 'Solo Empresas/Cooperativas',
+                                'resources' => 'Solo Recursos/Enlaces',
+                                'events' => 'Solo Eventos',
+                                'custom' => 'Personalizado',
                             ])
-                            ->default('personal')
+                            ->default('mixed')
                             ->required(),
                         Forms\Components\Select::make('visibility')
                             ->label('Visibilidad')
@@ -89,6 +93,13 @@ class UserListResource extends Resource
                             ->label('Destacada'),
                         Forms\Components\Toggle::make('is_template')
                             ->label('Es Plantilla'),
+                        Forms\Components\Select::make('collaborator_ids')
+                            ->label('Colaboradores')
+                            ->multiple()
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Usuarios que pueden editar esta lista'),
                     ])->columns(2),
                     
                 Forms\Components\Section::make('Funcionalidades')
@@ -103,23 +114,38 @@ class UserListResource extends Resource
                             ->label('Modo de Curación')
                             ->options([
                                 'manual' => 'Manual',
-                                'auto' => 'Automático',
-                                'hybrid' => 'Híbrido',
+                                'auto_hashtag' => 'Auto por Hashtags',
+                                'auto_keyword' => 'Auto por Palabras Clave',
+                                'auto_author' => 'Auto por Autores',
+                                'auto_topic' => 'Auto por Temas',
                             ])
                             ->default('manual'),
                     ])->columns(3),
+                    
+                Forms\Components\Section::make('Curación Automática')
+                    ->schema([
+                        Forms\Components\KeyValue::make('auto_criteria')
+                            ->label('Criterios de Auto-Curación')
+                            ->keyLabel('Criterio')
+                            ->valueLabel('Valor')
+                            ->helperText('Configurar criterios para curación automática'),
+                    ]),
                     
                 Forms\Components\Section::make('Tipos de Contenido Permitidos')
                     ->schema([
                         Forms\Components\CheckboxList::make('allowed_content_types')
                             ->label('Tipos de Contenido')
                             ->options([
-                                'person' => 'Personas',
-                                'event' => 'Eventos',
-                                'news_article' => 'Noticias',
-                                'point_of_interest' => 'Puntos de Interés',
+                                'user' => 'Usuarios',
+                                'post' => 'Posts',
+                                'project' => 'Proyectos',
                                 'cooperative' => 'Cooperativas',
-                                'energy_company' => 'Empresas Energéticas',
+                                'company' => 'Empresas',
+                                'event' => 'Eventos',
+                                'resource' => 'Recursos',
+                                'news' => 'Noticias',
+                                'achievement' => 'Logros',
+                                'challenge' => 'Desafíos',
                             ])
                             ->columns(3),
                     ]),
@@ -146,10 +172,14 @@ class UserListResource extends Resource
                     ->label('Tipo')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'personal' => 'gray',
-                        'curated' => 'info',
-                        'collaborative' => 'warning',
-                        'template' => 'success',
+                        'mixed' => 'gray',
+                        'users' => 'info',
+                        'posts' => 'warning',
+                        'projects' => 'success',
+                        'companies' => 'primary',
+                        'resources' => 'secondary',
+                        'events' => 'danger',
+                        'custom' => 'dark',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('visibility')
@@ -182,11 +212,21 @@ class UserListResource extends Resource
                     ->sortable()
                     ->badge()
                     ->color('warning'),
+                Tables\Columns\TextColumn::make('views_count')
+                    ->label('Vistas')
+                    ->sortable()
+                    ->badge()
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('shares_count')
+                    ->label('Compartidos')
+                    ->sortable()
+                    ->badge()
+                    ->color('danger'),
                 Tables\Columns\TextColumn::make('engagement_score')
                     ->label('Engagement')
                     ->sortable()
                     ->numeric(
-                        decimalPlaces: 1,
+                        decimalPlaces: 2,
                         decimalSeparator: '.',
                         thousandsSeparator: ',',
                     ),
@@ -205,10 +245,14 @@ class UserListResource extends Resource
                 Tables\Filters\SelectFilter::make('list_type')
                     ->label('Tipo de Lista')
                     ->options([
-                        'personal' => 'Personal',
-                        'curated' => 'Curada',
-                        'collaborative' => 'Colaborativa',
-                        'template' => 'Plantilla',
+                        'mixed' => 'Mixto',
+                        'users' => 'Solo Usuarios',
+                        'posts' => 'Solo Posts',
+                        'projects' => 'Solo Proyectos',
+                        'companies' => 'Solo Empresas/Cooperativas',
+                        'resources' => 'Solo Recursos/Enlaces',
+                        'events' => 'Solo Eventos',
+                        'custom' => 'Personalizado',
                     ]),
                 Tables\Filters\SelectFilter::make('visibility')
                     ->label('Visibilidad')
@@ -230,6 +274,15 @@ class UserListResource extends Resource
                 Tables\Filters\Filter::make('has_followers')
                     ->label('Con Seguidores')
                     ->query(fn (Builder $query): Builder => $query->where('followers_count', '>', 0)),
+                Tables\Filters\Filter::make('has_views')
+                    ->label('Con Vistas')
+                    ->query(fn (Builder $query): Builder => $query->where('views_count', '>', 0)),
+                Tables\Filters\Filter::make('has_shares')
+                    ->label('Con Compartidos')
+                    ->query(fn (Builder $query): Builder => $query->where('shares_count', '>', 0)),
+                Tables\Filters\Filter::make('high_engagement')
+                    ->label('Alto Engagement')
+                    ->query(fn (Builder $query): Builder => $query->where('engagement_score', '>', 100)),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -239,6 +292,12 @@ class UserListResource extends Resource
                     ->icon('heroicon-o-rectangle-stack')
                     ->url(fn (UserList $record): string => route('filament.admin.resources.user-lists.edit', $record))
                     ->openUrlInNewTab(),
+                Tables\Actions\Action::make('view_stats')
+                    ->label('Ver Estadísticas')
+                    ->icon('heroicon-o-chart-bar')
+                    ->modalContent(fn (UserList $record) => view('filament.actions.user-list-stats', ['list' => $record]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar'),
                 Tables\Actions\Action::make('toggle_featured')
                     ->label(fn (UserList $record): string => $record->is_featured ? 'Quitar Destacada' : 'Marcar Destacada')
                     ->icon(fn (UserList $record): string => $record->is_featured ? 'heroicon-o-star' : 'heroicon-o-star')
@@ -271,6 +330,28 @@ class UserListResource extends Resource
                             $records->each(fn (UserList $record) => $record->update(['is_featured' => !$record->is_featured]));
                             \Filament\Notifications\Notification::make()
                                 ->title('Estado destacada de ' . $records->count() . ' listas actualizado')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\BulkAction::make('change_curation_mode')
+                        ->label('Cambiar Modo de Curación')
+                        ->icon('heroicon-o-cog')
+                        ->form([
+                            Forms\Components\Select::make('curation_mode')
+                                ->label('Nuevo Modo de Curación')
+                                ->options([
+                                    'manual' => 'Manual',
+                                    'auto_hashtag' => 'Auto por Hashtags',
+                                    'auto_keyword' => 'Auto por Palabras Clave',
+                                    'auto_author' => 'Auto por Autores',
+                                    'auto_topic' => 'Auto por Temas',
+                                ])
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $records->each(fn (UserList $record) => $record->update(['curation_mode' => $data['curation_mode']]));
+                            \Filament\Notifications\Notification::make()
+                                ->title('Modo de curación de ' . $records->count() . ' listas actualizado')
                                 ->success()
                                 ->send();
                         }),
