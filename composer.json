@@ -24,6 +24,7 @@
         "mcamara/laravel-localization": "^2.3",
         "meilisearch/meilisearch-php": "^1.15",
         "owen-it/laravel-auditing": "^14.0",
+        "owenvoke/blade-fontawesome": "*",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.20",
