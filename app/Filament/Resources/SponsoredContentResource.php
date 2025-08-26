@@ -103,16 +103,56 @@ class SponsoredContentResource extends Resource
                     ->schema([
                         Forms\Components\TagsInput::make('target_audience')
                             ->label('Audiencia Objetivo')
-                            ->separator(','),
+                            ->separator(',')
+                            ->suggestions([
+                                'profesionales_energia',
+                                'propietarios_vivienda',
+                                'empresas_sostenibles',
+                                'inversores_verdes',
+                                'estudiantes_medioambiente',
+                                'activistas_clima',
+                                'consultores_energia',
+                                'arquitectos_sostenibles'
+                            ]),
                         Forms\Components\TagsInput::make('target_topics')
                             ->label('Temas Objetivo')
-                            ->separator(','),
+                            ->separator(',')
+                            ->suggestions([
+                                'energia_solar',
+                                'autoconsumo',
+                                'eficiencia_energetica',
+                                'sostenibilidad',
+                                'cambio_climatico',
+                                'energias_renovables',
+                                'edificios_verdes',
+                                'movilidad_electrica'
+                            ]),
                         Forms\Components\TagsInput::make('target_locations')
                             ->label('Ubicaciones Objetivo')
-                            ->separator(','),
+                            ->separator(',')
+                            ->suggestions([
+                                'madrid',
+                                'barcelona',
+                                'valencia',
+                                'sevilla',
+                                'bilbao',
+                                'andalucia',
+                                'cataluna',
+                                'pais_vasco'
+                            ]),
                         Forms\Components\TagsInput::make('target_demographics')
                             ->label('Demografía Objetivo')
-                            ->separator(','),
+                            ->separator(',')
+                            ->suggestions([
+                                'edad_25_35',
+                                'edad_35_45',
+                                'edad_45_55',
+                                'ingresos_altos',
+                                'ingresos_medios',
+                                'educacion_superior',
+                                'propietarios_vivienda',
+                                'profesionales_tecnologia'
+                            ]),
                     ])->columns(2),
                     
                 Forms\Components\Section::make('Configuración de Visualización')
@@ -131,7 +171,16 @@ class SponsoredContentResource extends Resource
                         Forms\Components\KeyValue::make('creative_assets')
                             ->label('Recursos Creativos')
                             ->keyLabel('Tipo')
-                            ->valueLabel('URL'),
+                            ->valueLabel('URL')
+                            ->addActionLabel('Agregar Recurso')
+                            ->keyLabel('Tipo de Recurso')
+                            ->valueLabel('URL del Recurso')
+                            ->default([
+                                'banner_principal' => '',
+                                'imagen_secundaria' => '',
+                                'video_promocional' => '',
+                                'logo_patrocinador' => ''
+                            ]),
                     ])->columns(2),
                     
                 Forms\Components\Section::make('Presupuesto y Bidding')
@@ -173,7 +222,18 @@ class SponsoredContentResource extends Resource
                         Forms\Components\KeyValue::make('schedule_config')
                             ->label('Configuración de Horarios')
                             ->keyLabel('Día/Hora')
-                            ->valueLabel('Configuración'),
+                            ->valueLabel('Configuración')
+                            ->addActionLabel('Agregar Horario')
+                            ->keyLabel('Día/Hora')
+                            ->valueLabel('Configuración')
+                            ->default([
+                                'lunes_09_12' => 'activo',
+                                'martes_09_12' => 'activo',
+                                'miercoles_09_12' => 'activo',
+                                'jueves_09_12' => 'activo',
+                                'viernes_09_12' => 'activo',
+                                'fin_de_semana' => 'pausado'
+                            ]),
                     ])->columns(2),
                     
                 Forms\Components\Section::make('Configuración de Transparencia')
@@ -187,7 +247,16 @@ class SponsoredContentResource extends Resource
                         Forms\Components\KeyValue::make('disclosure_text')
                             ->label('Texto de Divulgación')
                             ->keyLabel('Idioma')
-                            ->valueLabel('Texto'),
+                            ->valueLabel('Texto')
+                            ->addActionLabel('Agregar Idioma')
+                            ->keyLabel('Idioma')
+                            ->valueLabel('Texto de Divulgación')
+                            ->default([
+                                'es' => 'Contenido patrocinado',
+                                'en' => 'Sponsored content',
+                                'ca' => 'Contingut patrocinat',
+                                'eu' => 'Babestutako edukiak'
+                            ]),
                     ])->columns(2),
             ]);
     }
@@ -195,6 +264,10 @@ class SponsoredContentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
@@ -243,7 +316,8 @@ class SponsoredContentResource extends Resource
                 Tables\Columns\TextColumn::make('pricing_model')
                     ->label('Modelo de Precios')
                     ->badge()
-                    ->color('secondary'),
+                    ->color('secondary')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('bid_amount')
                     ->label('Bid')
                     ->money('EUR')
@@ -251,11 +325,11 @@ class SponsoredContentResource extends Resource
                 Tables\Columns\TextColumn::make('daily_budget')
                     ->label('Presupuesto Diario')
                     ->money('EUR')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_budget')
                     ->label('Presupuesto Total')
                     ->money('EUR')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('spent_amount')
                     ->label('Gastado')
                     ->money('EUR')
@@ -278,7 +352,30 @@ class SponsoredContentResource extends Resource
                         thousandsSeparator: ',',
                     )
                     ->suffix('%')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('conversions')
+                    ->label('Conversiones')
+                    ->sortable()
+                    ->badge()
+                    ->color('warning'),
+                Tables\Columns\TextColumn::make('conversion_rate')
+                    ->label('Tasa Conversión')
+                    ->numeric(
+                        decimalPlaces: 2,
+                        decimalSeparator: '.',
+                        thousandsSeparator: ',',
+                    )
+                    ->suffix('%')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('engagement_rate')
+                    ->label('Engagement')
+                    ->numeric(
+                        decimalPlaces: 2,
+                        decimalSeparator: '.',
+                        thousandsSeparator: ',',
+                    )
+                    ->suffix('%')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Fecha de Inicio')
                     ->dateTime()
@@ -286,12 +383,66 @@ class SponsoredContentResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')
                     ->label('Fecha de Fin')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()
-                    ->sortable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('target_audience')
+                    ->label('Audiencia Objetivo')
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('target_topics')
+                    ->label('Temas Objetivo')
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('target_locations')
+                    ->label('Ubicaciones Objetivo')
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('ad_label')
+                    ->label('Etiqueta')
+                    ->badge()
+                    ->color('gray'),
+                Tables\Columns\TextColumn::make('call_to_action')
+                    ->label('CTA')
+                    ->limit(15)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('destination_url')
+                    ->label('URL Destino')
+                    ->url(fn ($record) => $record->destination_url)
+                    ->limit(30)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('show_sponsor_info')
+                    ->label('Mostrar Info')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('allow_user_feedback')
+                    ->label('Permitir Feedback')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('sponsorable_type')
+                    ->label('Tipo de Contenido')
+                    ->badge()
+                    ->color('primary')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'App\Models\TopicPost' => 'Post de Tema',
+                        'App\Models\Event' => 'Evento',
+                        'App\Models\Cooperative' => 'Cooperativa',
+                        'App\Models\NewsArticle' => 'Artículo de Noticias',
+                        default => $state,
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('reviewed_by')
+                    ->label('Revisado por')
+                    ->relationship('reviewedBy', 'name')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('reviewed_at')
+                    ->label('Fecha de Revisión')
+                    ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -327,6 +478,14 @@ class SponsoredContentResource extends Resource
                         'cpa' => 'CPA',
                         'fixed' => 'Precio Fijo',
                     ]),
+                Tables\Filters\SelectFilter::make('sponsorable_type')
+                    ->label('Tipo de Contenido Patrocinado')
+                    ->options([
+                        'App\Models\TopicPost' => 'Post de Tema',
+                        'App\Models\Event' => 'Evento',
+                        'App\Models\Cooperative' => 'Cooperativa',
+                        'App\Models\NewsArticle' => 'Artículo de Noticias',
+                    ]),
                 Tables\Filters\Filter::make('active_campaigns')
                     ->label('Campañas Activas')
                     ->query(fn (Builder $query): Builder => $query->where('status', 'active')),
@@ -336,6 +495,40 @@ class SponsoredContentResource extends Resource
                 Tables\Filters\Filter::make('high_budget')
                     ->label('Alto Presupuesto')
                     ->query(fn (Builder $query): Builder => $query->where('total_budget', '>=', 1000)),
+                Tables\Filters\Filter::make('active_campaigns')
+                    ->label('Campañas Activas')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'active')),
+                Tables\Filters\Filter::make('pending_review')
+                    ->label('Pendientes de Revisión')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'pending_review')),
+                Tables\Filters\Filter::make('high_performance')
+                    ->label('Alto Rendimiento')
+                    ->query(fn (Builder $query): Builder => $query->where('ctr', '>=', 2.0)),
+                Tables\Filters\Filter::make('low_budget')
+                    ->label('Bajo Presupuesto')
+                    ->query(fn (Builder $query): Builder => $query->where('total_budget', '<=', 100)),
+                Tables\Filters\Filter::make('recent_campaigns')
+                    ->label('Campañas Recientes')
+                    ->query(fn (Builder $query): Builder => $query->where('created_at', '>=', now()->subDays(30))),
+                Tables\Filters\Filter::make('date_range')
+                    ->form([
+                        Forms\Components\DatePicker::make('start_date')
+                            ->label('Fecha de Inicio'),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->label('Fecha de Fin'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['start_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('start_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['end_date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('end_date', '<=', $date),
+                            );
+                    })
+                    ->label('Rango de Fechas'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -385,6 +578,25 @@ class SponsoredContentResource extends Resource
                             ->success()
                             ->send();
                     }),
+                Tables\Actions\Action::make('duplicate')
+                    ->label('Duplicar')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('info')
+                    ->action(function (SponsoredContent $record): void {
+                        $newRecord = $record->replicate();
+                        $newRecord->campaign_name = $record->campaign_name . ' (Copia)';
+                        $newRecord->status = 'draft';
+                        $newRecord->impressions = 0;
+                        $newRecord->clicks = 0;
+                        $newRecord->conversions = 0;
+                        $newRecord->spent_amount = 0;
+                        $newRecord->save();
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title('Campaña duplicada')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -413,10 +625,20 @@ class SponsoredContentResource extends Resource
                                 ->success()
                                 ->send();
                         }),
+                    Tables\Actions\BulkAction::make('pause')
+                        ->label('Pausar Seleccionadas')
+                        ->icon('heroicon-o-pause')
+                        ->action(function (Collection $records): void {
+                            $records->each(fn (SponsoredContent $record) => $record->update(['status' => 'paused']));
+                            \Filament\Notifications\Notification::make()
+                                ->title($records->count() . ' campañas pausadas')
+                                ->success()
+                                ->send();
+                        }),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['sponsor']));
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['sponsor', 'reviewedBy', 'sponsorable']));
     }
 
     public static function getRelations(): array
@@ -432,6 +654,29 @@ class SponsoredContentResource extends Resource
             'index' => Pages\ListSponsoredContents::route('/'),
             'create' => Pages\CreateSponsoredContent::route('/create'),
             'edit' => Pages\EditSponsoredContent::route('/{record}/edit'),
+        ];
+    }
+
+    /**
+     * Obtener estadísticas rápidas para el dashboard
+     */
+    public static function getStats(): array
+    {
+        $total = SponsoredContent::count();
+        $active = SponsoredContent::where('status', 'active')->count();
+        $pending = SponsoredContent::where('status', 'pending_review')->count();
+        $totalSpent = SponsoredContent::sum('spent_amount');
+        $totalImpressions = SponsoredContent::sum('impressions');
+        $totalClicks = SponsoredContent::sum('clicks');
+        
+        return [
+            'total_campaigns' => $total,
+            'active_campaigns' => $active,
+            'pending_review' => $pending,
+            'total_spent' => $totalSpent,
+            'total_impressions' => $totalImpressions,
+            'total_clicks' => $totalClicks,
+            'overall_ctr' => $totalImpressions > 0 ? round(($totalClicks / $totalImpressions) * 100, 2) : 0,
         ];
     }
 }
