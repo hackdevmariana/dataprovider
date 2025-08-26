@@ -20,7 +20,7 @@ class UserGeneratedContentFactory extends Factory
      */
     public function definition(): array
     {
-        $contentTypes = ['comment', 'suggestion', 'question', 'complaint', 'compliment'];
+        $contentTypes = ['comment', 'suggestion', 'photo'];
         $contentType = fake()->randomElement($contentTypes);
         
         $relatedTypes = [
@@ -34,18 +34,18 @@ class UserGeneratedContentFactory extends Factory
         
         return [
             'related_type' => fake()->randomElement($relatedTypes),
-            'related_id' => fake()->numberBetween(1, 100),
-            'type' => $contentType, // Usar 'type' en lugar de 'content_type' para coincidir con la tabla
+            'related_id' => fake()->numberBetween(1, 10),
+            'content_type' => $contentType, // Usar 'content_type' para coincidir con la tabla
             'content' => $content,
             'title' => $this->generateTitle($contentType),
             'excerpt' => $this->generateExcerpt($content),
-            'parent_id' => fake()->optional(0.3)->numberBetween(1, 50),
+            'parent_id' => fake()->optional(0.3)->numberBetween(1, 10),
             'rating' => $contentType === 'suggestion' ? fake()->numberBetween(1, 5) : null,
             'metadata' => json_encode($this->generateMetadata()),
             'media_attachments' => json_encode($this->generateMediaAttachments()),
             
             // Información del usuario
-            'user_id' => fake()->optional(0.7)->numberBetween(1, 100),
+            'user_id' => fake()->numberBetween(1, 3),
             'user_name' => fake()->name(),
             'user_email' => fake()->email(),
             'user_ip' => fake()->ipv4(),
@@ -57,7 +57,7 @@ class UserGeneratedContentFactory extends Factory
             'is_featured' => fake()->boolean(5),
             'is_spam' => fake()->boolean(10),
             'needs_moderation' => fake()->boolean(25),
-            'status' => fake()->randomElement(['pending', 'published', 'rejected', 'archived']),
+            'status' => fake()->randomElement(['pending', 'approved', 'rejected']),
             'visibility' => fake()->randomElement(['public', 'private', 'unlisted']),
             'language' => 'es',
             
@@ -74,7 +74,7 @@ class UserGeneratedContentFactory extends Factory
             // Tags y moderación
             'moderation_notes' => json_encode($this->generateModerationNotes()),
             'auto_tags' => json_encode($this->generateAutoTags($contentType)),
-            'moderator_id' => fake()->optional(0.3)->numberBetween(1, 10),
+            'moderator_id' => fake()->optional(0.3)->numberBetween(1, 3),
             
             // Geolocalización
             'location_name' => fake()->optional(0.4)->city(),
@@ -368,7 +368,7 @@ class UserGeneratedContentFactory extends Factory
     public function published(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'published',
+            'status' => 'approved',
             'published_at' => fake()->dateTimeBetween('-3 months', 'now'),
             'is_spam' => false,
             'needs_moderation' => false,
@@ -384,7 +384,7 @@ class UserGeneratedContentFactory extends Factory
             'is_featured' => true,
             'featured_until' => fake()->dateTimeBetween('now', '+1 month'),
             'likes_count' => fake()->numberBetween(100, 1000),
-            'status' => 'published',
+            'status' => 'approved',
         ]);
     }
 
@@ -396,7 +396,7 @@ class UserGeneratedContentFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'likes_count' => fake()->numberBetween(50, 500),
             'replies_count' => fake()->numberBetween(5, 50),
-            'status' => 'published',
+            'status' => 'approved',
         ]);
     }
 
