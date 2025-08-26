@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             // Core system data
             RolesAndAdminSeeder::class,
             UserRolesSeeder::class,
+            UserSeeder::class,
             AppSettingSeeder::class,
             
             // Reference data - Geographic
