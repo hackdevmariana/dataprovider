@@ -134,6 +134,10 @@ class DatabaseSeeder extends Seeder
             ChallengeSeeder::class,
             NewsArticleSeeder::class,
             UserGeneratedContentSeeder::class,
+            
+            // Topic and discussion data
+            TopicPostSeeder::class,
+            TopicCommentSeeder::class,
         ]);
     }
 }
