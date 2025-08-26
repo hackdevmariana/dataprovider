@@ -50,7 +50,7 @@ class UserGeneratedContentSeeder extends Seeder
                                             ->limit(10)
                                             ->get();
 
-        $users = User::limit(3)->get();
+        $users = User::limit(50)->get();
 
         $specificComments = [
             [
@@ -179,7 +179,7 @@ class UserGeneratedContentSeeder extends Seeder
     private function assignRelations(): void
     {
         $newsArticles = NewsArticle::limit(10)->get();
-        $users = User::limit(3)->get();
+        $users = User::limit(50)->get();
         
         UserGeneratedContent::whereNull('related_id')->chunk(10, function ($content) use ($newsArticles, $users) {
             foreach ($content as $item) {
