@@ -47,20 +47,19 @@ class UserGeneratedContentSeeder extends Seeder
     private function createSustainabilityComments(): void
     {
         $sustainabilityArticles = NewsArticle::whereIn('category', ['energía', 'medio ambiente', 'sostenibilidad'])
-                                            ->orWhere('covers_sustainability', true)
                                             ->limit(10)
                                             ->get();
 
-        $users = User::limit(20)->get();
+        $users = User::limit(3)->get();
 
         $specificComments = [
             [
-                'type' => 'comment',
+                'content_type' => 'comment',
                 'content' => 'Excelente noticia para España. Por fin vemos resultados concretos de las inversiones en energías renovables. Como ingeniero del sector, puedo confirmar que los datos son muy prometedores y que vamos por buen camino hacia la descarbonización.',
                 'title' => null,
                 'user_name' => 'Carlos Ingeniero',
                 'user_email' => 'carlos.ing@email.com',
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => false,
                 'likes_count' => 45,
@@ -71,13 +70,13 @@ class UserGeneratedContentSeeder extends Seeder
                 'published_at' => now()->subDays(1),
             ],
             [
-                'type' => 'suggestion',
+                'content_type' => 'suggestion',
                 'content' => 'Me parece genial la iniciativa, pero creo que falta más información sobre cómo los ciudadanos podemos contribuir. Sugiero incluir una sección con consejos prácticos para el ahorro energético en casa.',
                 'title' => 'Sugerencia para más contenido práctico',
                 'user_name' => 'Ana Sostenible',
                 'user_email' => 'ana.verde@email.com',
                 'rating' => 4,
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => false,
                 'likes_count' => 23,
@@ -88,12 +87,12 @@ class UserGeneratedContentSeeder extends Seeder
                 'published_at' => now()->subDays(2),
             ],
             [
-                'type' => 'question',
+                'content_type' => 'comment',
                 'content' => '¿Podrían explicar cómo afecta esto a las facturas de la luz? Me gustaría entender si estos avances se traducen en ahorros reales para las familias.',
                 'title' => 'Pregunta sobre impacto económico',
                 'user_name' => 'Miguel Familia',
                 'user_email' => 'miguel.familia@email.com',
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => false,
                 'likes_count' => 67,
@@ -105,12 +104,12 @@ class UserGeneratedContentSeeder extends Seeder
                 'published_at' => now()->subDays(1),
             ],
             [
-                'type' => 'compliment',
+                'content_type' => 'comment',
                 'content' => 'Fantástico trabajo periodístico. Me encanta cómo explican temas complejos de forma clara y accesible. Este tipo de información es fundamental para que la ciudadanía entienda la importancia de la transición energética.',
                 'title' => null,
                 'user_name' => 'Laura Profesora',
                 'user_email' => 'laura.edu@email.com',
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => true,
                 'likes_count' => 34,
@@ -121,12 +120,12 @@ class UserGeneratedContentSeeder extends Seeder
                 'published_at' => now()->subHours(12),
             ],
             [
-                'type' => 'comment',
+                'content_type' => 'comment',
                 'content' => 'En mi empresa hemos instalado paneles solares este año y hemos reducido el consumo de la red en un 60%. Confirmo que la tecnología funciona y es rentable. Animo a más empresas a apostar por las renovables.',
                 'title' => null,
                 'user_name' => 'Roberto Empresario',
                 'user_email' => 'roberto.empresa@email.com',
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => false,
                 'likes_count' => 89,
@@ -140,12 +139,12 @@ class UserGeneratedContentSeeder extends Seeder
                 'published_at' => now()->subDays(1),
             ],
             [
-                'type' => 'complaint',
+                'content_type' => 'comment',
                 'content' => 'Está bien la noticia, pero me parece que se olvidan de mencionar los costes. Las renovables requieren inversiones enormes y alguien tiene que pagarlas. Falta más análisis económico en profundidad.',
                 'title' => 'Falta análisis de costes',
                 'user_name' => 'David Crítico',
                 'user_email' => 'david.critico@email.com',
-                'status' => 'published',
+                'status' => 'approved',
                 'visibility' => 'public',
                 'is_verified' => false,
                 'likes_count' => 12,
@@ -179,8 +178,8 @@ class UserGeneratedContentSeeder extends Seeder
      */
     private function assignRelations(): void
     {
-        $newsArticles = NewsArticle::limit(50)->get();
-        $users = User::limit(30)->get();
+        $newsArticles = NewsArticle::limit(10)->get();
+        $users = User::limit(3)->get();
         
         UserGeneratedContent::whereNull('related_id')->chunk(10, function ($content) use ($newsArticles, $users) {
             foreach ($content as $item) {
