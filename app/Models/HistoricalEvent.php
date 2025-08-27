@@ -31,24 +31,33 @@ class HistoricalEvent extends Model
         'key_figures' => 'array',
         'consequences' => 'array',
         'sources' => 'array',
-        'is_verified' => 'boolean',
         'related_events' => 'array',
+        'is_verified' => 'boolean',
     ];
 
     // Atributos calculados
-    public function getYearsAgoAttribute(): int
+    public function getSignificanceLabelAttribute(): string
     {
-        return $this->event_date->diffInYears(Carbon::now());
+        return match ($this->significance_level) {
+            'critical' => 'Crítico',
+            'major' => 'Mayor',
+            'moderate' => 'Moderado',
+            'minor' => 'Menor',
+            'insignificant' => 'Insignificante',
+            default => 'Sin especificar',
+        };
     }
 
-    public function getCenturyAttribute(): int
+    public function getSignificanceColorAttribute(): string
     {
-        return ceil($this->event_date->year / 100);
-    }
-
-    public function getMillenniumAttribute(): int
-    {
-        return ceil($this->event_date->year / 1000);
+        return match ($this->significance_level) {
+            'critical' => 'danger',
+            'major' => 'warning',
+            'moderate' => 'info',
+            'minor' => 'success',
+            'insignificant' => 'secondary',
+            default => 'gray',
+        };
     }
 
     public function getEraLabelAttribute(): string
@@ -58,63 +67,28 @@ class HistoricalEvent extends Model
             'medieval' => 'Edad Media',
             'renaissance' => 'Renacimiento',
             'modern' => 'Edad Moderna',
-            'contemporary' => 'Edad Contemporánea',
+            'contemporary' => 'Contemporánea',
             'prehistoric' => 'Prehistoria',
-            'classical' => 'Clásica',
-            'enlightenment' => 'Ilustración',
-            'industrial' => 'Revolución Industrial',
-            'digital' => 'Era Digital',
             default => 'Sin especificar',
         };
     }
 
-    public function getCategoryLabelAttribute(): string
+    public function getEraColorAttribute(): string
     {
-        return match ($this->category) {
-            'politics' => 'Política',
-            'war' => 'Guerra',
-            'science' => 'Ciencia',
-            'culture' => 'Cultura',
-            'religion' => 'Religión',
-            'economy' => 'Economía',
-            'social' => 'Social',
-            'technology' => 'Tecnología',
-            'exploration' => 'Exploración',
-            'art' => 'Arte',
-            'literature' => 'Literatura',
-            'music' => 'Música',
-            'architecture' => 'Arquitectura',
-            'medicine' => 'Medicina',
-            'philosophy' => 'Filosofía',
-            'education' => 'Educación',
-            'sports' => 'Deportes',
-            'environment' => 'Medio Ambiente',
-            default => 'Otro',
-        };
-    }
-
-    public function getSignificanceLabelAttribute(): string
-    {
-        return match ($this->significance_level) {
-            'very_high' => 'Muy Alta',
-            'high' => 'Alta',
-            'moderate' => 'Moderada',
-            'low' => 'Baja',
-            'very_low' => 'Muy Baja',
-            default => 'Sin especificar',
-        };
-    }
-
-    public function getSignificanceColorAttribute(): string
-    {
-        return match ($this->significance_level) {
-            'very_high' => 'danger',
-            'high' => 'warning',
-            'moderate' => 'info',
-            'low' => 'success',
-            'very_low' => 'secondary',
+        return match ($this->era) {
+            'ancient' => 'danger',
+            'medieval' => 'warning',
+            'renaissance' => 'info',
+            'modern' => 'success',
+            'contemporary' => 'primary',
+            'prehistoric' => 'secondary',
             default => 'gray',
         };
+    }
+
+    public function getYearsAgoAttribute(): int
+    {
+        return $this->event_date->diffInYears(Carbon::now());
     }
 
     public function getFormattedDateAttribute(): string
@@ -122,9 +96,64 @@ class HistoricalEvent extends Model
         return $this->event_date->format('d/m/Y');
     }
 
+    public function getCenturyAttribute(): int
+    {
+        return (int) ceil($this->event_date->year / 100);
+    }
+
+    public function getCenturyLabelAttribute(): string
+    {
+        $century = $this->century;
+        if ($century === 1) {
+            return 'Siglo I';
+        } elseif ($century === 2) {
+            return 'Siglo II';
+        } elseif ($century === 3) {
+            return 'Siglo III';
+        } elseif ($century === 4) {
+            return 'Siglo IV';
+        } elseif ($century === 5) {
+            return 'Siglo V';
+        } elseif ($century === 6) {
+            return 'Siglo VI';
+        } elseif ($century === 7) {
+            return 'Siglo VII';
+        } elseif ($century === 8) {
+            return 'Siglo VIII';
+        } elseif ($century === 9) {
+            return 'Siglo IX';
+        } elseif ($century === 10) {
+            return 'Siglo X';
+        } elseif ($century === 11) {
+            return 'Siglo XI';
+        } elseif ($century === 12) {
+            return 'Siglo XII';
+        } elseif ($century === 13) {
+            return 'Siglo XIII';
+        } elseif ($century === 14) {
+            return 'Siglo XIV';
+        } elseif ($century === 15) {
+            return 'Siglo XV';
+        } elseif ($century === 16) {
+            return 'Siglo XVI';
+        } elseif ($century === 17) {
+            return 'Siglo XVII';
+        } elseif ($century === 18) {
+            return 'Siglo XVIII';
+        } elseif ($century === 19) {
+            return 'Siglo XIX';
+        } elseif ($century === 20) {
+            return 'Siglo XX';
+        } elseif ($century === 21) {
+            return 'Siglo XXI';
+        } else {
+            return 'Siglo ' . $century;
+        }
+    }
+
     public function getKeyFiguresCountAttribute(): int
     {
-        if ($this->key_figures && is_array($this->key_figures)) {
+        if (is_array($this->key_figures)) {
             return count($this->key_figures);
         }
         return 0;
@@ -132,7 +161,7 @@ class HistoricalEvent extends Model
 
     public function getConsequencesCountAttribute(): int
     {
-        if ($this->consequences && is_array($this->consequences)) {
+        if (is_array($this->consequences)) {
             return count($this->consequences);
         }
         return 0;
@@ -140,7 +169,7 @@ class HistoricalEvent extends Model
 
     public function getSourcesCountAttribute(): int
     {
-        if ($this->sources && is_array($this->sources)) {
+        if (is_array($this->sources)) {
             return count($this->sources);
         }
         return 0;
@@ -148,7 +177,7 @@ class HistoricalEvent extends Model
 
     public function getRelatedEventsCountAttribute(): int
     {
-        if ($this->related_events && is_array($this->related_events)) {
+        if (is_array($this->related_events)) {
             return count($this->related_events);
         }
         return 0;
@@ -177,7 +206,7 @@ class HistoricalEvent extends Model
 
     public function scopeHighSignificance($query)
     {
-        return $query->whereIn('significance_level', ['very_high', 'high']);
+        return $query->whereIn('significance_level', ['critical', 'major']);
     }
 
     public function scopeVerified($query)
@@ -221,29 +250,24 @@ class HistoricalEvent extends Model
         return $this->is_verified;
     }
 
-    public function isHighSignificance(): bool
+    public function isCritical(): bool
     {
-        return in_array($this->significance_level, ['very_high', 'high']);
+        return $this->significance_level === 'critical';
+    }
+
+    public function isMajor(): bool
+    {
+        return in_array($this->significance_level, ['critical', 'major']);
     }
 
     public function isAncient(): bool
     {
-        return $this->event_date->year < 500;
+        return $this->years_ago >= 1000;
     }
 
-    public function isMedieval(): bool
+    public function isRecent(): bool
     {
-        return $this->event_date->year >= 500 && $this->event_date->year < 1500;
-    }
-
-    public function isModern(): bool
-    {
-        return $this->event_date->year >= 1500 && $this->event_date->year < 1800;
-    }
-
-    public function isContemporary(): bool
-    {
-        return $this->event_date->year >= 1800;
+        return $this->years_ago <= 100;
     }
 
     public function hasKeyFigures(): bool
@@ -266,20 +290,35 @@ class HistoricalEvent extends Model
         return $this->related_events_count > 0;
     }
 
-    public function getAgeDescription(): string
+    public function getKeyFiguresList(): array
     {
-        $years = $this->years_ago;
-        
-        if ($years < 1) {
-            return 'Este año';
-        } elseif ($years < 10) {
-            return 'Hace ' . $years . ' años';
-        } elseif ($years < 100) {
-            return 'Hace ' . $years . ' años';
-        } elseif ($years < 1000) {
-            return 'Hace ' . round($years / 100, 1) . ' siglos';
-        } else {
-            return 'Hace ' . round($years / 1000, 1) . ' milenios';
+        if (is_array($this->key_figures)) {
+            return $this->key_figures;
         }
+        return [];
+    }
+
+    public function getConsequencesList(): array
+    {
+        if (is_array($this->consequences)) {
+            return $this->consequences;
+        }
+        return [];
+    }
+
+    public function getSourcesList(): array
+    {
+        if (is_array($this->sources)) {
+            return $this->sources;
+        }
+        return [];
+    }
+
+    public function getRelatedEventsList(): array
+    {
+        if (is_array($this->related_events)) {
+            return $this->related_events;
+        }
+        return [];
     }
 }

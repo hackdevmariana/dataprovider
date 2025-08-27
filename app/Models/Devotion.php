@@ -67,7 +67,7 @@ class Devotion extends Model
 
     public function getNovenaDaysCountAttribute(): int
     {
-        if ($this->novena_days && is_array($this->novena_days)) {
+        if (is_array($this->novena_days)) {
             return count($this->novena_days);
         }
         return 0;
@@ -75,7 +75,7 @@ class Devotion extends Model
 
     public function getSpecialIntentionsCountAttribute(): int
     {
-        if ($this->special_intentions && is_array($this->special_intentions)) {
+        if (is_array($this->special_intentions)) {
             return count($this->special_intentions);
         }
         return 0;
@@ -83,7 +83,7 @@ class Devotion extends Model
 
     public function getMiraclesCountAttribute(): int
     {
-        if ($this->miracles && is_array($this->miracles)) {
+        if (is_array($this->miracles)) {
             return count($this->miracles);
         }
         return 0;
@@ -91,7 +91,7 @@ class Devotion extends Model
 
     public function getPracticesCountAttribute(): int
     {
-        if ($this->practices && is_array($this->practices)) {
+        if (is_array($this->practices)) {
             return count($this->practices);
         }
         return 0;
@@ -99,7 +99,7 @@ class Devotion extends Model
 
     public function getTraditionsCountAttribute(): int
     {
-        if ($this->traditions && is_array($this->traditions)) {
+        if (is_array($this->traditions)) {
             return count($this->traditions);
         }
         return 0;
@@ -143,12 +143,12 @@ class Devotion extends Model
 
     public function scopeWithMiracles($query)
     {
-        return $query->whereJsonLength('miracles', '>', 0);
+        return $query->whereNotNull('miracles')->where('miracles', '!=', '[]');
     }
 
     public function scopeWithNovena($query)
     {
-        return $query->whereJsonLength('novena_days', '>', 0);
+        return $query->whereNotNull('novena_days')->where('novena_days', '!=', '[]');
     }
 
     // Métodos
@@ -187,13 +187,27 @@ class Devotion extends Model
         return $this->traditions_count > 0;
     }
 
-    public function getNovenaDuration(): int
+    public function getNovenaDaysList(): array
     {
-        return $this->novena_days_count;
+        if (is_array($this->novena_days)) {
+            return $this->novena_days;
+        }
+        return [];
     }
 
-    public function isNovenaDevotion(): bool
+    public function getSpecialIntentionsList(): array
     {
-        return $this->hasNovena();
+        if (is_array($this->special_intentions)) {
+            return $this->special_intentions;
+        }
+        return [];
+    }
+
+    public function getMiraclesList(): array
+    {
+        if (is_array($this->miracles)) {
+            return $this->miracles;
+        }
+        return [];
     }
 }

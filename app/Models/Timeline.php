@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class Timeline extends Model
@@ -17,70 +16,109 @@ class Timeline extends Model
         'theme',
         'start_date',
         'end_date',
-        'events',
-        'view_type',
-        'categories',
+        'events_count',
         'is_public',
         'created_by',
+        'tags',
+        'color_scheme',
+        'display_options',
+        'is_featured',
+        'views_count',
+        'likes_count',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
-        'events' => 'array',
-        'categories' => 'array',
+        'events_count' => 'integer',
         'is_public' => 'boolean',
+        'tags' => 'array',
+        'display_options' => 'array',
+        'is_featured' => 'boolean',
+        'views_count' => 'integer',
+        'likes_count' => 'integer',
     ];
 
-    // Relaciones
-    public function creator(): BelongsTo
+    // Atributos calculados
+    public function getThemeLabelAttribute(): string
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return match ($this->theme) {
+            'historical' => 'Histórico',
+            'personal' => 'Personal',
+            'cultural' => 'Cultural',
+            'scientific' => 'Científico',
+            'artistic' => 'Artístico',
+            'political' => 'Político',
+            'social' => 'Social',
+            'technological' => 'Tecnológico',
+            'religious' => 'Religioso',
+            'military' => 'Militar',
+            'economic' => 'Económico',
+            'environmental' => 'Ambiental',
+            default => 'General',
+        };
     }
 
-    // Atributos calculados
+    public function getThemeColorAttribute(): string
+    {
+        return match ($this->theme) {
+            'historical' => 'dark',
+            'personal' => 'primary',
+            'cultural' => 'info',
+            'scientific' => 'success',
+            'artistic' => 'secondary',
+            'political' => 'danger',
+            'social' => 'warning',
+            'technological' => 'info',
+            'religious' => 'warning',
+            'military' => 'danger',
+            'economic' => 'success',
+            'environmental' => 'success',
+            default => 'gray',
+        };
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        if (!$this->is_public) {
+            return 'Privada';
+        }
+        return $this->is_featured ? 'Destacada' : 'Pública';
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        if (!$this->is_public) {
+            return 'secondary';
+        }
+        return $this->is_featured ? 'warning' : 'success';
+    }
+
     public function getDurationAttribute(): int
     {
-        if ($this->start_date && $this->end_date) {
-            return $this->start_date->diffInDays($this->end_date);
+        if (!$this->start_date || !$this->end_date) {
+            return 0;
         }
-        return 0;
+        return $this->start_date->diffInDays($this->end_date);
     }
 
-    public function getDurationYearsAttribute(): int
+    public function getDurationLabelAttribute(): string
     {
-        if ($this->start_date && $this->end_date) {
-            return $this->start_date->diffInYears($this->end_date);
+        $days = $this->duration;
+        if ($days === 0) {
+            return 'Un día';
+        } elseif ($days < 7) {
+            return $days . ' días';
+        } elseif ($days < 30) {
+            $weeks = ceil($days / 7);
+            return $weeks . ' semana' . ($weeks > 1 ? 's' : '');
+        } elseif ($days < 365) {
+            $months = ceil($days / 30);
+            return $months . ' mes' . ($months > 1 ? 'es' : '');
+        } else {
+            $years = ceil($days / 365);
+            return $years . ' año' . ($years > 1 ? 's' : '');
         }
-        return 0;
-    }
-
-    public function getDurationMonthsAttribute(): int
-    {
-        if ($this->start_date && $this->end_date) {
-            return $this->start_date->diffInMonths($this->end_date);
-        }
-        return 0;
-    }
-
-    public function getFormattedDurationAttribute(): string
-    {
-        $years = $this->duration_years;
-        $months = $this->duration_months % 12;
-        $days = $this->duration % 30;
-
-        $parts = [];
-        if ($years > 0) {
-            $parts[] = $years . ' año' . ($years > 1 ? 's' : '');
-        }
-        if ($months > 0) {
-            $parts[] = $months . ' mes' . ($months > 1 ? 'es' : '');
-        }
-        if ($days > 0) {
-            $parts[] = $days . ' día' . ($days > 1 ? 's' : '');
-        }
-
-        return implode(', ', $parts);
     }
 
     public function getFormattedStartDateAttribute(): string
@@ -93,81 +131,29 @@ class Timeline extends Model
         return $this->end_date ? $this->end_date->format('d/m/Y') : 'Sin fecha';
     }
 
-    public function getViewTypeLabelAttribute(): string
-    {
-        return match ($this->view_type) {
-            'chronological' => 'Cronológico',
-            'thematic' => 'Temático',
-            'geographic' => 'Geográfico',
-            'biographical' => 'Biográfico',
-            'interactive' => 'Interactivo',
-            'timeline' => 'Línea de tiempo',
-            'calendar' => 'Calendario',
-            'map' => 'Mapa',
-            'tree' => 'Árbol',
-            'network' => 'Red',
-            default => 'Desconocido',
-        };
-    }
-
-    public function getViewTypeIconAttribute(): string
-    {
-        return match ($this->view_type) {
-            'chronological' => '📅',
-            'thematic' => '🏷️',
-            'geographic' => '🗺️',
-            'biographical' => '👤',
-            'interactive' => '🖱️',
-            'timeline' => '⏱️',
-            'calendar' => '📆',
-            'map' => '🗺️',
-            'tree' => '🌳',
-            'network' => '🕸️',
-            default => '📋',
-        };
-    }
-
-    public function getStatusLabelAttribute(): string
+    public function getIsActiveAttribute(): bool
     {
         if (!$this->start_date || !$this->end_date) {
-            return 'Sin fechas';
+            return false;
         }
-
         $now = Carbon::now();
-        if ($now < $this->start_date) {
-            return 'Futuro';
-        } elseif ($now > $this->end_date) {
-            return 'Completado';
-        } else {
-            return 'En curso';
-        }
+        return $now->between($this->start_date, $this->end_date);
     }
 
-    public function getStatusColorAttribute(): string
+    public function getIsUpcomingAttribute(): bool
     {
-        return match ($this->status) {
-            'Futuro' => 'info',
-            'En curso' => 'success',
-            'Completado' => 'secondary',
-            'Sin fechas' => 'warning',
-            default => 'gray',
-        };
+        if (!$this->start_date) {
+            return false;
+        }
+        return Carbon::now()->lt($this->start_date);
     }
 
-    public function getEventsCountAttribute(): int
+    public function getIsCompletedAttribute(): bool
     {
-        if ($this->events && is_array($this->events)) {
-            return count($this->events);
+        if (!$this->end_date) {
+            return false;
         }
-        return 0;
-    }
-
-    public function getCategoriesCountAttribute(): int
-    {
-        if ($this->categories && is_array($this->categories)) {
-            return count($this->categories);
-        }
-        return 0;
+        return Carbon::now()->gt($this->end_date);
     }
 
     public function getProgressAttribute(): float
@@ -175,29 +161,27 @@ class Timeline extends Model
         if (!$this->start_date || !$this->end_date) {
             return 0;
         }
-
-        $now = Carbon::now();
+        
         $total = $this->start_date->diffInDays($this->end_date);
-        $elapsed = $this->start_date->diffInDays($now);
-
-        if ($total <= 0) {
-            return 0;
+        if ($total === 0) {
+            return 100;
         }
-
+        
+        $elapsed = $this->start_date->diffInDays(Carbon::now());
         $progress = ($elapsed / $total) * 100;
+        
         return min(100, max(0, $progress));
     }
 
     public function getProgressLabelAttribute(): string
     {
         $progress = $this->progress;
-        
-        if ($progress <= 0) {
+        if ($progress === 0) {
             return 'No iniciado';
         } elseif ($progress < 25) {
-            return 'Iniciado';
+            return 'Iniciando';
         } elseif ($progress < 50) {
-            return 'En desarrollo';
+            return 'En progreso';
         } elseif ($progress < 75) {
             return 'Avanzado';
         } elseif ($progress < 100) {
@@ -205,6 +189,91 @@ class Timeline extends Model
         } else {
             return 'Completado';
         }
+    }
+
+    public function getProgressColorAttribute(): string
+    {
+        $progress = $this->progress;
+        if ($progress === 0) {
+            return 'secondary';
+        } elseif ($progress < 25) {
+            return 'info';
+        } elseif ($progress < 50) {
+            return 'warning';
+        } elseif ($progress < 75) {
+            return 'primary';
+        } elseif ($progress < 100) {
+            return 'success';
+        } else {
+            return 'success';
+        }
+    }
+
+    public function getPopularityScoreAttribute(): float
+    {
+        if ($this->views_count === 0) {
+            return 0;
+        }
+        
+        // Fórmula: (likes * 2 + views) / (views * 0.1)
+        $score = ($this->likes_count * 2 + $this->views_count) / ($this->views_count * 0.1);
+        return min(1.0, max(0.0, $score));
+    }
+
+    public function getPopularityLabelAttribute(): string
+    {
+        $score = $this->popularity_score;
+        if ($score >= 0.8) {
+            return 'Muy Popular';
+        } elseif ($score >= 0.6) {
+            return 'Popular';
+        } elseif ($score >= 0.4) {
+            return 'Moderado';
+        } else {
+            return 'Poco Popular';
+        }
+    }
+
+    public function getPopularityColorAttribute(): string
+    {
+        $score = $this->popularity_score;
+        if ($score >= 0.8) {
+            return 'success';
+        } elseif ($score >= 0.6) {
+            return 'info';
+        } elseif ($score >= 0.4) {
+            return 'warning';
+        } else {
+            return 'secondary';
+        }
+    }
+
+    public function getTagsCountAttribute(): int
+    {
+        if (is_array($this->tags)) {
+            return count($this->tags);
+        }
+        return 0;
+    }
+
+    public function getFormattedViewsCountAttribute(): string
+    {
+        if ($this->views_count >= 1000000) {
+            return round($this->views_count / 1000000, 1) . 'M';
+        } elseif ($this->views_count >= 1000) {
+            return round($this->views_count / 1000, 1) . 'K';
+        }
+        return number_format($this->views_count);
+    }
+
+    public function getFormattedLikesCountAttribute(): string
+    {
+        if ($this->likes_count >= 1000000) {
+            return round($this->likes_count / 1000000, 1) . 'M';
+        } elseif ($this->likes_count >= 1000) {
+            return round($this->likes_count / 1000, 1) . 'K';
+        }
+        return number_format($this->likes_count);
     }
 
     // Scopes
@@ -218,14 +287,14 @@ class Timeline extends Model
         return $query->where('is_public', false);
     }
 
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
     public function scopeByTheme($query, string $theme)
     {
         return $query->where('theme', $theme);
-    }
-
-    public function scopeByViewType($query, string $viewType)
-    {
-        return $query->where('view_type', $viewType);
     }
 
     public function scopeByCreator($query, int $userId)
@@ -240,31 +309,59 @@ class Timeline extends Model
                     ->where('end_date', '>=', $now);
     }
 
+    public function scopeUpcoming($query)
+    {
+        return $query->where('start_date', '>', Carbon::now());
+    }
+
     public function scopeCompleted($query)
     {
         return $query->where('end_date', '<', Carbon::now());
     }
 
-    public function scopeFuture($query)
-    {
-        return $query->where('start_date', '>', Carbon::now());
-    }
-
     public function scopeByDateRange($query, $startDate, $endDate)
     {
-        return $query->where(function ($q) use ($startDate, $endDate) {
-            $q->whereBetween('start_date', [$startDate, $endDate])
-              ->orWhereBetween('end_date', [$startDate, $endDate])
-              ->orWhere(function ($subQ) use ($startDate, $endDate) {
-                  $subQ->where('start_date', '<=', $startDate)
-                        ->where('end_date', '>=', $endDate);
-              });
-        });
+        return $query->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate]);
     }
 
-    public function scopeWithEvents($query)
+    public function scopePopular($query, float $minScore = 0.6)
     {
-        return $query->whereJsonLength('events', '>', 0);
+        return $query->whereRaw('(likes_count * 2 + views_count) / (views_count * 0.1) >= ?', [$minScore]);
+    }
+
+    public function scopeByViews($query, int $minViews)
+    {
+        return $query->where('views_count', '>=', $minViews);
+    }
+
+    public function scopeByLikes($query, int $minLikes)
+    {
+        return $query->where('likes_count', '>=', $minLikes);
+    }
+
+    public function scopeOrderByPopularity($query)
+    {
+        return $query->orderByRaw('(likes_count * 2 + views_count) / (views_count * 0.1) DESC');
+    }
+
+    public function scopeOrderByStartDate($query)
+    {
+        return $query->orderBy('start_date', 'asc');
+    }
+
+    public function scopeOrderByEndDate($query)
+    {
+        return $query->orderBy('end_date', 'desc');
+    }
+
+    public function scopeSearch($query, string $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', '%' . $search . '%')
+              ->orWhere('description', 'like', '%' . $search . '%')
+              ->orWhere('theme', 'like', '%' . $search . '%');
+        });
     }
 
     // Métodos
@@ -273,19 +370,34 @@ class Timeline extends Model
         return $this->is_public;
     }
 
+    public function isPrivate(): bool
+    {
+        return !$this->is_public;
+    }
+
+    public function isFeatured(): bool
+    {
+        return $this->is_featured;
+    }
+
     public function isActive(): bool
     {
-        return $this->status === 'En curso';
+        return $this->is_active;
+    }
+
+    public function isUpcoming(): bool
+    {
+        return $this->is_upcoming;
     }
 
     public function isCompleted(): bool
     {
-        return $this->status === 'Completado';
+        return $this->is_completed;
     }
 
-    public function isFuture(): bool
+    public function isPopular(): bool
     {
-        return $this->status === 'Futuro';
+        return $this->popularity_score >= 0.6;
     }
 
     public function hasEvents(): bool
@@ -293,51 +405,90 @@ class Timeline extends Model
         return $this->events_count > 0;
     }
 
-    public function hasCategories(): bool
+    public function hasTags(): bool
     {
-        return $this->categories_count > 0;
+        return $this->tags_count > 0;
     }
 
-    public function hasDates(): bool
+    public function hasStartDate(): bool
     {
-        return !is_null($this->start_date) && !is_null($this->end_date);
+        return !is_null($this->start_date);
     }
 
-    public function isOwnedBy(int $userId): bool
+    public function hasEndDate(): bool
     {
-        return $this->created_by === $userId;
+        return !is_null($this->end_date);
     }
 
-    public function canBeViewedBy(int $userId): bool
+    public function incrementViews(): void
     {
-        return $this->is_public || $this->isOwnedBy($userId);
+        $this->increment('views_count');
     }
 
-    public function getRemainingDays(): int
+    public function incrementLikes(): void
     {
-        if (!$this->end_date) {
-            return 0;
+        $this->increment('likes_count');
+    }
+
+    public function decrementLikes(): void
+    {
+        $this->decrement('likes_count');
+    }
+
+    public function getTagsList(): array
+    {
+        if (is_array($this->tags)) {
+            return $this->tags;
         }
-
-        $now = Carbon::now();
-        if ($now > $this->end_date) {
-            return 0;
-        }
-
-        return $now->diffInDays($this->end_date, false);
+        return [];
     }
 
-    public function getElapsedDays(): int
+    public function getDisplayOptionsList(): array
+    {
+        if (is_array($this->display_options)) {
+            return $this->display_options;
+        }
+        return [];
+    }
+
+    public function getDaysUntilStart(): int
     {
         if (!$this->start_date) {
             return 0;
         }
+        return Carbon::now()->diffInDays($this->start_date, false);
+    }
 
-        $now = Carbon::now();
-        if ($now < $this->start_date) {
+    public function getDaysUntilEnd(): int
+    {
+        if (!$this->end_date) {
             return 0;
         }
+        return Carbon::now()->diffInDays($this->end_date, false);
+    }
 
-        return $this->start_date->diffInDays($now);
+    public function getFormattedTimeRemainingAttribute(): string
+    {
+        if ($this->is_completed) {
+            return 'Completado';
+        } elseif ($this->is_upcoming) {
+            $days = $this->days_until_start;
+            if ($days === 0) {
+                return 'Hoy';
+            } elseif ($days === 1) {
+                return 'Mañana';
+            } else {
+                return 'En ' . $days . ' días';
+            }
+        } else {
+            $days = $this->days_until_end;
+            if ($days === 0) {
+                return 'Termina hoy';
+            } elseif ($days === 1) {
+                return 'Termina mañana';
+            } else {
+                return 'Termina en ' . $days . ' días';
+            }
+        }
     }
 }

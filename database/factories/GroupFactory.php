@@ -52,7 +52,7 @@ class GroupFactory extends Factory
                 'legendario', 'influyente', 'pionero', 'experimental', 'tradicional',
                 'moderno', 'clásico', 'innovador', 'underground', 'mainstream'
             ], $this->faker->numberBetween(1, 4)),
-            'search_boost' => $this->faker->numberBetween(50, 200),
+            'search_boost' => $this->faker->randomFloat(2, 0.50, 9.99),
             'official_fan_club' => $this->faker->optional(0.3)->url(),
             'is_verified' => $this->faker->boolean(20),
             'is_featured' => $this->faker->boolean(10),

@@ -41,7 +41,7 @@ class Quote extends Model
     // Relaciones
     public function category(): BelongsTo
     {
-        return $this->belongsTo(QuoteCategory::class, 'category');
+        return $this->belongsTo(QuoteCategory::class, 'category', 'name');
     }
 
     public function collections(): BelongsToMany
@@ -50,58 +50,6 @@ class Quote extends Model
     }
 
     // Atributos calculados
-    public function getCategoryLabelAttribute(): string
-    {
-        if ($this->category) {
-            return $this->category->name;
-        }
-        return 'Sin categoría';
-    }
-
-    public function getMoodLabelAttribute(): string
-    {
-        return match ($this->mood) {
-            'inspirational' => 'Inspiradora',
-            'motivational' => 'Motivadora',
-            'philosophical' => 'Filosófica',
-            'humorous' => 'Humorística',
-            'romantic' => 'Romántica',
-            'melancholic' => 'Melancólica',
-            'energetic' => 'Energética',
-            'calm' => 'Tranquila',
-            'mysterious' => 'Misteriosa',
-            'dramatic' => 'Dramática',
-            'peaceful' => 'Pacífica',
-            'adventurous' => 'Aventurera',
-            'wise' => 'Sabia',
-            'challenging' => 'Desafiante',
-            'comforting' => 'Consoladora',
-            default => 'Sin especificar',
-        };
-    }
-
-    public function getMoodIconAttribute(): string
-    {
-        return match ($this->mood) {
-            'inspirational' => '✨',
-            'motivational' => '🚀',
-            'philosophical' => '🤔',
-            'humorous' => '😄',
-            'romantic' => '💕',
-            'melancholic' => '😔',
-            'energetic' => '⚡',
-            'calm' => '😌',
-            'mysterious' => '🔮',
-            'dramatic' => '🎭',
-            'peaceful' => '🕊️',
-            'adventurous' => '🗺️',
-            'wise' => '🧠',
-            'challenging' => '💪',
-            'comforting' => '🤗',
-            default => '💭',
-        };
-    }
-
     public function getDifficultyLabelAttribute(): string
     {
         return match ($this->difficulty_level) {
@@ -124,6 +72,42 @@ class Quote extends Model
         };
     }
 
+    public function getMoodLabelAttribute(): string
+    {
+        return match ($this->mood) {
+            'inspiring' => 'Inspirador',
+            'motivational' => 'Motivacional',
+            'philosophical' => 'Filosófico',
+            'humorous' => 'Humorístico',
+            'romantic' => 'Romántico',
+            'melancholic' => 'Melancólico',
+            'energetic' => 'Energético',
+            'calm' => 'Tranquilo',
+            'mysterious' => 'Misterioso',
+            'optimistic' => 'Optimista',
+            'pessimistic' => 'Pesimista',
+            default => 'Sin especificar',
+        };
+    }
+
+    public function getMoodColorAttribute(): string
+    {
+        return match ($this->mood) {
+            'inspiring' => 'success',
+            'motivational' => 'warning',
+            'philosophical' => 'info',
+            'humorous' => 'light',
+            'romantic' => 'danger',
+            'melancholic' => 'secondary',
+            'energetic' => 'warning',
+            'calm' => 'success',
+            'mysterious' => 'dark',
+            'optimistic' => 'success',
+            'pessimistic' => 'danger',
+            default => 'gray',
+        };
+    }
+
     public function getPopularityLabelAttribute(): string
     {
         if ($this->popularity_score >= 0.8) {
@@ -131,11 +115,9 @@ class Quote extends Model
         } elseif ($this->popularity_score >= 0.6) {
             return 'Popular';
         } elseif ($this->popularity_score >= 0.4) {
-            return 'Moderada';
-        } elseif ($this->popularity_score >= 0.2) {
-            return 'Poco Popular';
+            return 'Moderado';
         } else {
-            return 'Desconocida';
+            return 'Poco Popular';
         }
     }
 
@@ -148,70 +130,8 @@ class Quote extends Model
         } elseif ($this->popularity_score >= 0.4) {
             return 'info';
         } else {
-            return 'success';
+            return 'secondary';
         }
-    }
-
-    public function getLanguageLabelAttribute(): string
-    {
-        return match ($this->language) {
-            'es' => 'Español',
-            'en' => 'Inglés',
-            'fr' => 'Francés',
-            'de' => 'Alemán',
-            'it' => 'Italiano',
-            'pt' => 'Portugués',
-            'ca' => 'Catalán',
-            'eu' => 'Euskera',
-            'gl' => 'Gallego',
-            'la' => 'Latín',
-            'gr' => 'Griego',
-            'ar' => 'Árabe',
-            'zh' => 'Chino',
-            'ja' => 'Japonés',
-            'ko' => 'Coreano',
-            'ru' => 'Ruso',
-            default => 'Desconocido',
-        };
-    }
-
-    public function getLanguageFlagAttribute(): string
-    {
-        return match ($this->language) {
-            'es' => '🇪🇸',
-            'en' => '🇬🇧',
-            'fr' => '🇫🇷',
-            'de' => '🇩🇪',
-            'it' => '🇮🇹',
-            'pt' => '🇵🇹',
-            'ca' => '🏴󠁥󠁳󠁣󠁴󠁿',
-            'eu' => '🏴󠁥󠁳󠁰󠁶󠁿',
-            'gl' => '🏴󠁥󠁳󠁧󠁡󠁿',
-            'la' => '🏛️',
-            'gr' => '🇬🇷',
-            'ar' => '🇸🇦',
-            'zh' => '🇨🇳',
-            'ja' => '🇯🇵',
-            'ko' => '🇰🇷',
-            'ru' => '🇷🇺',
-            default => '🌍',
-        };
-    }
-
-    public function getTagsCountAttribute(): int
-    {
-        if ($this->tags && is_array($this->tags)) {
-            return count($this->tags);
-        }
-        return 0;
-    }
-
-    public function getTranslationsCountAttribute(): int
-    {
-        if ($this->translations && is_array($this->translations)) {
-            return count($this->translations);
-        }
-        return 0;
     }
 
     public function getExcerptAttribute(): string
@@ -222,6 +142,44 @@ class Quote extends Model
     public function getShortTextAttribute(): string
     {
         return \Str::limit($this->text, 50);
+    }
+
+    public function getReadingTimeAttribute(): int
+    {
+        // Tiempo de lectura estimado: 200 palabras por minuto
+        return max(1, ceil($this->word_count / 200));
+    }
+
+    public function getFormattedReadingTimeAttribute(): string
+    {
+        $minutes = $this->reading_time;
+        if ($minutes < 60) {
+            return $minutes . ' min';
+        } else {
+            $hours = floor($minutes / 60);
+            $remainingMinutes = $minutes % 60;
+            if ($remainingMinutes === 0) {
+                return $hours . 'h';
+            } else {
+                return $hours . 'h ' . $remainingMinutes . 'm';
+            }
+        }
+    }
+
+    public function getTagsCountAttribute(): int
+    {
+        if (is_array($this->tags)) {
+            return count($this->tags);
+        }
+        return 0;
+    }
+
+    public function getTranslationsCountAttribute(): int
+    {
+        if (is_array($this->translations)) {
+            return count($this->translations);
+        }
+        return 0;
     }
 
     // Scopes
@@ -240,9 +198,9 @@ class Quote extends Model
         return $query->where('mood', $mood);
     }
 
-    public function scopeByDifficulty($query, string $difficulty)
+    public function scopeByDifficulty($query, string $level)
     {
-        return $query->where('difficulty_level', $difficulty);
+        return $query->where('difficulty_level', $level);
     }
 
     public function scopePopular($query, float $minScore = 0.6)
@@ -260,34 +218,6 @@ class Quote extends Model
         return $query->where('author', 'like', '%' . $author . '%');
     }
 
-    public function scopeBySource($query, string $source)
-    {
-        return $query->where('source', 'like', '%' . $source . '%');
-    }
-
-    public function scopeByWordCount($query, int $min, int $max = null)
-    {
-        if ($max) {
-            return $query->whereBetween('word_count', [$min, $max]);
-        }
-        return $query->where('word_count', '>=', $min);
-    }
-
-    public function scopeByUsage($query, int $minUsage)
-    {
-        return $query->where('usage_count', '>=', $minUsage);
-    }
-
-    public function scopeWithTags($query, array $tags)
-    {
-        return $query->whereJsonContains('tags', $tags);
-    }
-
-    public function scopeInspirational($query)
-    {
-        return $query->whereIn('mood', ['inspirational', 'motivational', 'wise']);
-    }
-
     public function scopeShort($query, int $maxWords = 20)
     {
         return $query->where('word_count', '<=', $maxWords);
@@ -296,6 +226,20 @@ class Quote extends Model
     public function scopeLong($query, int $minWords = 50)
     {
         return $query->where('word_count', '>=', $minWords);
+    }
+
+    public function scopeByUsage($query, int $minUsage = 10)
+    {
+        return $query->where('usage_count', '>=', $minUsage);
+    }
+
+    public function scopeSearch($query, string $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('text', 'like', '%' . $search . '%')
+              ->orWhere('author', 'like', '%' . $search . '%')
+              ->orWhere('source', 'like', '%' . $search . '%');
+        });
     }
 
     // Métodos
@@ -317,11 +261,6 @@ class Quote extends Model
     public function isLong(): bool
     {
         return $this->word_count >= 50;
-    }
-
-    public function isInspirational(): bool
-    {
-        return in_array($this->mood, ['inspirational', 'motivational', 'wise']);
     }
 
     public function hasAuthor(): bool
@@ -349,41 +288,19 @@ class Quote extends Model
         $this->increment('usage_count');
     }
 
-    public function getTranslation(string $language): ?string
+    public function getTagsList(): array
     {
-        if (!$this->translations || !is_array($this->translations)) {
-            return null;
+        if (is_array($this->tags)) {
+            return $this->tags;
         }
-
-        return $this->translations[$language] ?? null;
+        return [];
     }
 
-    public function getAvailableLanguages(): array
+    public function getTranslationsList(): array
     {
-        $languages = [$this->language];
-        
-        if ($this->translations && is_array($this->translations)) {
-            $languages = array_merge($languages, array_keys($this->translations));
+        if (is_array($this->translations)) {
+            return $this->translations;
         }
-        
-        return array_unique($languages);
-    }
-
-    public function getReadingTime(): int
-    {
-        // Tiempo de lectura estimado: 200 palabras por minuto
-        return max(1, ceil($this->word_count / 200));
-    }
-
-    public function getFormattedReadingTime(): string
-    {
-        $minutes = $this->reading_time;
-        if ($minutes < 1) {
-            return 'Menos de 1 min';
-        } elseif ($minutes === 1) {
-            return '1 min';
-        } else {
-            return $minutes . ' min';
-        }
+        return [];
     }
 }

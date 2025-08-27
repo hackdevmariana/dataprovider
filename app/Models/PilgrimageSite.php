@@ -57,32 +57,24 @@ class PilgrimageSite extends Model
             'church' => 'Iglesia',
             'monastery' => 'Monasterio',
             'convent' => 'Convento',
+            'hermitage' => 'Ermita',
             'chapel' => 'Capilla',
-            'grotto' => 'Gruta',
-            'cave' => 'Cueva',
-            'mountain' => 'Montaña',
-            'spring' => 'Manantial',
-            'tree' => 'Árbol',
             default => 'Otro',
         };
     }
 
-    public function getTypeIconAttribute(): string
+    public function getTypeColorAttribute(): string
     {
         return match ($this->type) {
-            'shrine' => '⛪',
-            'basilica' => '🏛️',
-            'cathedral' => '⛪',
-            'church' => '⛪',
-            'monastery' => '🏰',
-            'convent' => '🏰',
-            'chapel' => '⛪',
-            'grotto' => '🕳️',
-            'cave' => '🕳️',
-            'mountain' => '⛰️',
-            'spring' => '💧',
-            'tree' => '🌳',
-            default => '📍',
+            'shrine' => 'danger',
+            'basilica' => 'warning',
+            'cathedral' => 'info',
+            'church' => 'success',
+            'monastery' => 'secondary',
+            'convent' => 'primary',
+            'hermitage' => 'gray',
+            'chapel' => 'light',
+            default => 'gray',
         };
     }
 
@@ -96,9 +88,24 @@ class PilgrimageSite extends Model
         return $this->is_active ? 'success' : 'secondary';
     }
 
+    public function getAnnualPilgrimsFormattedAttribute(): string
+    {
+        if (!$this->annual_pilgrims) {
+            return 'Sin datos';
+        }
+
+        if ($this->annual_pilgrims >= 1000000) {
+            return round($this->annual_pilgrims / 1000000, 1) . 'M';
+        } elseif ($this->annual_pilgrims >= 1000) {
+            return round($this->annual_pilgrims / 1000, 1) . 'K';
+        }
+
+        return number_format($this->annual_pilgrims);
+    }
+
     public function getFacilitiesCountAttribute(): int
     {
-        if ($this->facilities && is_array($this->facilities)) {
+        if (is_array($this->facilities)) {
             return count($this->facilities);
         }
         return 0;
@@ -106,7 +113,7 @@ class PilgrimageSite extends Model
 
     public function getAccommodationCountAttribute(): int
     {
-        if ($this->accommodation && is_array($this->accommodation)) {
+        if (is_array($this->accommodation)) {
             return count($this->accommodation);
         }
         return 0;
@@ -114,7 +121,7 @@ class PilgrimageSite extends Model
 
     public function getTransportationCountAttribute(): int
     {
-        if ($this->transportation && is_array($this->transportation)) {
+        if (is_array($this->transportation)) {
             return count($this->transportation);
         }
         return 0;
@@ -122,44 +129,10 @@ class PilgrimageSite extends Model
 
     public function getSpecialDatesCountAttribute(): int
     {
-        if ($this->special_dates && is_array($this->special_dates)) {
+        if (is_array($this->special_dates)) {
             return count($this->special_dates);
         }
         return 0;
-    }
-
-    public function getPilgrimsLabelAttribute(): string
-    {
-        if (!$this->annual_pilgrims) {
-            return 'Sin datos';
-        }
-
-        if ($this->annual_pilgrims < 1000) {
-            return 'Bajo';
-        } elseif ($this->annual_pilgrims < 10000) {
-            return 'Medio';
-        } elseif ($this->annual_pilgrims < 100000) {
-            return 'Alto';
-        } else {
-            return 'Muy Alto';
-        }
-    }
-
-    public function getPilgrimsColorAttribute(): string
-    {
-        if (!$this->annual_pilgrims) {
-            return 'gray';
-        }
-
-        if ($this->annual_pilgrims < 1000) {
-            return 'success';
-        } elseif ($this->annual_pilgrims < 10000) {
-            return 'info';
-        } elseif ($this->annual_pilgrims < 100000) {
-            return 'warning';
-        } else {
-            return 'danger';
-        }
     }
 
     public function getCoordinatesAttribute(): string
@@ -168,12 +141,6 @@ class PilgrimageSite extends Model
             return $this->latitude . ', ' . $this->longitude;
         }
         return 'Sin coordenadas';
-    }
-
-    public function getFullLocationAttribute(): string
-    {
-        $parts = array_filter([$this->city, $this->region, $this->country]);
-        return implode(', ', $parts);
     }
 
     // Scopes
@@ -202,19 +169,27 @@ class PilgrimageSite extends Model
         return $query->where('city', $city);
     }
 
-    public function scopeWithCoordinates($query)
+    public function scopeWithSaint($query)
     {
-        return $query->whereNotNull('latitude')->whereNotNull('longitude');
+        return $query->whereNotNull('saint_id');
     }
 
-    public function scopeBySaint($query, int $saintId)
-    {
-        return $query->where('saint_id', $saintId);
-    }
-
-    public function scopeHighPilgrims($query, int $minPilgrims = 10000)
+    public function scopePopular($query, int $minPilgrims = 10000)
     {
         return $query->where('annual_pilgrims', '>=', $minPilgrims);
+    }
+
+    public function scopeNearby($query, float $lat, float $lng, float $radiusKm = 50)
+    {
+        // Fórmula de Haversine para calcular distancia
+        $sql = "(
+            6371 * acos(
+                cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) +
+                sin(radians(?)) * sin(radians(latitude))
+            )
+        ) <= ?";
+        
+        return $query->whereRaw($sql, [$lat, $lng, $lat, $radiusKm]);
     }
 
     // Métodos
@@ -223,14 +198,19 @@ class PilgrimageSite extends Model
         return $this->is_active;
     }
 
+    public function hasSaint(): bool
+    {
+        return !is_null($this->saint_id);
+    }
+
     public function hasCoordinates(): bool
     {
         return !is_null($this->latitude) && !is_null($this->longitude);
     }
 
-    public function hasSaint(): bool
+    public function isPopular(): bool
     {
-        return !is_null($this->saint_id);
+        return $this->annual_pilgrims >= 10000;
     }
 
     public function hasFacilities(): bool
@@ -253,28 +233,37 @@ class PilgrimageSite extends Model
         return $this->special_dates_count > 0;
     }
 
-    public function isPopular(): bool
-    {
-        return $this->annual_pilgrims && $this->annual_pilgrims >= 10000;
-    }
-
-    public function getDistanceFrom($lat, $lng): ?float
+    public function getDistanceFrom(float $lat, float $lng): ?float
     {
         if (!$this->hasCoordinates()) {
             return null;
         }
 
-        $lat1 = deg2rad($this->latitude);
-        $lng1 = deg2rad($this->longitude);
-        $lat2 = deg2rad($lat);
-        $lng2 = deg2rad($lng);
-
-        $dlat = $lat2 - $lat1;
-        $dlng = $lng2 - $lng1;
-
-        $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin($dlng / 2) * sin($dlng / 2);
+        $earthRadius = 6371; // Radio de la Tierra en km
+        
+        $latDiff = deg2rad($lat - $this->latitude);
+        $lngDiff = deg2rad($lng - $this->longitude);
+        
+        $a = sin($latDiff / 2) * sin($latDiff / 2) +
+             cos(deg2rad($this->latitude)) * cos(deg2rad($lat)) *
+             sin($lngDiff / 2) * sin($lngDiff / 2);
+        
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        
+        return $earthRadius * $c;
+    }
 
-        return 6371 * $c; // Radio de la Tierra en km
+    public function getFormattedDistanceFrom(float $lat, float $lng): string
+    {
+        $distance = $this->getDistanceFrom($lat, $lng);
+        if ($distance === null) {
+            return 'Sin coordenadas';
+        }
+
+        if ($distance < 1) {
+            return round($distance * 1000) . 'm';
+        }
+
+        return round($distance, 1) . 'km';
     }
 }

@@ -37,6 +37,7 @@ class GroupSeeder extends Seeder
         foreach ($famousGroups as $groupData) {
             $group = Group::create([
                 'name' => $groupData['name'],
+                'slug' => \Str::slug($groupData['name']),
                 'description' => $groupData['description'],
             ]);
 

@@ -42,26 +42,6 @@ class LiturgicalCalendar extends Model
     }
 
     // Atributos calculados
-    public function getIsTodayAttribute(): bool
-    {
-        return $this->date->isToday();
-    }
-
-    public function getIsThisYearAttribute(): bool
-    {
-        return $this->date->year === Carbon::now()->year;
-    }
-
-    public function getFormattedDateAttribute(): string
-    {
-        return $this->date->format('d/m/Y');
-    }
-
-    public function getDayOfWeekAttribute(): string
-    {
-        return $this->date->locale('es')->dayName;
-    }
-
     public function getCelebrationLevelLabelAttribute(): string
     {
         return match ($this->celebration_level) {
@@ -69,7 +49,7 @@ class LiturgicalCalendar extends Model
             'feast' => 'Fiesta',
             'memorial' => 'Memoria',
             'optional_memorial' => 'Memoria Opcional',
-            'ferial' => 'Ferial',
+            'weekday' => 'Feria',
             default => 'Desconocido',
         };
     }
@@ -81,7 +61,7 @@ class LiturgicalCalendar extends Model
             'feast' => 'warning',
             'memorial' => 'info',
             'optional_memorial' => 'secondary',
-            'ferial' => 'success',
+            'weekday' => 'success',
             default => 'gray',
         };
     }
@@ -99,20 +79,27 @@ class LiturgicalCalendar extends Model
         };
     }
 
-    public function getReadingsCountAttribute(): int
+    public function getIsTodayAttribute(): bool
     {
-        if ($this->readings && is_array($this->readings)) {
-            return count($this->readings);
-        }
-        return 0;
+        return $this->date->isToday();
     }
 
-    public function getPrayersCountAttribute(): int
+    public function getIsThisWeekAttribute(): bool
     {
-        if ($this->prayers && is_array($this->prayers)) {
-            return count($this->prayers);
-        }
-        return 0;
+        return $this->date->between(
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek()
+        );
+    }
+
+    public function getFormattedDateAttribute(): string
+    {
+        return $this->date->format('d/m/Y');
+    }
+
+    public function getDayOfWeekAttribute(): string
+    {
+        return $this->date->locale('es')->dayName;
     }
 
     // Scopes
@@ -123,7 +110,10 @@ class LiturgicalCalendar extends Model
 
     public function scopeThisWeek($query)
     {
-        return $query->whereBetween('date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+        return $query->whereBetween('date', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek()
+        ]);
     }
 
     public function scopeBySeason($query, string $season)
@@ -151,9 +141,12 @@ class LiturgicalCalendar extends Model
         return $query->whereDate('date', $date);
     }
 
-    public function scopeThisMonth($query)
+    public function scopeUpcoming($query, int $days = 7)
     {
-        return $query->whereMonth('date', Carbon::now()->month);
+        return $query->whereBetween('date', [
+            Carbon::today(),
+            Carbon::today()->addDays($days)
+        ]);
     }
 
     // Métodos
@@ -172,9 +165,9 @@ class LiturgicalCalendar extends Model
         return in_array($this->celebration_level, ['memorial', 'optional_memorial']);
     }
 
-    public function isFerial(): bool
+    public function isWeekday(): bool
     {
-        return $this->celebration_level === 'ferial';
+        return $this->celebration_level === 'weekday';
     }
 
     public function hasSaint(): bool
@@ -182,25 +175,27 @@ class LiturgicalCalendar extends Model
         return !is_null($this->saint_id);
     }
 
-    public function hasReadings(): bool
+    public function getReadingsCount(): int
     {
-        return $this->readings_count > 0;
+        if (is_array($this->readings)) {
+            return count($this->readings);
+        }
+        return 0;
     }
 
-    public function hasPrayers(): bool
+    public function getPrayersCount(): int
     {
-        return $this->prayers_count > 0;
+        if (is_array($this->prayers)) {
+            return count($this->prayers);
+        }
+        return 0;
     }
 
-    public function getNextOccurrence(): ?Carbon
+    public function getTraditionsCount(): int
     {
-        $nextYear = $this->date->copy()->addYear();
-        return $nextYear;
-    }
-
-    public function getPreviousOccurrence(): ?Carbon
-    {
-        $prevYear = $this->date->copy()->subYear();
-        return $prevYear;
+        if (is_array($this->traditions)) {
+            return count($this->traditions);
+        }
+        return 0;
     }
 }
