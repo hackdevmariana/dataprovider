@@ -589,12 +589,12 @@ class DailyAnniversaryResource extends Resource
                 
                 Tables\Columns\TextColumn::make('days_until_anniversary')
                     ->label('Días Restantes')
-                    ->formatStateUsing(fn ($record): string => {
+                    ->formatStateUsing(function ($record) {
                         $today = now();
                         $anniversary = $record->anniversary_date;
                         if (!$anniversary) return 'N/A';
                         
-                        $nextAnniversary = $anniversary->copy()->year($today->year);
+                        $nextAnniversary = $anniversary->copy()->setYear($today->year);
                         if ($nextAnniversary->isPast()) {
                             $nextAnniversary->addYear();
                         }
@@ -602,23 +602,21 @@ class DailyAnniversaryResource extends Resource
                         $days = $today->diffInDays($nextAnniversary, false);
                         return $days > 0 ? "+{$days}" : "Hoy";
                     })
-                    ->color(fn ($record): string => {
+                    ->color(function ($record) {
                         $today = now();
                         $anniversary = $record->anniversary_date;
                         if (!$anniversary) return 'secondary';
                         
-                        $nextAnniversary = $anniversary->copy()->year($today->year);
+                        $nextAnniversary = $anniversary->copy()->setYear($today->year);
                         if ($nextAnniversary->isPast()) {
                             $nextAnniversary->addYear();
                         }
                         
                         $days = $today->diffInDays($nextAnniversary, false);
-                        return match (true) {
-                            $days === 0 => 'success',
-                            $days <= 7 => 'warning',
-                            $days <= 30 => 'info',
-                            default => 'secondary',
-                        };
+                        if ($days === 0) return 'success';
+                        if ($days <= 7) return 'warning';
+                        if ($days <= 30) return 'info';
+                        return 'secondary';
                     }),
                 
                 Tables\Columns\TextColumn::make('created_at')
@@ -716,7 +714,7 @@ class DailyAnniversaryResource extends Resource
                 
                 Tables\Filters\Filter::make('upcoming_anniversaries')
                     ->label('Aniversarios Próximos (7 días)')
-                    ->query(fn (Builder $query): Builder => {
+                    ->query(function (Builder $query) {
                         $today = now();
                         $nextWeek = $today->copy()->addDays(7);
                         return $query->whereRaw("DATE_FORMAT(anniversary_date, '%m-%d') BETWEEN ? AND ?", [
@@ -727,7 +725,7 @@ class DailyAnniversaryResource extends Resource
                 
                 Tables\Filters\Filter::make('today_anniversaries')
                     ->label('Aniversarios de Hoy')
-                    ->query(fn (Builder $query): Builder => {
+                    ->query(function (Builder $query) {
                         $today = now();
                         return $query->whereRaw("DATE_FORMAT(anniversary_date, '%m-%d') = ?", [$today->format('m-d')]);
                     }),
@@ -744,37 +742,51 @@ class DailyAnniversaryResource extends Resource
                     ->color('warning'),
                 
                 Tables\Actions\Action::make('toggle_featured')
-                    ->label(fn ($record): string => $record->is_featured ? 'Quitar Destacado' : 'Destacar')
-                    ->icon(fn ($record): string => $record->is_featured ? 'fas-star' : 'far-star')
-                    ->action(function ($record): void {
+                    ->label(function ($record) {
+                        return $record->is_featured ? 'Quitar Destacado' : 'Destacar';
+                    })
+                    ->icon(function ($record) {
+                        return $record->is_featured ? 'fas-star' : 'far-star';
+                    })
+                    ->action(function ($record) {
                         $record->update(['is_featured' => !$record->is_featured]);
                     })
-                    ->color(fn ($record): string => $record->is_featured ? 'warning' : 'success'),
+                    ->color(function ($record) {
+                        return $record->is_featured ? 'warning' : 'success';
+                    }),
                 
                 Tables\Actions\Action::make('mark_verified')
                     ->label('Marcar como Verificado')
                     ->icon('fas-check-circle')
-                    ->action(function ($record): void {
+                    ->action(function ($record) {
                         $record->update(['status' => 'verified']);
                     })
-                    ->visible(fn ($record): bool => $record->status !== 'verified')
+                    ->visible(function ($record) {
+                        return $record->status !== 'verified';
+                    })
                     ->color('success'),
                 
                 Tables\Actions\Action::make('mark_celebrated')
                     ->label('Marcar como Celebrado')
                     ->icon('fas-birthday-cake')
-                    ->action(function ($record): void {
+                    ->action(function ($record) {
                         $record->update(['is_celebrated' => true]);
                     })
-                    ->visible(fn ($record): bool => !$record->is_celebrated)
+                    ->visible(function ($record) {
+                        return !$record->is_celebrated;
+                    })
                     ->color('success'),
                 
                 Tables\Actions\Action::make('view_location')
                     ->label('Ver Ubicación')
                     ->icon('fas-map-marker-alt')
-                    ->url(fn ($record): string => "https://maps.google.com/?q={$record->location}")
+                    ->url(function ($record) {
+                        return "https://maps.google.com/?q={$record->location}";
+                    })
                     ->openUrlInNewTab()
-                    ->visible(fn ($record): bool => !empty($record->location))
+                    ->visible(function ($record) {
+                        return !empty($record->location);
+                    })
                     ->color('primary'),
             ])
             ->bulkActions([
