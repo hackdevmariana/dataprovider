@@ -17,13 +17,13 @@ class EnergyServiceResource extends Resource
 {
     protected static ?string $model = EnergyService::class;
 
-    protected static ?string $navigationIcon = 'fas-plug';
+    protected static ?string $navigationIcon = 'fas-bolt';
 
     protected static ?string $navigationGroup = 'Energía y Precios';
 
     protected static ?string $navigationLabel = 'Servicios Energéticos';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $modelLabel = 'Servicio Energético';
 
@@ -35,7 +35,7 @@ class EnergyServiceResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Información Básica')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        Forms\Components\TextInput::make('service_name')
                             ->required()
                             ->maxLength(255)
                             ->label('Nombre del Servicio')
@@ -43,8 +43,8 @@ class EnergyServiceResource extends Resource
                         
                         Forms\Components\TextInput::make('service_code')
                             ->maxLength(100)
-                            ->label('Código de Servicio')
-                            ->placeholder('Código único del servicio...'),
+                            ->label('Código del Servicio')
+                            ->placeholder('Código único identificador...'),
                         
                         Forms\Components\Textarea::make('description')
                             ->required()
@@ -67,33 +67,66 @@ class EnergyServiceResource extends Resource
                                 'nuclear' => '☢️ Nuclear',
                                 'geothermal' => '🌋 Geotérmico',
                                 'hydrogen' => '⚗️ Hidrógeno',
-                                'maintenance' => '🔧 Mantenimiento',
-                                'consulting' => '💼 Consultoría',
-                                'installation' => '🔌 Instalación',
+                                'hybrid' => '🔄 Híbrido',
                                 'other' => '❓ Otro',
                             ])
                             ->required()
                             ->label('Tipo de Servicio'),
                         
-                        Forms\Components\Select::make('category')
+                        Forms\Components\Select::make('service_category')
                             ->options([
                                 'generation' => '⚡ Generación',
-                                'distribution' => '📡 Distribución',
                                 'transmission' => '🔌 Transmisión',
-                                'retail' => '🏪 Comercialización',
-                                'maintenance' => '🔧 Mantenimiento',
-                                'consulting' => '💼 Consultoría',
-                                'installation' => '🔌 Instalación',
-                                'monitoring' => '📊 Monitoreo',
+                                'distribution' => '📡 Distribución',
                                 'storage' => '🔋 Almacenamiento',
-                                'efficiency' => '💡 Eficiencia',
+                                'consulting' => '💼 Consultoría',
+                                'maintenance' => '🔧 Mantenimiento',
+                                'installation' => '🛠️ Instalación',
+                                'monitoring' => '📊 Monitoreo',
+                                'efficiency' => '📈 Eficiencia',
                                 'renewable' => '🌱 Renovable',
                                 'conventional' => '🛢️ Convencional',
+                                'smart_grid' => '🧠 Red Inteligente',
+                                'microgrid' => '🏘️ Microred',
+                                'other' => '❓ Otro',
+                            ])
+                            ->required()
+                            ->label('Categoría del Servicio'),
+                        
+                        Forms\Components\Select::make('energy_source')
+                            ->options([
+                                'electricity' => '⚡ Electricidad',
+                                'gas' => '🔥 Gas Natural',
+                                'lpg' => '🛢️ Gas Licuado',
+                                'oil' => '🛢️ Petróleo',
+                                'coal' => '⛏️ Carbón',
+                                'biomass' => '🌱 Biomasa',
+                                'solar' => '☀️ Solar',
+                                'wind' => '💨 Eólico',
+                                'hydro' => '💧 Hidroeléctrico',
+                                'nuclear' => '☢️ Nuclear',
+                                'geothermal' => '🌋 Geotérmico',
+                                'hydrogen' => '⚗️ Hidrógeno',
                                 'hybrid' => '🔄 Híbrido',
                                 'other' => '❓ Otro',
                             ])
                             ->required()
-                            ->label('Categoría'),
+                            ->label('Fuente de Energía'),
+                        
+                        Forms\Components\Select::make('customer_type')
+                            ->options([
+                                'residential' => '🏠 Residencial',
+                                'commercial' => '🏪 Comercial',
+                                'industrial' => '🏭 Industrial',
+                                'agricultural' => '🌾 Agrícola',
+                                'government' => '🏛️ Gubernamental',
+                                'non_profit' => '🤝 Sin Fines de Lucro',
+                                'educational' => '🎓 Educativo',
+                                'healthcare' => '🏥 Salud',
+                                'other' => '❓ Otro',
+                            ])
+                            ->required()
+                            ->label('Tipo de Cliente'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Proveedor y Empresa')
@@ -107,257 +140,457 @@ class EnergyServiceResource extends Resource
                         Forms\Components\TextInput::make('provider_code')
                             ->maxLength(100)
                             ->label('Código del Proveedor')
-                            ->placeholder('Código único del proveedor...'),
+                            ->placeholder('Código del proveedor...'),
+                        
+                        Forms\Components\TextInput::make('company_name')
+                            ->maxLength(255)
+                            ->label('Nombre de la Empresa')
+                            ->placeholder('Nombre de la empresa...'),
                         
                         Forms\Components\TextInput::make('company_registration')
                             ->maxLength(100)
-                            ->label('Registro Mercantil')
+                            ->label('Registro de la Empresa')
                             ->placeholder('Número de registro...'),
                         
-                        Forms\Components\TextInput::make('tax_id')
-                            ->maxLength(100)
-                            ->label('CIF/NIF')
-                            ->placeholder('Identificación fiscal...'),
-                        
-                        Forms\Components\TextInput::make('website')
-                            ->maxLength(500)
-                            ->label('Sitio Web')
+                        Forms\Components\TextInput::make('provider_website')
+                            ->label('Sitio Web del Proveedor')
                             ->url()
-                            ->placeholder('https://www.ejemplo.com'),
+                            ->placeholder('https://...'),
                         
-                        Forms\Components\TextInput::make('phone')
+                        Forms\Components\TextInput::make('provider_phone')
                             ->tel()
-                            ->maxLength(50)
-                            ->label('Teléfono'),
+                            ->maxLength(20)
+                            ->label('Teléfono del Proveedor')
+                            ->placeholder('+34...'),
+                        
+                        Forms\Components\TextInput::make('provider_email')
+                            ->email()
+                            ->maxLength(255)
+                            ->label('Email del Proveedor')
+                            ->placeholder('contacto@...'),
+                        
+                        Forms\Components\TextInput::make('contact_person')
+                            ->maxLength(255)
+                            ->label('Persona de Contacto')
+                            ->placeholder('Nombre del contacto...'),
+                        
+                        Forms\Components\TextInput::make('contact_phone')
+                            ->tel()
+                            ->maxLength(20)
+                            ->label('Teléfono de Contacto')
+                            ->placeholder('+34...'),
+                        
+                        Forms\Components\TextInput::make('contact_email')
+                            ->email()
+                            ->maxLength(255)
+                            ->label('Email de Contacto')
+                            ->placeholder('contacto@...'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Características Técnicas')
                     ->schema([
                         Forms\Components\TextInput::make('capacity')
                             ->numeric()
-                            ->step(0.01)
-                            ->suffix('MW')
                             ->label('Capacidad')
-                            ->helperText('Capacidad en megavatios'),
+                            ->placeholder('Capacidad del servicio...'),
                         
                         Forms\Components\Select::make('capacity_unit')
                             ->options([
-                                'MW' => 'MW (Megavatio)',
-                                'kW' => 'kW (Kilovatio)',
-                                'W' => 'W (Vatio)',
-                                'MWh' => 'MWh (Megavatio-hora)',
-                                'kWh' => 'kWh (Kilovatio-hora)',
-                                'Wh' => 'Wh (Vatio-hora)',
-                                'm³/h' => 'm³/h (Metros cúbicos por hora)',
-                                'l/h' => 'l/h (Litros por hora)',
-                                'kg/h' => 'kg/h (Kilogramos por hora)',
+                                'kW' => 'kW',
+                                'MW' => 'MW',
+                                'GW' => 'GW',
+                                'kWh' => 'kWh',
+                                'MWh' => 'MWh',
+                                'GWh' => 'GWh',
+                                'm3' => 'm³',
+                                'l' => 'L',
+                                'gal' => 'Galones',
                                 'other' => 'Otro',
                             ])
                             ->label('Unidad de Capacidad'),
                         
                         Forms\Components\TextInput::make('efficiency')
                             ->numeric()
-                            ->step(0.01)
+                            ->label('Eficiencia (%)')
+                            ->placeholder('Porcentaje de eficiencia...')
                             ->minValue(0)
-                            ->maxValue(100)
-                            ->suffix('%')
-                            ->label('Eficiencia')
-                            ->helperText('Porcentaje de eficiencia'),
+                            ->maxValue(100),
                         
                         Forms\Components\TextInput::make('voltage')
                             ->numeric()
-                            ->suffix('V')
                             ->label('Voltaje')
-                            ->helperText('Voltaje en voltios'),
+                            ->placeholder('Voltaje del servicio...'),
+                        
+                        Forms\Components\Select::make('voltage_unit')
+                            ->options([
+                                'V' => 'V',
+                                'kV' => 'kV',
+                                'MV' => 'MV',
+                                'other' => 'Otro',
+                            ])
+                            ->label('Unidad de Voltaje'),
                         
                         Forms\Components\TextInput::make('frequency')
                             ->numeric()
-                            ->suffix('Hz')
-                            ->label('Frecuencia')
-                            ->helperText('Frecuencia en hercios'),
+                            ->label('Frecuencia (Hz)')
+                            ->placeholder('Frecuencia del servicio...'),
                         
                         Forms\Components\TextInput::make('power_factor')
                             ->numeric()
-                            ->step(0.01)
-                            ->minValue(0)
-                            ->maxValue(1)
                             ->label('Factor de Potencia')
-                            ->helperText('Valor entre 0 y 1'),
+                            ->placeholder('Factor de potencia...')
+                            ->minValue(0)
+                            ->maxValue(1),
+                        
+                        Forms\Components\TextInput::make('reliability')
+                            ->numeric()
+                            ->label('Confiabilidad (%)')
+                            ->placeholder('Porcentaje de confiabilidad...')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        
+                        Forms\Components\TextInput::make('uptime')
+                            ->numeric()
+                            ->label('Tiempo de Actividad (%)')
+                            ->placeholder('Porcentaje de tiempo activo...')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        
+                        Forms\Components\TextInput::make('response_time')
+                            ->numeric()
+                            ->label('Tiempo de Respuesta')
+                            ->placeholder('Tiempo de respuesta...'),
+                        
+                        Forms\Components\Select::make('response_time_unit')
+                            ->options([
+                                'minutes' => 'Minutos',
+                                'hours' => 'Horas',
+                                'days' => 'Días',
+                                'other' => 'Otro',
+                            ])
+                            ->label('Unidad de Tiempo de Respuesta'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Ubicación y Cobertura')
                     ->schema([
-                        Forms\Components\TextInput::make('location')
-                            ->maxLength(255)
-                            ->label('Ubicación')
-                            ->placeholder('Ciudad, región o lugar específico...'),
-                        
-                        Forms\Components\TextInput::make('country')
-                            ->maxLength(100)
-                            ->label('País')
-                            ->placeholder('País donde se ofrece el servicio...'),
-                        
-                        Forms\Components\TextInput::make('region')
-                            ->maxLength(100)
-                            ->label('Región')
-                            ->placeholder('Región, provincia o estado...'),
-                        
-                        Forms\Components\TextInput::make('postal_code')
-                            ->maxLength(20)
-                            ->label('Código Postal'),
-                        
-                        Forms\Components\TextInput::make('coordinates')
-                            ->maxLength(100)
-                            ->label('Coordenadas')
-                            ->placeholder('Latitud, Longitud...'),
-                        
-                        Forms\Components\Select::make('coverage_area')
+                        Forms\Components\Select::make('geographic_coverage')
                             ->options([
-                                'local' => '🏠 Local',
-                                'regional' => '🏘️ Regional',
                                 'national' => '🏳️ Nacional',
-                                'continental' => '🌎 Continental',
-                                'global' => '🌍 Global',
+                                'regional' => '🏘️ Regional',
+                                'state_province' => '🏛️ Estado/Provincia',
+                                'city' => '🏙️ Ciudad',
+                                'local' => '🏠 Local',
+                                'specific_area' => '📍 Área Específica',
+                                'other' => '❓ Otro',
                             ])
-                            ->label('Área de Cobertura'),
+                            ->required()
+                            ->label('Cobertura Geográfica'),
+                        
+                        Forms\Components\TextInput::make('specific_locations')
+                            ->maxLength(500)
+                            ->label('Ubicaciones Específicas')
+                            ->placeholder('Ciudades, regiones o áreas específicas...'),
+                        
+                        Forms\Components\TextInput::make('service_area')
+                            ->maxLength(255)
+                            ->label('Área de Servicio')
+                            ->placeholder('Área geográfica del servicio...'),
+                        
+                        Forms\Components\TextInput::make('zip_codes')
+                            ->maxLength(500)
+                            ->label('Códigos Postales')
+                            ->placeholder('Códigos postales cubiertos...'),
+                        
+                        Forms\Components\Toggle::make('is_mobile')
+                            ->label('Es Móvil')
+                            ->default(false)
+                            ->helperText('El servicio se puede mover'),
+                        
+                        Forms\Components\Toggle::make('is_portable')
+                            ->label('Es Portátil')
+                            ->default(false)
+                            ->helperText('El servicio es portátil'),
+                        
+                        Forms\Components\Toggle::make('is_remote')
+                            ->label('Es Remoto')
+                            ->default(false)
+                            ->helperText('El servicio se puede operar remotamente'),
+                        
+                        Forms\Components\TextInput::make('installation_requirements')
+                            ->maxLength(500)
+                            ->label('Requisitos de Instalación')
+                            ->placeholder('Requisitos para la instalación...'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Precios y Tarifas')
                     ->schema([
                         Forms\Components\TextInput::make('base_price')
                             ->numeric()
-                            ->step(0.01)
-                            ->prefix('€')
                             ->label('Precio Base')
-                            ->helperText('Precio base del servicio'),
+                            ->placeholder('Precio base del servicio...'),
+                        
+                        Forms\Components\Select::make('price_currency')
+                            ->options([
+                                'EUR' => '€ EUR',
+                                'USD' => '$ USD',
+                                'GBP' => '£ GBP',
+                                'JPY' => '¥ JPY',
+                                'CHF' => 'CHF',
+                                'CAD' => 'C$ CAD',
+                                'AUD' => 'A$ AUD',
+                                'other' => 'Otro',
+                            ])
+                            ->default('EUR')
+                            ->label('Moneda del Precio'),
                         
                         Forms\Components\Select::make('price_unit')
                             ->options([
-                                '€/kWh' => '€/kWh (Euro por kilovatio-hora)',
-                                '€/MWh' => '€/MWh (Euro por megavatio-hora)',
-                                '€/m³' => '€/m³ (Euro por metro cúbico)',
-                                '€/l' => '€/l (Euro por litro)',
-                                '€/kg' => '€/kg (Euro por kilogramo)',
-                                '€/hora' => '€/hora (Euro por hora)',
-                                '€/mes' => '€/mes (Euro por mes)',
-                                '€/año' => '€/año (Euro por año)',
-                                '€/servicio' => '€/servicio (Euro por servicio)',
+                                'per_kWh' => 'por kWh',
+                                'per_MWh' => 'por MWh',
+                                'per_kW' => 'por kW',
+                                'per_month' => 'por mes',
+                                'per_year' => 'por año',
+                                'per_service' => 'por servicio',
+                                'per_hour' => 'por hora',
+                                'per_day' => 'por día',
                                 'other' => 'Otro',
                             ])
                             ->label('Unidad de Precio'),
                         
-                        Forms\Components\Toggle::make('has_fixed_price')
-                            ->label('Precio Fijo')
-                            ->default(false),
+                        Forms\Components\TextInput::make('setup_fee')
+                            ->numeric()
+                            ->label('Cargo de Instalación')
+                            ->placeholder('Cargo por instalación...'),
                         
-                        Forms\Components\Toggle::make('has_variable_price')
-                            ->label('Precio Variable')
-                            ->default(false),
+                        Forms\Components\TextInput::make('maintenance_fee')
+                            ->numeric()
+                            ->label('Cargo de Mantenimiento')
+                            ->placeholder('Cargo por mantenimiento...'),
                         
-                        Forms\Components\TextInput::make('price_variability')
-                            ->maxLength(100)
-                            ->label('Variabilidad del Precio')
-                            ->placeholder('Horaria, estacional, por demanda...'),
+                        Forms\Components\TextInput::make('cancellation_fee')
+                            ->numeric()
+                            ->label('Cargo de Cancelación')
+                            ->placeholder('Cargo por cancelación...'),
                         
-                        Forms\Components\KeyValue::make('price_tiers')
-                            ->label('Niveles de Precio')
-                            ->keyLabel('Nivel')
-                            ->valueLabel('Precio')
-                            ->addActionLabel('Agregar Nivel'),
+                        Forms\Components\Toggle::make('has_discounts')
+                            ->label('Tiene Descuentos')
+                            ->default(false)
+                            ->helperText('El servicio ofrece descuentos'),
+                        
+                        Forms\Components\Textarea::make('discount_details')
+                            ->maxLength(500)
+                            ->label('Detalles de Descuentos')
+                            ->rows(2)
+                            ->placeholder('Detalles sobre descuentos disponibles...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_discounts')),
+                        
+                        Forms\Components\Toggle::make('has_promotions')
+                            ->label('Tiene Promociones')
+                            ->default(false)
+                            ->helperText('El servicio tiene promociones activas'),
+                        
+                        Forms\Components\Textarea::make('promotion_details')
+                            ->maxLength(500)
+                            ->label('Detalles de Promociones')
+                            ->rows(2)
+                            ->placeholder('Detalles sobre promociones...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_promotions')),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Disponibilidad y Horarios')
                     ->schema([
-                        Forms\Components\Toggle::make('is_available_24_7')
-                            ->label('Disponible 24/7')
-                            ->default(false),
-                        
-                        Forms\Components\TextInput::make('business_hours')
-                            ->maxLength(255)
-                            ->label('Horario Comercial')
-                            ->placeholder('L-V 9:00-18:00, S 9:00-14:00...'),
-                        
-                        Forms\Components\TextInput::make('response_time')
-                            ->maxLength(100)
-                            ->label('Tiempo de Respuesta')
-                            ->placeholder('2 horas, 24 horas, inmediato...'),
-                        
                         Forms\Components\Select::make('availability_status')
                             ->options([
-                                'available' => '🟢 Disponible',
-                                'limited' => '🟡 Limitado',
-                                'unavailable' => '🔴 No Disponible',
+                                'available' => '✅ Disponible',
+                                'limited' => '⚠️ Limitada',
+                                'unavailable' => '❌ No Disponible',
+                                'coming_soon' => '🚀 Próximamente',
+                                'discontinued' => '🛑 Discontinuado',
                                 'maintenance' => '🔧 En Mantenimiento',
-                                'planned_outage' => '📅 Corte Programado',
-                                'emergency_outage' => '🚨 Corte de Emergencia',
+                                'testing' => '🧪 En Pruebas',
+                                'other' => '❓ Otro',
                             ])
+                            ->required()
                             ->default('available')
                             ->label('Estado de Disponibilidad'),
+                        
+                        Forms\Components\TextInput::make('availability_hours')
+                            ->maxLength(255)
+                            ->label('Horarios de Disponibilidad')
+                            ->placeholder('Horarios del servicio...'),
+                        
+                        Forms\Components\Toggle::make('is_24_7')
+                            ->label('24/7')
+                            ->default(false)
+                            ->helperText('El servicio está disponible 24/7'),
+                        
+                        Forms\Components\Toggle::make('has_emergency_service')
+                            ->label('Servicio de Emergencia')
+                            ->default(false)
+                            ->helperText('Ofrece servicio de emergencia'),
+                        
+                        Forms\Components\TextInput::make('emergency_phone')
+                            ->tel()
+                            ->maxLength(20)
+                            ->label('Teléfono de Emergencia')
+                            ->placeholder('+34...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_emergency_service')),
+                        
+                        Forms\Components\TextInput::make('response_time_emergency')
+                            ->numeric()
+                            ->label('Tiempo de Respuesta Emergencia')
+                            ->placeholder('Tiempo de respuesta para emergencias...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_emergency_service')),
+                        
+                        Forms\Components\Select::make('response_time_emergency_unit')
+                            ->options([
+                                'minutes' => 'Minutos',
+                                'hours' => 'Horas',
+                                'other' => 'Otro',
+                            ])
+                            ->label('Unidad de Tiempo Emergencia')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_emergency_service')),
+                        
+                        Forms\Components\Toggle::make('has_weekend_service')
+                            ->label('Servicio en Fines de Semana')
+                            ->default(false)
+                            ->helperText('Ofrece servicio en fines de semana'),
+                        
+                        Forms\Components\Toggle::make('has_holiday_service')
+                            ->label('Servicio en Festivos')
+                            ->default(false)
+                            ->helperText('Ofrece servicio en días festivos'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Certificaciones y Calidad')
                     ->schema([
                         Forms\Components\Toggle::make('is_certified')
-                            ->label('Certificado')
-                            ->default(false),
+                            ->label('Está Certificado')
+                            ->default(false)
+                            ->helperText('El servicio tiene certificaciones'),
                         
-                        Forms\Components\TextInput::make('certification_body')
-                            ->maxLength(255)
-                            ->label('Organismo Certificador')
-                            ->placeholder('Nombre del organismo...'),
+                        Forms\Components\Textarea::make('certifications')
+                            ->maxLength(500)
+                            ->label('Certificaciones')
+                            ->rows(2)
+                            ->placeholder('Certificaciones del servicio...')
+                            ->visible(fn (Forms\Get $get): bool => $get('is_certified')),
                         
-                        Forms\Components\TextInput::make('certification_number')
+                        Forms\Components\Toggle::make('is_licensed')
+                            ->label('Está Licenciado')
+                            ->default(false)
+                            ->helperText('El servicio tiene licencias'),
+                        
+                        Forms\Components\Textarea::make('licenses')
+                            ->maxLength(500)
+                            ->label('Licencias')
+                            ->rows(2)
+                            ->placeholder('Licencias del servicio...')
+                            ->visible(fn (Forms\Get $get): bool => $get('is_licensed')),
+                        
+                        Forms\Components\Toggle::make('is_insured')
+                            ->label('Está Asegurado')
+                            ->default(false)
+                            ->helperText('El servicio tiene seguro'),
+                        
+                        Forms\Components\Textarea::make('insurance_details')
+                            ->maxLength(500)
+                            ->label('Detalles del Seguro')
+                            ->rows(2)
+                            ->placeholder('Detalles del seguro...')
+                            ->visible(fn (Forms\Get $get): bool => $get('is_insured')),
+                        
+                        Forms\Components\Toggle::make('has_warranty')
+                            ->label('Tiene Garantía')
+                            ->default(false)
+                            ->helperText('El servicio incluye garantía'),
+                        
+                        Forms\Components\Textarea::make('warranty_details')
+                            ->maxLength(500)
+                            ->label('Detalles de la Garantía')
+                            ->rows(2)
+                            ->placeholder('Detalles de la garantía...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_warranty')),
+                        
+                        Forms\Components\TextInput::make('warranty_duration')
                             ->maxLength(100)
-                            ->label('Número de Certificación')
-                            ->placeholder('Número de certificado...'),
-                        
-                        Forms\Components\DatePicker::make('certification_date')
-                            ->label('Fecha de Certificación')
-                            ->displayFormat('d/m/Y'),
-                        
-                        Forms\Components\DatePicker::make('certification_expiry')
-                            ->label('Vencimiento de Certificación')
-                            ->displayFormat('d/m/Y'),
+                            ->label('Duración de la Garantía')
+                            ->placeholder('Duración de la garantía...')
+                            ->visible(fn (Forms\Get $get): bool => $get('has_warranty')),
                         
                         Forms\Components\Select::make('quality_rating')
                             ->options([
                                 'excellent' => '🟢 Excelente (5/5)',
-                                'very_good' => '🟢 Muy Bueno (4/5)',
-                                'good' => '🟡 Bueno (3/5)',
+                                'very_good' => '🟢 Muy Buena (4/5)',
+                                'good' => '🟡 Buena (3/5)',
                                 'fair' => '🟠 Regular (2/5)',
                                 'poor' => '🔴 Pobre (1/5)',
-                                'not_rated' => '⚫ No Evaluado',
+                                'not_rated' => '⚫ No Evaluada',
                             ])
                             ->label('Calificación de Calidad'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Información Adicional')
                     ->schema([
-                        Forms\Components\KeyValue::make('additional_features')
-                            ->label('Características Adicionales')
-                            ->keyLabel('Característica')
-                            ->valueLabel('Descripción')
-                            ->addActionLabel('Agregar Característica'),
+                        Forms\Components\Textarea::make('features')
+                            ->maxLength(1000)
+                            ->label('Características')
+                            ->rows(3)
+                            ->placeholder('Características especiales del servicio...'),
+                        
+                        Forms\Components\Textarea::make('benefits')
+                            ->maxLength(1000)
+                            ->label('Beneficios')
+                            ->rows(3)
+                            ->placeholder('Beneficios del servicio...'),
+                        
+                        Forms\Components\Textarea::make('limitations')
+                            ->maxLength(500)
+                            ->label('Limitaciones')
+                            ->rows(2)
+                            ->placeholder('Limitaciones del servicio...'),
+                        
+                        Forms\Components\Textarea::make('requirements')
+                            ->maxLength(500)
+                            ->label('Requisitos')
+                            ->rows(2)
+                            ->placeholder('Requisitos para usar el servicio...'),
+                        
+                        Forms\Components\Textarea::make('restrictions')
+                            ->maxLength(500)
+                            ->label('Restricciones')
+                            ->rows(2)
+                            ->placeholder('Restricciones del servicio...'),
+                        
+                        Forms\Components\Textarea::make('terms_conditions')
+                            ->maxLength(1000)
+                            ->label('Términos y Condiciones')
+                            ->rows(3)
+                            ->placeholder('Términos y condiciones del servicio...'),
                         
                         Forms\Components\Textarea::make('notes')
                             ->maxLength(1000)
                             ->label('Notas')
                             ->rows(3)
-                            ->placeholder('Notas adicionales o comentarios...'),
-                        
-                        Forms\Components\KeyValue::make('metadata')
-                            ->label('Metadatos')
-                            ->keyLabel('Campo')
-                            ->valueLabel('Valor')
-                            ->addActionLabel('Agregar Campo'),
+                            ->placeholder('Notas adicionales...'),
                     ])->columns(1),
 
                 Forms\Components\Section::make('Estado del Servicio')
                     ->schema([
-                        Forms\Components\Toggle::make('is_active')
-                            ->label('Activo')
-                            ->default(true)
-                            ->helperText('Indica si el servicio está activo'),
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'active' => '✅ Activo',
+                                'inactive' => '❌ Inactivo',
+                                'pending' => '⏳ Pendiente',
+                                'suspended' => '⏸️ Suspendido',
+                                'discontinued' => '🛑 Discontinuado',
+                                'maintenance' => '🔧 En Mantenimiento',
+                                'testing' => '🧪 En Pruebas',
+                                'other' => '❓ Otro',
+                            ])
+                            ->required()
+                            ->default('active')
+                            ->label('Estado'),
                         
                         Forms\Components\Toggle::make('is_featured')
                             ->label('Destacado')
@@ -367,19 +600,45 @@ class EnergyServiceResource extends Resource
                         Forms\Components\Toggle::make('is_premium')
                             ->label('Premium')
                             ->default(false)
-                            ->helperText('Servicio de alta calidad'),
+                            ->helperText('Servicio de categoría premium'),
                         
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'active' => '✅ Activo',
-                                'inactive' => '❌ Inactivo',
-                                'maintenance' => '🔧 En Mantenimiento',
-                                'discontinued' => '🚫 Discontinuado',
-                                'beta' => '🧪 Beta',
-                                'deprecated' => '⚠️ Deprecado',
-                            ])
-                            ->default('active')
-                            ->label('Estado'),
+                        Forms\Components\Toggle::make('is_popular')
+                            ->label('Popular')
+                            ->default(false)
+                            ->helperText('Servicio popular entre los clientes'),
+                        
+                        Forms\Components\Toggle::make('is_new')
+                            ->label('Nuevo')
+                            ->default(false)
+                            ->helperText('Servicio recién lanzado'),
+                        
+                        Forms\Components\Toggle::make('is_recommended')
+                            ->label('Recomendado')
+                            ->default(false)
+                            ->helperText('Servicio recomendado por expertos'),
+                        
+                        Forms\Components\Toggle::make('is_verified')
+                            ->label('Verificado')
+                            ->default(false)
+                            ->helperText('El servicio ha sido verificado'),
+                        
+                        Forms\Components\Toggle::make('is_approved')
+                            ->label('Aprobado')
+                            ->default(false)
+                            ->helperText('El servicio ha sido aprobado'),
+                        
+                        Forms\Components\DatePicker::make('launch_date')
+                            ->label('Fecha de Lanzamiento')
+                            ->displayFormat('d/m/Y'),
+                        
+                        Forms\Components\DatePicker::make('last_updated')
+                            ->label('Última Actualización')
+                            ->displayFormat('d/m/Y'),
+                        
+                        Forms\Components\TextInput::make('update_frequency')
+                            ->maxLength(100)
+                            ->label('Frecuencia de Actualización')
+                            ->placeholder('Mensual, trimestral, anual...'),
                     ])->columns(2),
             ]);
     }
@@ -393,7 +652,7 @@ class EnergyServiceResource extends Resource
                     ->sortable()
                     ->searchable(),
                 
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('service_name')
                     ->label('Servicio')
                     ->searchable()
                     ->limit(40)
@@ -408,7 +667,7 @@ class EnergyServiceResource extends Resource
                         'success' => 'solar',
                         'primary' => 'wind',
                         'danger' => 'nuclear',
-                        'secondary' => 'maintenance',
+                        'secondary' => 'biomass',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'electricity' => '⚡ Electricidad',
@@ -423,37 +682,35 @@ class EnergyServiceResource extends Resource
                         'nuclear' => '☢️ Nuclear',
                         'geothermal' => '🌋 Geotérmico',
                         'hydrogen' => '⚗️ Hidrógeno',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'consulting' => '💼 Consultoría',
-                        'installation' => '🔌 Instalación',
+                        'hybrid' => '🔄 Híbrido',
                         'other' => '❓ Otro',
                         default => $state,
                     }),
                 
-                Tables\Columns\BadgeColumn::make('category')
+                Tables\Columns\BadgeColumn::make('service_category')
                     ->label('Categoría')
                     ->colors([
                         'primary' => 'generation',
-                        'success' => 'distribution',
-                        'warning' => 'transmission',
-                        'info' => 'retail',
-                        'danger' => 'maintenance',
-                        'secondary' => 'consulting',
+                        'success' => 'transmission',
+                        'warning' => 'distribution',
+                        'info' => 'storage',
+                        'danger' => 'consulting',
+                        'secondary' => 'maintenance',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'generation' => '⚡ Generación',
-                        'distribution' => '📡 Distribución',
                         'transmission' => '🔌 Transmisión',
-                        'retail' => '🏪 Comercialización',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'consulting' => '💼 Consultoría',
-                        'installation' => '🔌 Instalación',
-                        'monitoring' => '📊 Monitoreo',
+                        'distribution' => '📡 Distribución',
                         'storage' => '🔋 Almacenamiento',
-                        'efficiency' => '💡 Eficiencia',
+                        'consulting' => '💼 Consultoría',
+                        'maintenance' => '🔧 Mantenimiento',
+                        'installation' => '🛠️ Instalación',
+                        'monitoring' => '📊 Monitoreo',
+                        'efficiency' => '📈 Eficiencia',
                         'renewable' => '🌱 Renovable',
                         'conventional' => '🛢️ Convencional',
-                        'hybrid' => '🔄 Híbrido',
+                        'smart_grid' => '🧠 Red Inteligente',
+                        'microgrid' => '🏘️ Microred',
                         'other' => '❓ Otro',
                         default => $state,
                     }),
@@ -461,43 +718,46 @@ class EnergyServiceResource extends Resource
                 Tables\Columns\TextColumn::make('provider_name')
                     ->label('Proveedor')
                     ->searchable()
-                    ->limit(25),
-                
-                Tables\Columns\TextColumn::make('location')
-                    ->label('Ubicación')
-                    ->searchable()
-                    ->limit(20),
+                    ->limit(30)
+                    ->weight('medium')
+                    ->wrap(),
                 
                 Tables\Columns\TextColumn::make('capacity')
                     ->label('Capacidad')
                     ->numeric()
-                    ->suffix(fn ($record): string => $record->capacity_unit ?? 'MW')
-                    ->sortable(),
+                    ->sortable()
+                    ->suffix(fn ($record): string => $record->capacity_unit ? ' ' . $record->capacity_unit : '')
+                    ->color(fn (float $state): string => match (true) {
+                        $state >= 1000 => 'success',
+                        $state >= 100 => 'info',
+                        $state >= 10 => 'warning',
+                        $state >= 1 => 'secondary',
+                        default => 'danger',
+                    }),
                 
                 Tables\Columns\TextColumn::make('efficiency')
                     ->label('Eficiencia')
                     ->numeric()
-                    ->suffix('%')
                     ->sortable()
+                    ->suffix('%')
                     ->color(fn (float $state): string => match (true) {
                         $state >= 90 => 'success',
                         $state >= 80 => 'info',
                         $state >= 70 => 'warning',
-                        $state >= 60 => 'danger',
-                        default => 'secondary',
+                        $state >= 60 => 'secondary',
+                        default => 'danger',
                     }),
                 
                 Tables\Columns\TextColumn::make('base_price')
                     ->label('Precio Base')
-                    ->money('EUR')
-                    ->suffix(fn ($record): string => '/' . ($record->price_unit ?? 'kWh'))
+                    ->money(fn ($record): string => $record->price_currency ?? 'EUR')
                     ->sortable()
                     ->color(fn (float $state): string => match (true) {
-                        $state < 0.10 => 'success',
-                        $state < 0.20 => 'info',
-                        $state < 0.50 => 'warning',
-                        $state < 1.00 => 'danger',
-                        default => 'dark',
+                        $state <= 50 => 'success',
+                        $state <= 100 => 'info',
+                        $state <= 200 => 'warning',
+                        $state <= 500 => 'secondary',
+                        default => 'danger',
                     }),
                 
                 Tables\Columns\BadgeColumn::make('availability_status')
@@ -506,17 +766,18 @@ class EnergyServiceResource extends Resource
                         'success' => 'available',
                         'warning' => 'limited',
                         'danger' => 'unavailable',
-                        'info' => 'maintenance',
-                        'secondary' => 'planned_outage',
-                        'dark' => 'emergency_outage',
+                        'info' => 'coming_soon',
+                        'secondary' => 'discontinued',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'available' => '🟢 Disponible',
-                        'limited' => '🟡 Limitado',
-                        'unavailable' => '🔴 No Disponible',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'planned_outage' => '📅 Corte Programado',
-                        'emergency_outage' => '🚨 Corte Emergencia',
+                        'available' => '✅ Disponible',
+                        'limited' => '⚠️ Limitada',
+                        'unavailable' => '❌ No Disponible',
+                        'coming_soon' => '🚀 Próximamente',
+                        'discontinued' => '🛑 Discontinuado',
+                        'maintenance' => '🔧 En Mantenimiento',
+                        'testing' => '🧪 En Pruebas',
+                        'other' => '❓ Otro',
                         default => $state,
                     }),
                 
@@ -526,11 +787,17 @@ class EnergyServiceResource extends Resource
                     ->trueColor('success')
                     ->falseColor('secondary'),
                 
-                Tables\Columns\IconColumn::make('is_active')
-                    ->label('Activo')
+                Tables\Columns\IconColumn::make('is_licensed')
+                    ->label('Licenciado')
                     ->boolean()
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->trueColor('info')
+                    ->falseColor('secondary'),
+                
+                Tables\Columns\IconColumn::make('is_insured')
+                    ->label('Asegurado')
+                    ->boolean()
+                    ->trueColor('warning')
+                    ->falseColor('secondary'),
                 
                 Tables\Columns\IconColumn::make('is_featured')
                     ->label('Destacado')
@@ -549,18 +816,19 @@ class EnergyServiceResource extends Resource
                     ->colors([
                         'success' => 'active',
                         'danger' => 'inactive',
-                        'warning' => 'maintenance',
+                        'info' => 'pending',
+                        'warning' => 'suspended',
                         'secondary' => 'discontinued',
-                        'info' => 'beta',
-                        'dark' => 'deprecated',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'active' => '✅ Activo',
                         'inactive' => '❌ Inactivo',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'discontinued' => '🚫 Discontinuado',
-                        'beta' => '🧪 Beta',
-                        'deprecated' => '⚠️ Deprecado',
+                        'pending' => '⏳ Pendiente',
+                        'suspended' => '⏸️ Suspendido',
+                        'discontinued' => '🛑 Discontinuado',
+                        'maintenance' => '🔧 En Mantenimiento',
+                        'testing' => '🧪 En Pruebas',
+                        'other' => '❓ Otro',
                         default => $state,
                     }),
                 
@@ -585,40 +853,54 @@ class EnergyServiceResource extends Resource
                         'nuclear' => '☢️ Nuclear',
                         'geothermal' => '🌋 Geotérmico',
                         'hydrogen' => '⚗️ Hidrógeno',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'consulting' => '💼 Consultoría',
-                        'installation' => '🔌 Instalación',
+                        'hybrid' => '🔄 Híbrido',
                         'other' => '❓ Otro',
                     ])
                     ->label('Tipo de Servicio'),
                 
-                Tables\Filters\SelectFilter::make('category')
+                Tables\Filters\SelectFilter::make('service_category')
                     ->options([
                         'generation' => '⚡ Generación',
-                        'distribution' => '📡 Distribución',
                         'transmission' => '🔌 Transmisión',
-                        'retail' => '🏪 Comercialización',
-                        'maintenance' => '🔧 Mantenimiento',
-                        'consulting' => '💼 Consultoría',
-                        'installation' => '🔌 Instalación',
-                        'monitoring' => '📊 Monitoreo',
+                        'distribution' => '📡 Distribución',
                         'storage' => '🔋 Almacenamiento',
-                        'efficiency' => '💡 Eficiencia',
+                        'consulting' => '💼 Consultoría',
+                        'maintenance' => '🔧 Mantenimiento',
+                        'installation' => '🛠️ Instalación',
+                        'monitoring' => '📊 Monitoreo',
+                        'efficiency' => '📈 Eficiencia',
                         'renewable' => '🌱 Renovable',
                         'conventional' => '🛢️ Convencional',
-                        'hybrid' => '🔄 Híbrido',
+                        'smart_grid' => '🧠 Red Inteligente',
+                        'microgrid' => '🏘️ Microred',
                         'other' => '❓ Otro',
                     ])
-                    ->label('Categoría'),
+                    ->label('Categoría del Servicio'),
+                
+                Tables\Filters\SelectFilter::make('customer_type')
+                    ->options([
+                        'residential' => '🏠 Residencial',
+                        'commercial' => '🏪 Comercial',
+                        'industrial' => '🏭 Industrial',
+                        'agricultural' => '🌾 Agrícola',
+                        'government' => '🏛️ Gubernamental',
+                        'non_profit' => '🤝 Sin Fines de Lucro',
+                        'educational' => '🎓 Educativo',
+                        'healthcare' => '🏥 Salud',
+                        'other' => '❓ Otro',
+                    ])
+                    ->label('Tipo de Cliente'),
                 
                 Tables\Filters\SelectFilter::make('availability_status')
                     ->options([
-                        'available' => '🟢 Disponible',
-                        'limited' => '🟡 Limitado',
-                        'unavailable' => '🔴 No Disponible',
+                        'available' => '✅ Disponible',
+                        'limited' => '⚠️ Limitada',
+                        'unavailable' => '❌ No Disponible',
+                        'coming_soon' => '🚀 Próximamente',
+                        'discontinued' => '🛑 Discontinuado',
                         'maintenance' => '🔧 En Mantenimiento',
-                        'planned_outage' => '📅 Corte Programado',
-                        'emergency_outage' => '🚨 Corte de Emergencia',
+                        'testing' => '🧪 En Pruebas',
+                        'other' => '❓ Otro',
                     ])
                     ->label('Estado de Disponibilidad'),
                 
@@ -626,20 +908,14 @@ class EnergyServiceResource extends Resource
                     ->options([
                         'active' => '✅ Activo',
                         'inactive' => '❌ Inactivo',
+                        'pending' => '⏳ Pendiente',
+                        'suspended' => '⏸️ Suspendido',
+                        'discontinued' => '🛑 Discontinuado',
                         'maintenance' => '🔧 En Mantenimiento',
-                        'discontinued' => '🚫 Discontinuado',
-                        'beta' => '🧪 Beta',
-                        'deprecated' => '⚠️ Deprecado',
+                        'testing' => '🧪 En Pruebas',
+                        'other' => '❓ Otro',
                     ])
                     ->label('Estado'),
-                
-                Tables\Filters\Filter::make('active_only')
-                    ->label('Solo Activos')
-                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
-                
-                Tables\Filters\Filter::make('certified_only')
-                    ->label('Solo Certificados')
-                    ->query(fn (Builder $query): Builder => $query->where('is_certified', true)),
                 
                 Tables\Filters\Filter::make('featured_only')
                     ->label('Solo Destacados')
@@ -649,17 +925,37 @@ class EnergyServiceResource extends Resource
                     ->label('Solo Premium')
                     ->query(fn (Builder $query): Builder => $query->where('is_premium', true)),
                 
-                Tables\Filters\Filter::make('high_efficiency')
-                    ->label('Alta Eficiencia')
-                    ->query(fn (Builder $query): Builder => $query->where('efficiency', '>=', 90)),
+                Tables\Filters\Filter::make('certified_only')
+                    ->label('Solo Certificados')
+                    ->query(fn (Builder $query): Builder => $query->where('is_certified', true)),
                 
-                Tables\Filters\Filter::make('low_price')
-                    ->label('Precios Bajos')
-                    ->query(fn (Builder $query): Builder => $query->where('base_price', '<=', 0.20)),
+                Tables\Filters\Filter::make('licensed_only')
+                    ->label('Solo Licenciados')
+                    ->query(fn (Builder $query): Builder => $query->where('is_licensed', true)),
+                
+                Tables\Filters\Filter::make('insured_only')
+                    ->label('Solo Asegurados')
+                    ->query(fn (Builder $query): Builder => $query->where('is_insured', true)),
                 
                 Tables\Filters\Filter::make('renewable_energy')
-                    ->label('Energía Renovable')
-                    ->query(fn (Builder $query): Builder => $query->whereIn('service_type', ['solar', 'wind', 'hydro', 'biomass', 'geothermal'])),
+                    ->label('Solo Energía Renovable')
+                    ->query(fn (Builder $query): Builder => $query->whereIn('energy_source', ['solar', 'wind', 'hydro', 'biomass', 'geothermal'])),
+                
+                Tables\Filters\Filter::make('high_efficiency')
+                    ->label('Alta Eficiencia (80%+)')
+                    ->query(fn (Builder $query): Builder => $query->where('efficiency', '>=', 80)),
+                
+                Tables\Filters\Filter::make('low_price')
+                    ->label('Precio Bajo (≤50)')
+                    ->query(fn (Builder $query): Builder => $query->where('base_price', '<=', 50)),
+                
+                Tables\Filters\Filter::make('available_services')
+                    ->label('Solo Disponibles')
+                    ->query(fn (Builder $query): Builder => $query->where('availability_status', 'available')),
+                
+                Tables\Filters\Filter::make('active_services')
+                    ->label('Solo Activos')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'active')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -689,19 +985,39 @@ class EnergyServiceResource extends Resource
                     ->color(fn ($record): string => $record->is_premium ? 'primary' : 'secondary'),
                 
                 Tables\Actions\Action::make('visit_website')
-                    ->label('Visitar Web')
+                    ->label('Visitar Sitio Web')
                     ->icon('fas-external-link-alt')
-                    ->url(fn ($record): string => $record->website)
+                    ->url(fn ($record): string => $record->provider_website)
                     ->openUrlInNewTab()
-                    ->visible(fn ($record): bool => !empty($record->website))
-                    ->color('primary'),
+                    ->visible(fn ($record): bool => !empty($record->provider_website))
+                    ->color('info'),
                 
                 Tables\Actions\Action::make('contact_provider')
-                    ->label('Contactar')
+                    ->label('Contactar Proveedor')
                     ->icon('fas-phone')
-                    ->url(fn ($record): string => "tel:{$record->phone}")
-                    ->visible(fn ($record): bool => !empty($record->phone))
+                    ->action(function ($record): void {
+                        // Aquí se podría implementar la lógica de contacto
+                    })
+                    ->visible(fn ($record): bool => !empty($record->provider_phone) || !empty($record->provider_email))
                     ->color('success'),
+                
+                Tables\Actions\Action::make('activate_service')
+                    ->label('Activar')
+                    ->icon('fas-play')
+                    ->action(function ($record): void {
+                        $record->update(['status' => 'active']);
+                    })
+                    ->visible(fn ($record): bool => $record->status !== 'active')
+                    ->color('success'),
+                
+                Tables\Actions\Action::make('deactivate_service')
+                    ->label('Desactivar')
+                    ->icon('fas-pause')
+                    ->action(function ($record): void {
+                        $record->update(['status' => 'inactive']);
+                    })
+                    ->visible(fn ($record): bool => $record->status === 'active')
+                    ->color('warning'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -710,22 +1026,6 @@ class EnergyServiceResource extends Resource
                         ->icon('fas-trash')
                         ->color('danger')
                         ->requiresConfirmation(),
-                    
-                    Tables\Actions\BulkAction::make('activate')
-                        ->label('Activar')
-                        ->icon('fas-check')
-                        ->action(function ($records): void {
-                            $records->each->update(['is_active' => true]);
-                        })
-                        ->color('success'),
-                    
-                    Tables\Actions\BulkAction::make('deactivate')
-                        ->label('Desactivar')
-                        ->icon('fas-times')
-                        ->action(function ($records): void {
-                            $records->each->update(['is_active' => false]);
-                        })
-                        ->color('danger'),
                     
                     Tables\Actions\BulkAction::make('mark_featured')
                         ->label('Marcar como Destacados')
@@ -742,9 +1042,25 @@ class EnergyServiceResource extends Resource
                             $records->each->update(['is_premium' => true]);
                         })
                         ->color('primary'),
+                    
+                    Tables\Actions\BulkAction::make('activate_all')
+                        ->label('Activar Todos')
+                        ->icon('fas-play')
+                        ->action(function ($records): void {
+                            $records->each->update(['status' => 'active']);
+                        })
+                        ->color('success'),
+                    
+                    Tables\Actions\BulkAction::make('deactivate_all')
+                        ->label('Desactivar Todos')
+                        ->icon('fas-pause')
+                        ->action(function ($records): void {
+                            $records->each->update(['status' => 'inactive']);
+                        })
+                        ->color('warning'),
                 ]),
             ])
-            ->defaultSort('name', 'asc')
+            ->defaultSort('created_at', 'desc')
             ->paginated([25, 50, 100]);
     }
 
