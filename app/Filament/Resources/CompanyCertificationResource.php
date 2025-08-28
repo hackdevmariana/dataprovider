@@ -485,15 +485,16 @@ class CompanyCertificationResource extends Resource
                 
                 Tables\Columns\TextColumn::make('days_until_expiry')
                     ->label('Días Restantes')
-                    ->formatStateUsing(fn ($record): string => {
+                    ->formatStateUsing(function ($record) {
                         if (!$record->expiry_date) return 'N/A';
                         $days = $record->expiry_date->diffInDays(now(), false);
                         return $days > 0 ? "+{$days}" : abs($days);
                     })
-                    ->color(fn ($record): string => 
-                        $record->expiry_date && $record->expiry_date->isPast() ? 'danger' : 
-                        ($record->expiry_date && $record->expiry_date->diffInDays(now()) <= 90 ? 'warning' : 'success')
-                    ),
+                    ->color(function ($record) {
+                        if (!$record->expiry_date) return 'success';
+                        return $record->expiry_date->isPast() ? 'danger' : 
+                               ($record->expiry_date->diffInDays(now()) <= 90 ? 'warning' : 'success');
+                    }),
                 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
