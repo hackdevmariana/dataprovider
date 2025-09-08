@@ -14,8 +14,7 @@ class ViewNewsAggregation extends ViewRecord
     {
         return [
             Actions\EditAction::make()
-                ->label('Editar')
-                ->icon('fas-edit'),
+                ->label('Editar'),
         ];
     }
 }
