@@ -30,6 +30,23 @@ class BillSimulatorResource extends Resource
     protected static ?string $navigationGroup = 'Energía';
     
     protected static ?int $navigationSort = 3;
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        
+        return match (true) {
+            $count >= 50 => 'success',
+            $count >= 20 => 'warning',
+            $count >= 10 => 'info',
+            default => 'gray',
+        };
+    }
 
     public static function form(Form $form): Form
     {
