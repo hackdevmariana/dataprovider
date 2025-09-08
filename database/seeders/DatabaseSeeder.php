@@ -20,6 +20,11 @@ class DatabaseSeeder extends Seeder
             QuoteSeeder::class,
             RealTimePriceSeeder::class,
             NewsSourceSeeder::class,
+            FestivalActivitySeeder::class,
+            FestivalScheduleSeeder::class,
+            NewsAggregationSeeder::class,
+            TrendingTopicSeeder::class,
+            DevotionSeeder::class,
         ]);
     }
 }
