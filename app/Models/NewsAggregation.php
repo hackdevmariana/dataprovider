@@ -37,6 +37,11 @@ class NewsAggregation extends Model
         return $this->belongsTo(NewsSource::class, 'source_id');
     }
 
+    public function article(): BelongsTo
+    {
+        return $this->belongsTo(NewsArticle::class, 'article_id');
+    }
+
     // Atributos calculados
     public function getProcessingStatusLabelAttribute(): string
     {
