@@ -17,7 +17,7 @@ class FestivalScheduleResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-calendar-day';
 
-    protected static ?string $navigationGroup = 'Festivales y Eventos';
+    protected static ?string $navigationGroup = 'Events & Calendar';
 
     protected static ?string $navigationLabel = 'Horarios de Festivales';
 
