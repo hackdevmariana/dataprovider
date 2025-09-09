@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             OfferHistorySeeder::class,
             PriceForecastSeeder::class,
             OfferComparisonSeeder::class,
+            EnergyServiceSeeder::class,
         ]);
     }
 }
