@@ -107,8 +107,8 @@ class EnergyCompanyFactory extends Factory
             'latitude' => $location['lat'] + $this->faker->randomFloat(4, -0.1, 0.1),
             'longitude' => $location['lng'] + $this->faker->randomFloat(4, -0.1, 0.1),
             'coverage_scope' => $this->faker->randomElement($coverageScopes),
-            'municipality_id' => $this->faker->boolean(60) ? Municipality::factory() : null,
-            'image_id' => $this->faker->boolean(30) ? Image::factory() : null,
+            'municipality_id' => null, // Se puede añadir municipios si es necesario
+            'image_id' => null, // Se puede añadir imágenes si es necesario
         ];
     }
 
