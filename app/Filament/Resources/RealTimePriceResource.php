@@ -29,6 +29,11 @@ class RealTimePriceResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Precios en Tiempo Real';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
