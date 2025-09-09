@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             OfferComparisonSeeder::class,
             EnergyServiceSeeder::class,
             PriceAlertSeeder::class,
+            ApiKeySeeder::class,
         ]);
     }
 }
