@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             NewsAggregationSeeder::class,
             TrendingTopicSeeder::class,
             DevotionSeeder::class,
+            OfferHistorySeeder::class,
         ]);
     }
 }
