@@ -19,6 +19,11 @@ class FestivalProgramResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -84,9 +89,20 @@ class FestivalProgramResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('event_type')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_free')
-                    ->boolean(),
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'performance' => 'success',
+                        'workshop' => 'info',
+                        'conference' => 'warning',
+                        'exhibition' => 'primary',
+                        'party' => 'danger',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('is_free')
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'Gratuito' : 'De pago')
+                    ->badge()
+                    ->color(fn (bool $state): string => $state ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('ticket_price')
                     ->numeric()
                     ->sortable(),
@@ -96,6 +112,23 @@ class FestivalProgramResource extends Resource
                 Tables\Columns\TextColumn::make('current_attendance')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('attendance_status')
+                    ->label('Estado')
+                    ->getStateUsing(function ($record): string {
+                        if (!$record->capacity) return 'Sin límite';
+                        $percentage = ($record->current_attendance / $record->capacity) * 100;
+                        if ($percentage >= 100) return 'Lleno';
+                        if ($percentage >= 80) return 'Casi lleno';
+                        return 'Disponible';
+                    })
+                    ->badge()
+                    ->color(function ($record): string {
+                        if (!$record->capacity) return 'gray';
+                        $percentage = ($record->current_attendance / $record->capacity) * 100;
+                        if ($percentage >= 100) return 'danger';
+                        if ($percentage >= 80) return 'warning';
+                        return 'success';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
