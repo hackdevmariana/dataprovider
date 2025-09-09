@@ -13,31 +13,26 @@ class PriceForecast extends Model
     protected $fillable = [
         'energy_type',
         'zone',
-        'forecast_date',
-        'target_date',
+        'forecast_time',
+        'target_time',
         'predicted_price',
         'confidence_level',
-        'forecast_method',
-        'data_source',
-        'factors_considered',
-        'uncertainty_range',
-        'trend_direction',
-        'is_accurate',
-        'actual_price',
+        'forecast_model',
+        'factors',
+        'min_price',
+        'max_price',
         'accuracy_score',
-        'notes',
     ];
 
     protected $casts = [
-        'forecast_date' => 'date',
-        'target_date' => 'date',
+        'forecast_time' => 'datetime',
+        'target_time' => 'datetime',
         'predicted_price' => 'decimal:4',
-        'actual_price' => 'decimal:4',
         'confidence_level' => 'decimal:2',
-        'accuracy_score' => 'decimal:2',
-        'factors_considered' => 'array',
-        'uncertainty_range' => 'array',
-        'is_accurate' => 'boolean',
+        'min_price' => 'decimal:4',
+        'max_price' => 'decimal:4',
+        'accuracy_score' => 'string',
+        'factors' => 'array',
     ];
 
     // Atributos calculados
