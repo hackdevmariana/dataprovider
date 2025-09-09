@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             DevotionSeeder::class,
             OfferHistorySeeder::class,
             PriceForecastSeeder::class,
+            OfferComparisonSeeder::class,
         ]);
     }
 }
