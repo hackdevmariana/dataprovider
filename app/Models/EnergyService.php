@@ -13,35 +13,30 @@ class EnergyService extends Model
     protected $fillable = [
         'company_id',
         'service_name',
-        'service_type',
         'description',
-        'energy_type',
-        'zone',
-        'price_structure',
-        'contract_terms',
+        'service_type',
+        'energy_source',
         'features',
-        'is_active',
-        'launch_date',
-        'rating',
-        'reviews_count',
-        'customers_count',
-        'service_level',
-        'availability',
-        'special_offers',
+        'requirements',
+        'base_price',
+        'pricing_model',
+        'pricing_details',
+        'contract_duration',
         'terms_conditions',
+        'is_available',
+        'is_featured',
+        'popularity_score',
     ];
 
     protected $casts = [
-        'price_structure' => 'array',
-        'contract_terms' => 'array',
         'features' => 'array',
-        'launch_date' => 'date',
-        'rating' => 'decimal:1',
-        'reviews_count' => 'integer',
-        'customers_count' => 'integer',
-        'is_active' => 'boolean',
-        'special_offers' => 'array',
+        'requirements' => 'array',
+        'pricing_details' => 'array',
         'terms_conditions' => 'array',
+        'base_price' => 'decimal:2',
+        'is_available' => 'boolean',
+        'is_featured' => 'boolean',
+        'popularity_score' => 'integer',
     ];
 
     // Relaciones
@@ -64,6 +59,11 @@ class EnergyService extends Model
             'monitoring' => 'Monitoreo',
             'billing' => 'Facturación',
             'support' => 'Soporte',
+            'energy_audit' => 'Auditoría Energética',
+            'efficiency' => 'Eficiencia Energética',
+            'renewable' => 'Energías Renovables',
+            'smart_home' => 'Hogar Inteligente',
+            'electric_vehicle' => 'Vehículo Eléctrico',
             default => 'Otro',
         };
     }
@@ -81,171 +81,107 @@ class EnergyService extends Model
             'monitoring' => 'danger',
             'billing' => 'gray',
             'support' => 'primary',
+            'energy_audit' => 'info',
+            'efficiency' => 'success',
+            'renewable' => 'success',
+            'smart_home' => 'warning',
+            'electric_vehicle' => 'info',
             default => 'gray',
         };
     }
 
-    public function getEnergyTypeLabelAttribute(): string
+    public function getEnergySourceLabelAttribute(): string
     {
-        return match ($this->energy_type) {
+        return match ($this->energy_source) {
             'electricity' => 'Electricidad',
-            'gas' => 'Gas',
+            'gas' => 'Gas Natural',
             'oil' => 'Petróleo',
             'coal' => 'Carbón',
-            'renewable' => 'Renovable',
+            'solar' => 'Solar',
+            'wind' => 'Eólico',
+            'hydro' => 'Hidroeléctrico',
             'nuclear' => 'Nuclear',
+            'biomass' => 'Biomasa',
+            'geothermal' => 'Geotérmico',
             'hybrid' => 'Híbrido',
             'all' => 'Todos',
-            default => 'Desconocido',
+            default => 'No especificado',
         };
     }
 
-    public function getEnergyTypeColorAttribute(): string
+    public function getEnergySourceColorAttribute(): string
     {
-        return match ($this->energy_type) {
+        return match ($this->energy_source) {
             'electricity' => 'warning',
             'gas' => 'info',
             'oil' => 'dark',
             'coal' => 'secondary',
-            'renewable' => 'success',
+            'solar' => 'success',
+            'wind' => 'info',
+            'hydro' => 'primary',
             'nuclear' => 'danger',
+            'biomass' => 'success',
+            'geothermal' => 'warning',
             'hybrid' => 'primary',
             'all' => 'light',
             default => 'gray',
         };
     }
 
-    public function getZoneLabelAttribute(): string
+    public function getPricingModelLabelAttribute(): string
     {
-        return match ($this->zone) {
-            'peninsula' => 'Península',
-            'canarias' => 'Canarias',
-            'baleares' => 'Baleares',
-            'ceuta' => 'Ceuta',
-            'melilla' => 'Melilla',
-            'national' => 'Nacional',
-            'international' => 'Internacional',
-            default => 'Desconocida',
-        };
-    }
-
-    public function getServiceLevelLabelAttribute(): string
-    {
-        return match ($this->service_level) {
-            'basic' => 'Básico',
-            'standard' => 'Estándar',
-            'premium' => 'Premium',
-            'enterprise' => 'Empresarial',
+        return match ($this->pricing_model) {
+            'fixed' => 'Precio Fijo',
+            'variable' => 'Precio Variable',
+            'tiered' => 'Por Escalones',
+            'subscription' => 'Suscripción',
+            'pay_per_use' => 'Pago por Uso',
+            'contract' => 'Contrato',
+            'free' => 'Gratuito',
             'custom' => 'Personalizado',
-            default => 'Sin especificar',
+            default => 'No especificado',
         };
     }
 
-    public function getServiceLevelColorAttribute(): string
+    public function getPricingModelColorAttribute(): string
     {
-        return match ($this->service_level) {
-            'basic' => 'secondary',
-            'standard' => 'info',
-            'premium' => 'warning',
-            'enterprise' => 'success',
-            'custom' => 'primary',
+        return match ($this->pricing_model) {
+            'fixed' => 'success',
+            'variable' => 'warning',
+            'tiered' => 'info',
+            'subscription' => 'primary',
+            'pay_per_use' => 'secondary',
+            'contract' => 'dark',
+            'free' => 'light',
+            'custom' => 'gray',
             default => 'gray',
-        };
-    }
-
-    public function getAvailabilityLabelAttribute(): string
-    {
-        return match ($this->availability) {
-            '24_7' => '24/7',
-            'business_hours' => 'Horario Comercial',
-            'weekdays' => 'Días Laborables',
-            'on_demand' => 'Bajo Demanda',
-            'limited' => 'Limitado',
-            default => 'Sin especificar',
         };
     }
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->is_active ? 'Activo' : 'Inactivo';
+        return $this->is_available ? 'Disponible' : 'No Disponible';
     }
 
     public function getStatusColorAttribute(): string
     {
-        return $this->is_active ? 'success' : 'secondary';
+        return $this->is_available ? 'success' : 'danger';
     }
 
-    public function getRatingLabelAttribute(): string
+    public function getFormattedBasePriceAttribute(): string
     {
-        if (!$this->rating) {
-            return 'Sin calificación';
+        if (!$this->base_price) {
+            return 'Consultar precio';
         }
-
-        if ($this->rating >= 4.5) {
-            return 'Excelente';
-        } elseif ($this->rating >= 4.0) {
-            return 'Muy Bueno';
-        } elseif ($this->rating >= 3.5) {
-            return 'Bueno';
-        } elseif ($this->rating >= 3.0) {
-            return 'Regular';
-        } elseif ($this->rating >= 2.0) {
-            return 'Malo';
-        } else {
-            return 'Muy Malo';
-        }
+        return number_format($this->base_price, 2) . ' €';
     }
 
-    public function getRatingColorAttribute(): string
+    public function getFormattedPopularityScoreAttribute(): string
     {
-        if (!$this->rating) {
-            return 'gray';
+        if ($this->popularity_score >= 1000) {
+            return round($this->popularity_score / 1000, 1) . 'K';
         }
-
-        if ($this->rating >= 4.5) {
-            return 'success';
-        } elseif ($this->rating >= 4.0) {
-            return 'info';
-        } elseif ($this->rating >= 3.5) {
-            return 'warning';
-        } elseif ($this->rating >= 3.0) {
-            return 'secondary';
-        } else {
-            return 'danger';
-        }
-    }
-
-    public function getFormattedRatingAttribute(): string
-    {
-        if (!$this->rating) {
-            return 'Sin calificación';
-        }
-        return number_format($this->rating, 1) . '/5.0';
-    }
-
-    public function getFormattedLaunchDateAttribute(): string
-    {
-        return $this->launch_date ? $this->launch_date->format('d/m/Y') : 'Sin fecha';
-    }
-
-    public function getFormattedCustomersCountAttribute(): string
-    {
-        if ($this->customers_count >= 1000000) {
-            return round($this->customers_count / 1000000, 1) . 'M';
-        } elseif ($this->customers_count >= 1000) {
-            return round($this->customers_count / 1000, 1) . 'K';
-        }
-        return number_format($this->customers_count);
-    }
-
-    public function getFormattedReviewsCountAttribute(): string
-    {
-        if ($this->reviews_count >= 1000000) {
-            return round($this->reviews_count / 1000000, 1) . 'M';
-        } elseif ($this->reviews_count >= 1000) {
-            return round($this->reviews_count / 1000, 1) . 'K';
-        }
-        return number_format($this->reviews_count);
+        return number_format($this->popularity_score);
     }
 
     public function getFeaturesCountAttribute(): int
@@ -256,39 +192,48 @@ class EnergyService extends Model
         return 0;
     }
 
-    public function getSpecialOffersCountAttribute(): int
+    public function getRequirementsCountAttribute(): int
     {
-        if (is_array($this->special_offers)) {
-            return count($this->special_offers);
+        if (is_array($this->requirements)) {
+            return count($this->requirements);
         }
         return 0;
     }
 
+    public function getIsPopularAttribute(): bool
+    {
+        return $this->popularity_score >= 100;
+    }
+
+    public function getIsHighDemandAttribute(): bool
+    {
+        return $this->popularity_score >= 500;
+    }
+
     public function getIsNewAttribute(): bool
     {
-        if (!$this->launch_date) {
-            return false;
-        }
-        return $this->launch_date->diffInDays(now()) <= 90;
+        return $this->created_at->diffInDays(now()) <= 30;
     }
 
     public function getIsEstablishedAttribute(): bool
     {
-        if (!$this->launch_date) {
-            return false;
-        }
-        return $this->launch_date->diffInDays(now()) >= 365;
+        return $this->created_at->diffInDays(now()) >= 365;
     }
 
     // Scopes
-    public function scopeActive($query)
+    public function scopeAvailable($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('is_available', true);
     }
 
-    public function scopeInactive($query)
+    public function scopeUnavailable($query)
     {
-        return $query->where('is_active', false);
+        return $query->where('is_available', false);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
     public function scopeByServiceType($query, string $type)
@@ -296,24 +241,14 @@ class EnergyService extends Model
         return $query->where('service_type', $type);
     }
 
-    public function scopeByEnergyType($query, string $type)
+    public function scopeByEnergySource($query, string $source)
     {
-        return $query->where('energy_type', $type);
+        return $query->where('energy_source', $source);
     }
 
-    public function scopeByZone($query, string $zone)
+    public function scopeByPricingModel($query, string $model)
     {
-        return $query->where('zone', $zone);
-    }
-
-    public function scopeByServiceLevel($query, string $level)
-    {
-        return $query->where('service_level', $level);
-    }
-
-    public function scopeByAvailability($query, string $availability)
-    {
-        return $query->where('availability', $availability);
+        return $query->where('pricing_model', $model);
     }
 
     public function scopeByCompany($query, int $companyId)
@@ -321,54 +256,39 @@ class EnergyService extends Model
         return $query->where('company_id', $companyId);
     }
 
-    public function scopeByRating($query, float $minRating)
+    public function scopePopular($query, int $minScore = 100)
     {
-        return $query->where('rating', '>=', $minRating);
+        return $query->where('popularity_score', '>=', $minScore);
     }
 
-    public function scopeHighRated($query, float $minRating = 4.0)
+    public function scopeHighDemand($query, int $minScore = 500)
     {
-        return $query->where('rating', '>=', $minRating);
+        return $query->where('popularity_score', '>=', $minScore);
     }
 
-    public function scopeByCustomersCount($query, int $minCustomers)
+    public function scopeNew($query, int $days = 30)
     {
-        return $query->where('customers_count', '>=', $minCustomers);
-    }
-
-    public function scopePopular($query, int $minCustomers = 1000)
-    {
-        return $query->where('customers_count', '>=', $minCustomers);
-    }
-
-    public function scopeNew($query, int $days = 90)
-    {
-        return $query->where('launch_date', '>=', now()->subDays($days));
+        return $query->where('created_at', '>=', now()->subDays($days));
     }
 
     public function scopeEstablished($query, int $days = 365)
     {
-        return $query->where('launch_date', '<=', now()->subDays($days));
+        return $query->where('created_at', '<=', now()->subDays($days));
     }
 
-    public function scopeByDate($query, $date)
+    public function scopeOrderByPopularity($query, string $direction = 'desc')
     {
-        return $query->whereDate('launch_date', $date);
+        return $query->orderBy('popularity_score', $direction);
     }
 
-    public function scopeOrderByRating($query, string $direction = 'desc')
+    public function scopeOrderByPrice($query, string $direction = 'asc')
     {
-        return $query->orderBy('rating', $direction);
+        return $query->orderBy('base_price', $direction);
     }
 
-    public function scopeOrderByCustomers($query, string $direction = 'desc')
+    public function scopeOrderByCreated($query, string $direction = 'desc')
     {
-        return $query->orderBy('customers_count', $direction);
-    }
-
-    public function scopeOrderByLaunchDate($query, string $direction = 'desc')
-    {
-        return $query->orderBy('launch_date', $direction);
+        return $query->orderBy('created_at', $direction);
     }
 
     public function scopeSearch($query, string $search)
@@ -380,9 +300,24 @@ class EnergyService extends Model
     }
 
     // Métodos
-    public function isActive(): bool
+    public function isAvailable(): bool
     {
-        return $this->is_active;
+        return $this->is_available;
+    }
+
+    public function isFeatured(): bool
+    {
+        return $this->is_featured;
+    }
+
+    public function isPopular(): bool
+    {
+        return $this->is_popular;
+    }
+
+    public function isHighDemand(): bool
+    {
+        return $this->is_high_demand;
     }
 
     public function isNew(): bool
@@ -395,39 +330,24 @@ class EnergyService extends Model
         return $this->is_established;
     }
 
-    public function isHighRated(): bool
-    {
-        return $this->rating >= 4.0;
-    }
-
-    public function isPopular(): bool
-    {
-        return $this->customers_count >= 1000;
-    }
-
     public function hasFeatures(): bool
     {
         return $this->features_count > 0;
     }
 
-    public function hasSpecialOffers(): bool
+    public function hasRequirements(): bool
     {
-        return $this->special_offers_count > 0;
+        return $this->requirements_count > 0;
     }
 
-    public function hasRating(): bool
+    public function hasPricingDetails(): bool
     {
-        return !is_null($this->rating);
+        return is_array($this->pricing_details) && count($this->pricing_details) > 0;
     }
 
-    public function hasCustomers(): bool
+    public function hasTermsConditions(): bool
     {
-        return $this->customers_count > 0;
-    }
-
-    public function hasReviews(): bool
-    {
-        return $this->reviews_count > 0;
+        return is_array($this->terms_conditions) && count($this->terms_conditions) > 0;
     }
 
     public function getFeaturesList(): array
@@ -438,56 +358,35 @@ class EnergyService extends Model
         return [];
     }
 
-    public function getSpecialOffersList(): array
+    public function getRequirementsList(): array
     {
-        if (is_array($this->special_offers)) {
-            return $this->special_offers;
+        if (is_array($this->requirements)) {
+            return $this->requirements;
         }
         return [];
     }
 
-    public function getPriceStructureList(): array
+    public function getPricingDetailsList(): array
     {
-        if (is_array($this->price_structure)) {
-            return $this->price_structure;
+        if (is_array($this->pricing_details)) {
+            return $this->pricing_details;
         }
         return [];
     }
 
-    public function getContractTermsList(): array
+    public function getTermsConditionsList(): array
     {
-        if (is_array($this->contract_terms)) {
-            return $this->contract_terms;
+        if (is_array($this->terms_conditions)) {
+            return $this->terms_conditions;
         }
         return [];
-    }
-
-    public function getStarRatingAttribute(): string
-    {
-        if (!$this->rating) {
-            return '☆☆☆☆☆';
-        }
-
-        $rating = $this->rating;
-        $fullStars = floor($rating);
-        $halfStar = ($rating - $fullStars) >= 0.5;
-        $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
-
-        $stars = str_repeat('★', $fullStars);
-        if ($halfStar) {
-            $stars .= '☆';
-        }
-        $stars .= str_repeat('☆', $emptyStars);
-
-        return $stars;
     }
 
     public function getServiceDescriptionAttribute(): string
     {
         $type = $this->service_type_label;
-        $energy = $this->energy_type_label;
-        $level = $this->service_level_label;
+        $source = $this->energy_source_label;
         
-        return "Servicio de {$type} de {$energy} - Nivel {$level}";
+        return "Servicio de {$type} - {$source}";
     }
 }
