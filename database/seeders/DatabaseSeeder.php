@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             TrendingTopicSeeder::class,
             DevotionSeeder::class,
             OfferHistorySeeder::class,
+            PriceForecastSeeder::class,
         ]);
     }
 }
