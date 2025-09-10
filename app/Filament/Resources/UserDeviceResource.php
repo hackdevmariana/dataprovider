@@ -26,6 +26,11 @@ class UserDeviceResource extends Resource
     protected static ?string $navigationGroup = 'Admin';
     protected static ?string $navigationLabel = 'User Devices';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
