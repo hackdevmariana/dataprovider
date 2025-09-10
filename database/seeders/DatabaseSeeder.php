@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             ApiKeySeeder::class,
             UserDeviceSeeder::class,
             UserListSeeder::class,
+            SyncLogSeeder::class,
         ]);
     }
 }
