@@ -4,225 +4,347 @@ namespace Database\Seeders;
 
 use App\Models\UserList;
 use App\Models\User;
-use App\Models\Cooperative;
-use App\Models\NewsArticle;
-use App\Models\Event;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserListSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    use WithoutModelEvents;
+
     public function run(): void
     {
-        $this->command->info('📋 Creando listas personalizadas de usuarios...');
-
-        $users = User::limit(10)->get();
-
-        if ($users->isEmpty()) {
-            $this->command->warn('⚠️ No hay usuarios disponibles. Creando algunos usuarios primero...');
-            User::factory()->count(5)->create();
-            $users = User::limit(5)->get();
+        // Verificar que existan usuarios
+        if (User::count() === 0) {
+            $this->command->warn('No hay usuarios. Creando algunos usuarios de ejemplo...');
+            User::factory(10)->create();
         }
 
-        // Listas destacadas públicas
-        $featuredLists = [
-            [
-                'name' => 'Mejores Cooperativas de España',
-                'description' => 'Lista curada de las cooperativas energéticas más activas y confiables del país',
-                'list_type' => 'companies',
-                'icon' => 'users',
-                'color' => '#10B981',
-            ],
-            [
-                'name' => 'Instaladores Verificados',
-                'description' => 'Profesionales de instalación solar con certificaciones y reviews positivas',
-                'list_type' => 'users',
-                'icon' => 'shield-check',
-                'color' => '#3B82F6',
-            ],
-            [
-                'name' => 'Recursos Imprescindibles',
-                'description' => 'Artículos, guías y herramientas esenciales para el autoconsumo',
-                'list_type' => 'resources',
-                'icon' => 'book-open',
+        $users = User::all();
+
+        $this->command->info('Creando listas de usuario...');
+
+        // Listas básicas (40% de las listas)
+        UserList::factory(40)
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas mixtas (15% de las listas)
+        UserList::factory(15)
+            ->mixed()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas de usuarios (10% de las listas)
+        UserList::factory(10)
+            ->users()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas de posts (10% de las listas)
+        UserList::factory(10)
+            ->posts()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas de proyectos (8% de las listas)
+        UserList::factory(8)
+            ->projects()
+            ->create([
+                'user_id' => $users->random()->id,
+            ]);
+
+        // Listas de empresas (7% de las listas)
+        UserList::factory(7)
+            ->companies()
+            ->create([
+                'user_id' => $users->random()->id,
+            ]);
+
+        // Listas de recursos (5% de las listas)
+        UserList::factory(5)
+            ->resources()
+            ->create([
+                'user_id' => $users->random()->id,
+            ]);
+
+        // Listas de eventos (3% de las listas)
+        UserList::factory(3)
+            ->events()
+            ->create([
+                'user_id' => $users->random()->id,
+            ]);
+
+        // Listas personalizadas (2% de las listas)
+        UserList::factory(2)
+            ->custom()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas privadas (30% de las listas)
+        UserList::factory(30)
+            ->private()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas públicas (40% de las listas)
+        UserList::factory(40)
+            ->public()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas para seguidores (20% de las listas)
+        UserList::factory(20)
+            ->followers()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas colaborativas (10% de las listas)
+        UserList::factory(10)
+            ->collaborative()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas manuales (60% de las listas)
+        UserList::factory(60)
+            ->manual()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con auto-hashtag (15% de las listas)
+        UserList::factory(15)
+            ->autoHashtag()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con auto-keyword (10% de las listas)
+        UserList::factory(10)
+            ->autoKeyword()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con auto-author (8% de las listas)
+        UserList::factory(8)
+            ->autoAuthor()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con auto-topic (7% de las listas)
+        UserList::factory(7)
+            ->autoTopic()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas destacadas (5% de las listas)
+        UserList::factory(5)
+            ->featured()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas plantilla (3% de las listas)
+        UserList::factory(3)
+            ->template()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas activas (90% de las listas)
+        UserList::factory(90)
+            ->active()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas inactivas (10% de las listas)
+        UserList::factory(10)
+            ->inactive()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con muchos elementos (10% de las listas)
+        UserList::factory(10)
+            ->withItems(fake()->numberBetween(20, 50))
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con muchos seguidores (8% de las listas)
+        UserList::factory(8)
+            ->withFollowers(fake()->numberBetween(50, 200))
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con muchas vistas (12% de las listas)
+        UserList::factory(12)
+            ->withViews(fake()->numberBetween(500, 2000))
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con muchos shares (6% de las listas)
+        UserList::factory(6)
+            ->withShares(fake()->numberBetween(20, 100))
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con alto engagement (8% de las listas)
+        UserList::factory(8)
+            ->highEngagement()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Listas con bajo engagement (15% de las listas)
+        UserList::factory(15)
+            ->lowEngagement()
+            ->create([
+                'user_id' => fn() => $users->random()->id,
+            ]);
+
+        // Crear listas específicas para usuarios conocidos
+        $this->createSpecificLists($users);
+
+        $this->command->info('✅ Listas de usuario creadas exitosamente!');
+    }
+
+    private function createSpecificLists($users): void
+    {
+        // Listas para usuario específico
+        $user1 = $users->first();
+        if ($user1) {
+            UserList::create([
+                'user_id' => $user1->id,
+                'name' => 'Mis Favoritos',
+                'slug' => 'mis-favoritos',
+                'description' => 'Una colección personal de mis recursos favoritos y contenido de calidad.',
+                'icon' => '⭐',
                 'color' => '#F59E0B',
-            ],
-            [
-                'name' => 'Eventos de Energía Renovable',
-                'description' => 'Conferencias, talleres y encuentros del sector energético',
-                'list_type' => 'events',
-                'icon' => 'calendar',
-                'color' => '#8B5CF6',
-            ],
-        ];
-
-        foreach ($featuredLists as $listData) {
-            $user = $users->random();
-            $list = UserList::create(array_merge($listData, [
-                'user_id' => $user->id,
-                'visibility' => 'public',
-                'is_featured' => true,
-                'items_count' => fake()->numberBetween(10, 50),
-                'followers_count' => fake()->numberBetween(50, 300),
-                'views_count' => fake()->numberBetween(500, 2000),
-                'shares_count' => fake()->numberBetween(20, 100),
-                'engagement_score' => fake()->randomFloat(2, 200, 800),
-            ]));
-
-            $this->command->info("✅ Lista destacada creada: {$list->name}");
-        }
-
-        // Listas por cada usuario
-        foreach ($users as $user) {
-            // Lista personal privada
-            UserList::factory()
-                   ->for($user)
-                   ->state([
-                       'name' => 'Mis Favoritos',
-                       'description' => 'Contenido que me interesa y quiero revisar más tarde',
-                       'list_type' => 'mixed',
-                       'visibility' => 'private',
-                       'icon' => 'heart',
-                       'color' => '#EF4444',
-                   ])
-                   ->create();
-
-            // Lista pública del usuario
-            UserList::factory()
-                   ->for($user)
-                   ->public()
-                   ->create();
-
-            // Posibilidad de lista colaborativa
-            if (fake()->boolean(30)) {
-                $collaborators = $users->where('id', '!=', $user->id)
-                                     ->random(fake()->numberBetween(1, 3))
-                                     ->pluck('id')
-                                     ->toArray();
-
-                UserList::factory()
-                       ->for($user)
-                       ->collaborative()
-                       ->state([
-                           'collaborator_ids' => $collaborators,
-                       ])
-                       ->create();
-            }
-        }
-
-        // Listas por tipo específico
-        $listTypes = ['users', 'posts', 'projects', 'companies', 'resources', 'events'];
-        
-        foreach ($listTypes as $type) {
-            UserList::factory()
-                   ->type($type)
-                   ->for($users->random())
-                   ->count(fake()->numberBetween(1, 3))
-                   ->create();
-        }
-
-        // Plantillas de listas
-        $templates = [
-            [
-                'name' => 'Plantilla: Seguimiento de Instalación',
-                'description' => 'Plantilla para organizar el proceso de instalación solar',
                 'list_type' => 'mixed',
-                'icon' => 'clipboard-list',
-                'color' => '#6B7280',
-            ],
-            [
-                'name' => 'Plantilla: Comparativa de Ofertas',
-                'description' => 'Plantilla para comparar diferentes ofertas de instalación',
+                'allowed_content_types' => null,
+                'visibility' => 'private',
+                'collaborator_ids' => null,
+                'allow_suggestions' => false,
+                'allow_comments' => false,
+                'curation_mode' => 'manual',
+                'auto_criteria' => null,
+                'items_count' => 25,
+                'followers_count' => 0,
+                'views_count' => 0,
+                'shares_count' => 0,
+                'engagement_score' => 25.0,
+                'is_featured' => false,
+                'is_template' => false,
+                'is_active' => true,
+            ]);
+
+            UserList::create([
+                'user_id' => $user1->id,
+                'name' => 'Recursos de Desarrollo',
+                'slug' => 'recursos-de-desarrollo',
+                'description' => 'Herramientas, librerías y recursos esenciales para el desarrollo de software.',
+                'icon' => '🔧',
+                'color' => '#3B82F6',
+                'list_type' => 'resources',
+                'allowed_content_types' => ['link', 'resource', 'tool'],
+                'visibility' => 'public',
+                'collaborator_ids' => null,
+                'allow_suggestions' => true,
+                'allow_comments' => true,
+                'curation_mode' => 'auto_keyword',
+                'auto_criteria' => [
+                    'keywords' => ['desarrollo', 'programación', 'herramientas', 'librerías'],
+                    'min_quality_score' => 8,
+                ],
+                'items_count' => 45,
+                'followers_count' => 120,
+                'views_count' => 850,
+                'shares_count' => 35,
+                'engagement_score' => 285.0,
+                'is_featured' => true,
+                'is_template' => true,
+                'is_active' => true,
+            ]);
+        }
+
+        // Listas para otro usuario
+        $user2 = $users->skip(1)->first();
+        if ($user2) {
+            UserList::create([
+                'user_id' => $user2->id,
+                'name' => 'Eventos del Sector',
+                'slug' => 'eventos-del-sector',
+                'description' => 'Conferencias, meetups y eventos importantes del sector tecnológico.',
+                'icon' => '🎪',
+                'color' => '#EC4899',
+                'list_type' => 'events',
+                'allowed_content_types' => ['event', 'conference', 'meetup'],
+                'visibility' => 'public',
+                'collaborator_ids' => null,
+                'allow_suggestions' => true,
+                'allow_comments' => false,
+                'curation_mode' => 'auto_hashtag',
+                'auto_criteria' => [
+                    'hashtags' => ['#tecnologia', '#conferencia', '#meetup', '#evento'],
+                    'min_engagement' => 50,
+                ],
+                'items_count' => 30,
+                'followers_count' => 85,
+                'views_count' => 650,
+                'shares_count' => 28,
+                'engagement_score' => 221.0,
+                'is_featured' => true,
+                'is_template' => false,
+                'is_active' => true,
+            ]);
+        }
+
+        // Listas para otro usuario
+        $user3 = $users->skip(2)->first();
+        if ($user3) {
+            UserList::create([
+                'user_id' => $user3->id,
+                'name' => 'Startups Prometedoras',
+                'slug' => 'startups-prometedoras',
+                'description' => 'Empresas emergentes con potencial de crecimiento e innovación.',
+                'icon' => '🚀',
+                'color' => '#8B5CF6',
                 'list_type' => 'companies',
-                'icon' => 'scale',
-                'color' => '#059669',
-            ],
-        ];
-
-        foreach ($templates as $templateData) {
-            UserList::factory()
-                   ->template()
-                   ->for($users->first())
-                   ->state($templateData)
-                   ->create();
+                'allowed_content_types' => ['company', 'startup', 'organization'],
+                'visibility' => 'public',
+                'collaborator_ids' => null,
+                'allow_suggestions' => true,
+                'allow_comments' => true,
+                'curation_mode' => 'auto_topic',
+                'auto_criteria' => [
+                    'topics' => ['startup', 'innovación', 'tecnología', 'emprendimiento'],
+                    'min_relevance_score' => 0.8,
+                ],
+                'items_count' => 20,
+                'followers_count' => 95,
+                'views_count' => 720,
+                'shares_count' => 42,
+                'engagement_score' => 254.0,
+                'is_featured' => true,
+                'is_template' => false,
+                'is_active' => true,
+            ]);
         }
-
-        // Añadir algunos elementos de ejemplo a las listas
-        $this->addSampleItemsToLists();
-
-        // Estadísticas finales
-        $total = UserList::count();
-        $public = UserList::where('visibility', 'public')->count();
-        $featured = UserList::where('is_featured', true)->count();
-        $collaborative = UserList::where('visibility', 'collaborative')->count();
-        $templates = UserList::where('is_template', true)->count();
-        $byType = UserList::selectRaw('list_type, COUNT(*) as count')
-                         ->groupBy('list_type')
-                         ->pluck('count', 'list_type')
-                         ->toArray();
-
-        $this->command->info("📊 Estadísticas de Listas:");
-        $this->command->info("   Total: {$total}");
-        $this->command->info("   Públicas: {$public}");
-        $this->command->info("   Destacadas: {$featured}");
-        $this->command->info("   Colaborativas: {$collaborative}");
-        $this->command->info("   Plantillas: {$templates}");
-        
-        foreach ($byType as $type => $count) {
-            $this->command->info("   {$type}: {$count}");
-        }
-
-        $this->command->info('🎉 Listas de usuarios creadas exitosamente!');
-    }
-
-    /**
-     * Añadir elementos de ejemplo a algunas listas.
-     */
-    private function addSampleItemsToLists(): void
-    {
-        $lists = UserList::where('visibility', 'public')
-                        ->where('is_active', true)
-                        ->limit(5)
-                        ->get();
-
-        foreach ($lists as $list) {
-            $itemCount = fake()->numberBetween(3, 15);
-            
-            for ($i = 0; $i < $itemCount; $i++) {
-                // Determinar qué tipo de contenido añadir según el tipo de lista
-                $content = $this->getRandomContentForListType($list->list_type);
-                
-                if ($content) {
-                    $list->addItem($content, $list->user, [
-                        'note' => fake()->optional(0.3)->sentence(),
-                        'rating' => fake()->optional(0.4)->randomFloat(1, 1, 5),
-                        'mode' => 'manual',
-                    ]);
-                }
-            }
-
-            $this->command->info("   ➕ Añadidos {$itemCount} elementos a: {$list->name}");
-        }
-    }
-
-    /**
-     * Obtener contenido aleatorio según el tipo de lista.
-     */
-    private function getRandomContentForListType(string $listType)
-    {
-        return match($listType) {
-            'companies' => Cooperative::inRandomOrder()->first(),
-            'resources', 'posts' => NewsArticle::inRandomOrder()->first(),
-            'events' => Event::inRandomOrder()->first(),
-            'users' => User::inRandomOrder()->first(),
-            default => collect([
-                Cooperative::inRandomOrder()->first(),
-                NewsArticle::inRandomOrder()->first(),
-                Event::inRandomOrder()->first(),
-                User::inRandomOrder()->first(),
-            ])->filter()->random(),
-        };
     }
 }

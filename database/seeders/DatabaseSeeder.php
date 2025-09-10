@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             PriceAlertSeeder::class,
             ApiKeySeeder::class,
             UserDeviceSeeder::class,
+            UserListSeeder::class,
         ]);
     }
 }
