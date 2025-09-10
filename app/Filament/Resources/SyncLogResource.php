@@ -33,15 +33,27 @@ class SyncLogResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('user_id')
-                ->relationship('user', 'name')
+            Select::make('data_source_id')
+                ->label('Data Source')
+                ->relationship('dataSource', 'name')
                 ->searchable()
                 ->required(),
-            TextInput::make('operation')
-                ->required()
-                ->maxLength(255),
-            Textarea::make('details')
-                ->rows(4),
+            Select::make('status')
+                ->label('Status')
+                ->options([
+                    'success' => 'Success',
+                    'failed' => 'Failed',
+                ])
+                ->required(),
+            Forms\Components\DateTimePicker::make('started_at')
+                ->label('Started At')
+                ->required(),
+            Forms\Components\DateTimePicker::make('finished_at')
+                ->label('Finished At'),
+            Forms\Components\TextInput::make('processed_items_count')
+                ->label('Processed Items Count')
+                ->numeric()
+                ->default(0),
         ]);
     }
 
@@ -49,10 +61,44 @@ class SyncLogResource extends Resource
     {
         return $table->columns([
             TextColumn::make('id')->sortable()->searchable(),
-            TextColumn::make('user.name')->label('User')->searchable(),
-            TextColumn::make('operation')->searchable(),
-            TextColumn::make('created_at')->dateTime()->sortable(),
-        ]);
+            TextColumn::make('dataSource.name')->label('Data Source')->searchable()->sortable(),
+            Tables\Columns\BadgeColumn::make('status')
+                ->label('Status')
+                ->colors([
+                    'success' => 'success',
+                    'failed' => 'danger',
+                ]),
+            TextColumn::make('started_at')->label('Started At')->dateTime()->sortable(),
+            TextColumn::make('finished_at')->label('Finished At')->dateTime()->sortable(),
+            TextColumn::make('processed_items_count')->label('Items Count')->sortable()->badge(),
+            TextColumn::make('created_at')->label('Created At')->dateTime()->sortable(),
+        ])
+        ->filters([
+            Tables\Filters\SelectFilter::make('status')
+                ->label('Status')
+                ->options([
+                    'success' => 'Success',
+                    'failed' => 'Failed',
+                ]),
+            Tables\Filters\SelectFilter::make('data_source_id')
+                ->label('Data Source')
+                ->relationship('dataSource', 'name'),
+            Tables\Filters\Filter::make('in_progress')
+                ->label('In Progress')
+                ->query(fn (Builder $query): Builder => $query->whereNull('finished_at')),
+            Tables\Filters\Filter::make('completed')
+                ->label('Completed')
+                ->query(fn (Builder $query): Builder => $query->whereNotNull('finished_at')),
+        ])
+        ->actions([
+            Tables\Actions\ViewAction::make(),
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ])
+        ->defaultSort('started_at', 'desc');
     }
 
     public static function getRelations(): array
