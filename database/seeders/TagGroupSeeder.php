@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\TagGroup;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class TagGroupSeeder extends Seeder
 {
@@ -13,109 +13,121 @@ class TagGroupSeeder extends Seeder
      */
     public function run(): void
     {
+        // Crear grupos de etiquetas específicos y útiles
         $tagGroups = [
             [
-                'name' => 'Categorías Generales',
-                'slug' => 'categorias-generales',
-                'description' => 'Etiquetas de uso general para clasificar contenido básico',
+                'name' => 'Categorías de Contenido',
+                'slug' => 'categorias-contenido',
+                'description' => 'Grupo de etiquetas para categorizar diferentes tipos de contenido como artículos, videos, imágenes, documentos, etc.',
             ],
             [
-                'name' => 'Energía y Sostenibilidad',
-                'slug' => 'energia-sostenibilidad',
-                'description' => 'Etiquetas relacionadas con energía renovable, sostenibilidad y medio ambiente',
+                'name' => 'Etiquetas de Ubicación',
+                'slug' => 'etiquetas-ubicacion',
+                'description' => 'Etiquetas para identificar ubicaciones geográficas, ciudades, regiones, países y áreas específicas.',
             ],
             [
-                'name' => 'Ubicación Geográfica',
-                'slug' => 'ubicacion-geografica',
-                'description' => 'Etiquetas para clasificar contenido por ubicación geográfica',
+                'name' => 'Tipos de Eventos',
+                'slug' => 'tipos-eventos',
+                'description' => 'Clasificación de diferentes tipos de eventos como conferencias, talleres, conciertos, festivales, etc.',
             ],
             [
-                'name' => 'Eventos y Festivales',
-                'slug' => 'eventos-festivales',
-                'description' => 'Etiquetas para categorizar eventos, fiestas y festivales',
+                'name' => 'Clasificación por Edad',
+                'slug' => 'clasificacion-edad',
+                'description' => 'Etiquetas para clasificar contenido según la edad recomendada del público objetivo (infantil, juvenil, adulto, etc.).',
             ],
             [
-                'name' => 'Personas y Personajes',
-                'slug' => 'personas-personajes',
-                'description' => 'Etiquetas para clasificar personas, celebridades y personajes públicos',
+                'name' => 'Géneros Musicales',
+                'slug' => 'generos-musicales',
+                'description' => 'Clasificación de diferentes géneros y estilos musicales como rock, pop, clásica, jazz, etc.',
             ],
             [
-                'name' => 'Noticias y Medios',
-                'slug' => 'noticias-medios',
-                'description' => 'Etiquetas para categorizar noticias, artículos y contenido mediático',
+                'name' => 'Estilos Artísticos',
+                'slug' => 'estilos-artisticos',
+                'description' => 'Etiquetas para clasificar diferentes estilos y movimientos artísticos.',
             ],
             [
-                'name' => 'Cooperativas y Organizaciones',
-                'slug' => 'cooperativas-organizaciones',
-                'description' => 'Etiquetas para cooperativas energéticas y organizaciones',
+                'name' => 'Niveles de Dificultad',
+                'slug' => 'niveles-dificultad',
+                'description' => 'Clasificación de contenido según su nivel de dificultad (básico, intermedio, avanzado, experto).',
             ],
             [
-                'name' => 'Tecnología e Innovación',
-                'slug' => 'tecnologia-innovacion',
-                'description' => 'Etiquetas relacionadas con tecnología, innovación y desarrollo',
+                'name' => 'Idiomas Disponibles',
+                'slug' => 'idiomas-disponibles',
+                'description' => 'Etiquetas para identificar los idiomas en los que está disponible el contenido.',
             ],
             [
-                'name' => 'Arte y Cultura',
-                'slug' => 'arte-cultura',
-                'description' => 'Etiquetas para contenido artístico, cultural y creativo',
+                'name' => 'Formatos de Presentación',
+                'slug' => 'formatos-presentacion',
+                'description' => 'Clasificación según el formato de presentación (presencial, virtual, híbrido, grabado, etc.).',
             ],
             [
-                'name' => 'Deportes y Entretenimiento',
-                'slug' => 'deportes-entretenimiento',
-                'description' => 'Etiquetas para actividades deportivas y de entretenimiento',
+                'name' => 'Temas de Interés',
+                'slug' => 'temas-interes',
+                'description' => 'Etiquetas para categorizar contenido según temas de interés específicos.',
             ],
             [
-                'name' => 'Educación y Formación',
-                'slug' => 'educacion-formacion',
-                'description' => 'Etiquetas para contenido educativo y formativo',
+                'name' => 'Estados de Proyecto',
+                'slug' => 'estados-proyecto',
+                'description' => 'Clasificación de proyectos según su estado (planificación, en desarrollo, completado, cancelado, etc.).',
             ],
             [
-                'name' => 'Salud y Bienestar',
-                'slug' => 'salud-bienestar',
-                'description' => 'Etiquetas relacionadas con salud, bienestar y calidad de vida',
+                'name' => 'Prioridades',
+                'slug' => 'prioridades',
+                'description' => 'Etiquetas para clasificar tareas y elementos según su nivel de prioridad.',
             ],
             [
-                'name' => 'Economía y Finanzas',
-                'slug' => 'economia-finanzas',
-                'description' => 'Etiquetas para contenido económico y financiero',
+                'name' => 'Departamentos',
+                'slug' => 'departamentos',
+                'description' => 'Clasificación de contenido y recursos según el departamento responsable.',
             ],
             [
-                'name' => 'Política y Sociedad',
-                'slug' => 'politica-sociedad',
-                'description' => 'Etiquetas para temas políticos y sociales',
+                'name' => 'Funciones del Personal',
+                'slug' => 'funciones-personal',
+                'description' => 'Etiquetas para clasificar el personal según sus funciones y responsabilidades.',
             ],
             [
-                'name' => 'Ciencia e Investigación',
-                'slug' => 'ciencia-investigacion',
-                'description' => 'Etiquetas para contenido científico y de investigación',
+                'name' => 'Tipos de Documentos',
+                'slug' => 'tipos-documentos',
+                'description' => 'Clasificación de documentos según su tipo (manuales, políticas, procedimientos, etc.).',
+            ],
+            [
+                'name' => 'Clasificación Legal',
+                'slug' => 'clasificacion-legal',
+                'description' => 'Etiquetas para clasificar contenido según aspectos legales y regulatorios.',
+            ],
+            [
+                'name' => 'Estados de Aprobación',
+                'slug' => 'estados-aprobacion',
+                'description' => 'Clasificación de contenido según su estado de aprobación (pendiente, aprobado, rechazado, etc.).',
+            ],
+            [
+                'name' => 'Niveles de Acceso',
+                'slug' => 'niveles-acceso',
+                'description' => 'Etiquetas para clasificar contenido según los niveles de acceso requeridos.',
+            ],
+            [
+                'name' => 'Tipos de Recurso',
+                'slug' => 'tipos-recurso',
+                'description' => 'Clasificación de recursos según su tipo (humanos, materiales, tecnológicos, etc.).',
+            ],
+            [
+                'name' => 'Categorías de Noticias',
+                'slug' => 'categorias-noticias',
+                'description' => 'Etiquetas para categorizar noticias y artículos informativos.',
             ],
         ];
 
+        // Insertar los grupos de etiquetas
         foreach ($tagGroups as $tagGroup) {
-            TagGroup::firstOrCreate(
-                ['slug' => $tagGroup['slug']],
+            TagGroup::updateOrCreate(
+                ['slug' => $tagGroup['slug']], // Buscar por slug único
                 $tagGroup
             );
         }
 
-        $this->command->info('Se han creado ' . count($tagGroups) . ' grupos de etiquetas.');
-        
-        // Mostrar tabla con los grupos creados
-        $createdGroups = TagGroup::all(['id', 'name', 'slug'])->toArray();
-        
-        $this->command->table(
-            ['ID', 'Nombre', 'Slug'],
-            $createdGroups
-        );
-
-        // Estadísticas
-        $totalGroups = TagGroup::count();
-        $this->command->newLine();
-        $this->command->info("📊 Estadísticas:");
-        $this->command->info("   • Total de grupos de etiquetas: {$totalGroups}");
-        $this->command->info("   • Grupos más recientes: " . TagGroup::latest()->take(3)->pluck('name')->implode(', '));
-        
-        $this->command->newLine();
-        $this->command->info("✅ Seeder de TagGroup completado exitosamente.");
+        // Crear algunos grupos adicionales aleatorios usando el factory
+        TagGroup::factory()
+            ->count(5)
+            ->create();
     }
 }
