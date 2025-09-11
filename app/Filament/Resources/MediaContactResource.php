@@ -23,7 +23,11 @@ class MediaContactResource extends Resource
     protected static ?string $label = 'Contacto del medio de comunicación';
     protected static ?string $pluralLabel = 'Contactos del medio de comunicación';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Section::make('Información Básica')
