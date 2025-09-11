@@ -22,7 +22,11 @@ class WeatherAndSolarDataResource extends Resource
     protected static ?string $navigationGroup = 'Energy & Environment';
     protected static ?string $label = 'Dato Meteorológico y Solar';
     protected static ?string $pluralLabel = 'Datos Meteorológicos y Solares';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\DateTimePicker::make('datetime')->required(),
