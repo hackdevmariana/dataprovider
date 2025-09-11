@@ -21,7 +21,11 @@ class MediaOutletResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     protected static ?string $label = 'Medio de comunicación';
     protected static ?string $pluralLabel = 'Medios de comunicación';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
