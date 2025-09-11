@@ -22,7 +22,11 @@ class WorkResource extends Resource
     protected static ?string $label = 'Work';
     protected static ?string $pluralLabel = 'Works';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
