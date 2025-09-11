@@ -23,7 +23,11 @@ class UserChallengeResource extends Resource
     protected static ?string $label = 'Participación en Reto';
     protected static ?string $pluralLabel = 'Participaciones en Retos';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
