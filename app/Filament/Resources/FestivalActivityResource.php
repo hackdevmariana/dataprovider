@@ -27,7 +27,11 @@ class FestivalActivityResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Actividades de Festivales';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
