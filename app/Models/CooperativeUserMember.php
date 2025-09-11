@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class CooperativeUserMember extends Pivot
 {
+    use HasFactory;
+
     protected $table = 'cooperative_user_members';
 
     protected $fillable = [
