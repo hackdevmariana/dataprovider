@@ -24,7 +24,11 @@ class ProvinceResource extends Resource
     protected static ?string $navigationGroup = 'Locations';
 
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             TextInput::make('name')->required()->maxLength(255),
