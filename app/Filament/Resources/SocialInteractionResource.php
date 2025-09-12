@@ -23,7 +23,11 @@ class SocialInteractionResource extends Resource
     protected static ?string $pluralModelLabel = 'Interacciones Sociales';
     protected static ?int $navigationSort = 1;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
