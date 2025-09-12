@@ -19,7 +19,11 @@ class CarbonSavingLogResource extends Resource
     protected static ?string $navigationGroup = 'Energy & Environment';
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('user_id')
