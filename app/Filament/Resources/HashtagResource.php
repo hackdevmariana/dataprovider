@@ -24,7 +24,11 @@ class HashtagResource extends Resource
 
     protected static ?int $navigationSort = 9;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
