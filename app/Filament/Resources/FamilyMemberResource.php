@@ -20,7 +20,11 @@ class FamilyMemberResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'People & Organizations';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
