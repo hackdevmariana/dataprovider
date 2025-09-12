@@ -37,7 +37,11 @@ class CarbonSavingRequestResource extends Resource
     protected static ?string $pluralModelLabel = 'Solicitudes de Ahorro de Carbono';
     protected static ?int $navigationSort = 15;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
