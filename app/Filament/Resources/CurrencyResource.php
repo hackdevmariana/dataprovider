@@ -27,7 +27,11 @@ class CurrencyResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Monedas';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
