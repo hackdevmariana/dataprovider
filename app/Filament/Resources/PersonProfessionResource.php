@@ -24,7 +24,11 @@ class PersonProfessionResource extends Resource
     protected static ?string $navigationLabel = 'Profesiones de Personas';
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
