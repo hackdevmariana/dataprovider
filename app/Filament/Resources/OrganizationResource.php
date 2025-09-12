@@ -29,6 +29,11 @@ class OrganizationResource extends Resource
     protected static ?string $modelLabel = 'Organization';
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
