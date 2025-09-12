@@ -21,7 +21,11 @@ class ChallengeResource extends Resource
     protected static ?string $navigationGroup = 'Social System';
     protected static ?int $navigationSort = 20;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
