@@ -22,7 +22,11 @@ class EnergyInstallationResource extends Resource
     protected static ?string $navigationGroup = 'Energy & Environment';
     protected static ?string $label = 'Instalación Energética';
     protected static ?string $pluralLabel = 'Instalaciones Energéticas';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')->required(),
