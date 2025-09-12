@@ -23,7 +23,11 @@ class UserAchievementResource extends Resource
     protected static ?string $label = 'Logro de Usuario';
     protected static ?string $pluralLabel = 'Logros de Usuarios';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
