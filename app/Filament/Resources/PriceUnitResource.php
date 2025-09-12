@@ -19,7 +19,11 @@ class PriceUnitResource extends Resource
     protected static ?string $navigationGroup = 'Energy & Environment';
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
