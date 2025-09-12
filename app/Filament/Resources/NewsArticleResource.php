@@ -35,7 +35,11 @@ class NewsArticleResource extends Resource
     protected static ?string $navigationLabel = 'Noticias';
     protected static ?int $navigationSort = 30;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Section::make('Información Básica')
