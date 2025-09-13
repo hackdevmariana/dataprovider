@@ -21,7 +21,11 @@ class SponsoredContentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -416,11 +420,11 @@ class SponsoredContentResource extends Resource
                     ->url(fn ($record) => $record->destination_url)
                     ->limit(30)
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('show_sponsor_info')
+                Tables\Columns\IconColumn::make('show_sponsor_info')
                     ->label('Mostrar Info')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('allow_user_feedback')
+                Tables\Columns\IconColumn::make('allow_user_feedback')
                     ->label('Permitir Feedback')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -436,9 +440,8 @@ class SponsoredContentResource extends Resource
                         default => $state,
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('reviewed_by')
+                Tables\Columns\TextColumn::make('reviewedBy.name')
                     ->label('Revisado por')
-                    ->relationship('reviewedBy', 'name')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('reviewed_at')
                     ->label('Fecha de Revisión')
@@ -541,7 +544,7 @@ class SponsoredContentResource extends Resource
                     ->action(function (SponsoredContent $record): void {
                         $record->update([
                             'status' => 'approved',
-                            'reviewed_by' => auth()->id(),
+                            'reviewed_by' => \Illuminate\Support\Facades\Auth::id(),
                             'reviewed_at' => now(),
                         ]);
                         \Filament\Notifications\Notification::make()
@@ -557,7 +560,7 @@ class SponsoredContentResource extends Resource
                     ->action(function (SponsoredContent $record): void {
                         $record->update([
                             'status' => 'rejected',
-                            'reviewed_by' => auth()->id(),
+                            'reviewed_by' => \Illuminate\Support\Facades\Auth::id(),
                             'reviewed_at' => now(),
                         ]);
                         \Filament\Notifications\Notification::make()
@@ -607,7 +610,7 @@ class SponsoredContentResource extends Resource
                         ->action(function (Collection $records): void {
                             $records->each(fn (SponsoredContent $record) => $record->update([
                                 'status' => 'approved',
-                                'reviewed_by' => auth()->id(),
+                                'reviewed_by' => \Illuminate\Support\Facades\Auth::id(),
                                 'reviewed_at' => now(),
                             ]));
                             \Filament\Notifications\Notification::make()
