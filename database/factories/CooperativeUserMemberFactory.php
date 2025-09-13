@@ -147,3 +147,4 @@ class CooperativeUserMemberFactory extends Factory
         ]);
     }
 }
+
