@@ -37,7 +37,11 @@ class ElectricityOfferResource extends Resource
     protected static ?string $pluralModelLabel = 'Ofertas Eléctricas';
     protected static ?int $navigationSort = 20;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Section::make('Información de la Oferta')
