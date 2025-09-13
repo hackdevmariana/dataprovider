@@ -22,7 +22,11 @@ class CalendarHolidayResource extends Resource
 
     protected static ?string $label = 'Holiday';
     protected static ?string $pluralLabel = 'Holidays';
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form
             ->schema([
