@@ -27,7 +27,11 @@ class ScrapingSourceResource extends Resource
     protected static ?string $navigationGroup = 'General & Stats';
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             TextInput::make('name')
