@@ -24,7 +24,11 @@ class ContentVoteResource extends Resource
     protected static ?string $pluralModelLabel = 'Votos de Contenido';
     protected static ?int $navigationSort = 6;
 
-    public static function form(Form $form): Form
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Section::make('Información del Voto')
