@@ -2,341 +2,321 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Font;
+use Illuminate\Database\Seeder;
 
 class FontSeeder extends Seeder
 {
     /**
-     * Ejecutar el seeder para fuentes de KiroLux.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        $this->command->info('Creando tipografías para KiroLux...');
-
-        // Crear fuentes principales para KiroLux
-        $kiroluxFonts = $this->getKiroLuxFonts();
-        $createdCount = 0;
-
-        foreach ($kiroluxFonts as $fontData) {
-            $font = Font::firstOrCreate(
-                ['name' => $fontData['name']],
-                [
-                    'name' => $fontData['name'],
-                    'family' => $fontData['family'],
-                    'style' => $fontData['style'],
-                    'weight' => $fontData['weight'],
-                    'license' => $fontData['license'],
-                    'source_url' => $fontData['source_url'],
-                    'is_default' => $fontData['is_default'],
-                ]
-            );
-            
-            if ($font->wasRecentlyCreated) {
-                $createdCount++;
-            }
-        }
-
-        $this->command->info("✅ Creadas {$createdCount} fuentes para KiroLux");
-
-        // Mostrar estadísticas
-        $this->showStatistics();
+        // Fuentes Sans-serif populares
+        $this->createSansSerifFonts();
+        
+        // Fuentes Serif elegantes
+        $this->createSerifFonts();
+        
+        // Fuentes Monospace para código
+        $this->createMonospaceFonts();
+        
+        // Fuentes Display/Decorativas
+        $this->createDisplayFonts();
     }
 
     /**
-     * Fuentes optimizadas para KiroLux.
+     * Crear fuentes Sans-serif.
      */
-    private function getKiroLuxFonts(): array
+    private function createSansSerifFonts(): void
     {
-        return [
-            // Fuente principal - Sans-serif moderna
+        $sansSerifFonts = [
             [
                 'name' => 'Inter Regular',
                 'family' => 'Inter',
-                'style' => 'normal',
-                'weight' => '400',
+                'style' => 'Regular',
+                'weight' => 400,
                 'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Inter',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap',
                 'is_default' => true,
             ],
             [
                 'name' => 'Inter Medium',
                 'family' => 'Inter',
-                'style' => 'normal',
-                'weight' => '500',
+                'style' => 'Medium',
+                'weight' => 500,
                 'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Inter',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Inter Semibold',
-                'family' => 'Inter',
-                'style' => 'normal',
-                'weight' => '600',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Inter',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap',
                 'is_default' => false,
             ],
             [
                 'name' => 'Inter Bold',
                 'family' => 'Inter',
-                'style' => 'normal',
-                'weight' => '700',
+                'style' => 'Bold',
+                'weight' => 700,
                 'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Inter',
-                'is_default' => false,
-            ],
-
-            // Fuente secundaria - Para títulos y branding
-            [
-                'name' => 'Poppins Regular',
-                'family' => 'Poppins',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Poppins',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Poppins Medium',
-                'family' => 'Poppins',
-                'style' => 'normal',
-                'weight' => '500',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Poppins',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Poppins Semibold',
-                'family' => 'Poppins',
-                'style' => 'normal',
-                'weight' => '600',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Poppins',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Poppins Bold',
-                'family' => 'Poppins',
-                'style' => 'normal',
-                'weight' => '700',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/Poppins',
-                'is_default' => false,
-            ],
-
-            // Fuente monospace - Para datos técnicos
-            [
-                'name' => 'JetBrains Mono Regular',
-                'family' => 'JetBrains Mono',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/JetBrains+Mono',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'JetBrains Mono Medium',
-                'family' => 'JetBrains Mono',
-                'style' => 'normal',
-                'weight' => '500',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/JetBrains+Mono',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'JetBrains Mono Bold',
-                'family' => 'JetBrains Mono',
-                'style' => 'normal',
-                'weight' => '700',
-                'license' => 'Open Font License',
-                'source_url' => 'https://fonts.google.com/specimen/JetBrains+Mono',
-                'is_default' => false,
-            ],
-
-            // Fuente display - Para números grandes y métricas
-            [
-                'name' => 'Roboto Condensed Regular',
-                'family' => 'Roboto Condensed',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Apache License',
-                'source_url' => 'https://fonts.google.com/specimen/Roboto+Condensed',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Roboto Condensed Medium',
-                'family' => 'Roboto Condensed',
-                'style' => 'normal',
-                'weight' => '500',
-                'license' => 'Apache License',
-                'source_url' => 'https://fonts.google.com/specimen/Roboto+Condensed',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'Roboto Condensed Bold',
-                'family' => 'Roboto Condensed',
-                'style' => 'normal',
-                'weight' => '700',
-                'license' => 'Apache License',
-                'source_url' => 'https://fonts.google.com/specimen/Roboto+Condensed',
-                'is_default' => false,
-            ],
-
-            // Fuentes de sistema - Fallback
-            [
-                'name' => 'System UI Regular',
-                'family' => 'system-ui',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'System Font',
-                'source_url' => 'system://fonts',
-                'is_default' => false,
-            ],
-            [
-                'name' => 'SF Pro Display Regular',
-                'family' => 'SF Pro Display',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Apple System Font',
-                'source_url' => 'https://developer.apple.com/fonts/',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap',
                 'is_default' => false,
             ],
             [
                 'name' => 'Roboto Regular',
                 'family' => 'Roboto',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Apache License',
-                'source_url' => 'https://fonts.google.com/specimen/Roboto',
-                'is_default' => false,
-            ],
-
-            // Fuente para iconos - Si se necesita
-            [
-                'name' => 'Material Icons Regular',
-                'family' => 'Material Icons',
-                'style' => 'normal',
-                'weight' => '400',
-                'license' => 'Apache License',
-                'source_url' => 'https://fonts.google.com/icons',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Apache License 2.0',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap',
                 'is_default' => false,
             ],
             [
-                'name' => 'Heroicons Outline',
-                'family' => 'Heroicons',
-                'style' => 'outline',
-                'weight' => '400',
-                'license' => 'MIT License',
-                'source_url' => 'https://heroicons.com/',
+                'name' => 'Roboto Medium',
+                'family' => 'Roboto',
+                'style' => 'Medium',
+                'weight' => 500,
+                'license' => 'Apache License 2.0',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap',
                 'is_default' => false,
             ],
             [
-                'name' => 'Heroicons Solid',
-                'family' => 'Heroicons',
-                'style' => 'solid',
-                'weight' => '400',
-                'license' => 'MIT License',
-                'source_url' => 'https://heroicons.com/',
+                'name' => 'Open Sans Regular',
+                'family' => 'Open Sans',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Apache License 2.0',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Lato Regular',
+                'family' => 'Lato',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Montserrat Regular',
+                'family' => 'Montserrat',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Montserrat Bold',
+                'family' => 'Montserrat',
+                'style' => 'Bold',
+                'weight' => 700,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Poppins Regular',
+                'family' => 'Poppins',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap',
                 'is_default' => false,
             ],
         ];
+
+        foreach ($sansSerifFonts as $fontData) {
+            Font::create($fontData);
+        }
     }
 
     /**
-     * Mostrar estadísticas de las fuentes creadas.
+     * Crear fuentes Serif.
      */
-    private function showStatistics(): void
+    private function createSerifFonts(): void
     {
-        $stats = [
-            'Total fuentes' => Font::count(),
-            'Fuentes por defecto' => Font::where('is_default', true)->count(),
-            'Familia Inter' => Font::where('family', 'Inter')->count(),
-            'Familia Poppins' => Font::where('family', 'Poppins')->count(),
-            'Fuentes monospace' => Font::where('family', 'JetBrains Mono')->count(),
-            'Fuentes display' => Font::where('family', 'Roboto Condensed')->count(),
-            'Fuentes de sistema' => Font::whereIn('family', ['system-ui', 'SF Pro Display', 'Roboto'])->count(),
-            'Fuentes de iconos' => Font::whereIn('family', ['Material Icons', 'Heroicons'])->count(),
+        $serifFonts = [
+            [
+                'name' => 'Playfair Display Regular',
+                'family' => 'Playfair Display',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Playfair Display Bold',
+                'family' => 'Playfair Display',
+                'style' => 'Bold',
+                'weight' => 700,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Merriweather Regular',
+                'family' => 'Merriweather',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Lora Regular',
+                'family' => 'Lora',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Lora:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Source Serif Pro Regular',
+                'family' => 'Source Serif Pro',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Crimson Text Regular',
+                'family' => 'Crimson Text',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400&display=swap',
+                'is_default' => false,
+            ],
         ];
 
-        $this->command->info("\n📊 Estadísticas de fuentes:");
-        foreach ($stats as $type => $count) {
-            $this->command->info("   {$type}: {$count}");
+        foreach ($serifFonts as $fontData) {
+            Font::create($fontData);
         }
-
-        // Familias de fuentes
-        $families = Font::selectRaw('family, COUNT(*) as count')
-                       ->groupBy('family')
-                       ->orderBy('count', 'desc')
-                       ->get();
-
-        if ($families->isNotEmpty()) {
-            $this->command->info("\n🔤 Familias de fuentes:");
-            foreach ($families as $family) {
-                $this->command->info("   {$family->family}: {$family->count} variantes");
-            }
-        }
-
-        // Pesos disponibles
-        $weights = Font::selectRaw('weight, COUNT(*) as count')
-                      ->groupBy('weight')
-                      ->orderBy('weight', 'asc')
-                      ->get();
-
-        if ($weights->isNotEmpty()) {
-            $this->command->info("\n⚖️ Pesos disponibles:");
-            foreach ($weights as $weight) {
-                $weightName = $this->getWeightName($weight->weight);
-                $this->command->info("   {$weight->weight} ({$weightName}): {$weight->count} fuentes");
-            }
-        }
-
-        // Licencias
-        $licenses = Font::selectRaw('license, COUNT(*) as count')
-                       ->groupBy('license')
-                       ->orderBy('count', 'desc')
-                       ->get();
-
-        if ($licenses->isNotEmpty()) {
-            $this->command->info("\n📜 Licencias:");
-            foreach ($licenses as $license) {
-                $this->command->info("   {$license->license}: {$license->count} fuentes");
-            }
-        }
-
-        // Información para KiroLux
-        $defaultFont = Font::where('is_default', true)->first();
-        $interFonts = Font::where('family', 'Inter')->count();
-        $poppinsFonts = Font::where('family', 'Poppins')->count();
-        
-        $this->command->info("\n⚡ Para KiroLux:");
-        $this->command->info("   🔤 Fuente principal: " . ($defaultFont ? $defaultFont->name : 'No definida'));
-        $this->command->info("   📱 Inter (UI): {$interFonts} variantes - Óptima para interfaces");
-        $this->command->info("   🎨 Poppins (Branding): {$poppinsFonts} variantes - Para títulos");
-        $this->command->info("   💻 JetBrains Mono: Para datos técnicos y código");
-        $this->command->info("   📊 Roboto Condensed: Para métricas y números grandes");
-        $this->command->info("   🌍 Soporte multiidioma: Completo");
-        $this->command->info("   📱 Mobile-optimized: Todas las fuentes");
-        $this->command->info("   ⚡ Performance: Google Fonts CDN");
     }
 
     /**
-     * Obtener el nombre legible del peso de fuente.
+     * Crear fuentes Monospace.
      */
-    private function getWeightName(string $weight): string
+    private function createMonospaceFonts(): void
     {
-        $weights = [
-            '100' => 'Thin',
-            '200' => 'Extra Light',
-            '300' => 'Light',
-            '400' => 'Regular',
-            '500' => 'Medium',
-            '600' => 'Semibold',
-            '700' => 'Bold',
-            '800' => 'Extra Bold',
-            '900' => 'Black',
+        $monospaceFonts = [
+            [
+                'name' => 'Fira Code Regular',
+                'family' => 'Fira Code',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Fira Code Medium',
+                'family' => 'Fira Code',
+                'style' => 'Medium',
+                'weight' => 500,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Source Code Pro Regular',
+                'family' => 'Source Code Pro',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'JetBrains Mono Regular',
+                'family' => 'JetBrains Mono',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'IBM Plex Mono Regular',
+                'family' => 'IBM Plex Mono',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap',
+                'is_default' => false,
+            ],
         ];
 
-        return $weights[$weight] ?? 'Unknown';
+        foreach ($monospaceFonts as $fontData) {
+            Font::create($fontData);
+        }
+    }
+
+    /**
+     * Crear fuentes Display/Decorativas.
+     */
+    private function createDisplayFonts(): void
+    {
+        $displayFonts = [
+            [
+                'name' => 'Oswald Regular',
+                'family' => 'Oswald',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Oswald:wght@400&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Oswald Bold',
+                'family' => 'Oswald',
+                'style' => 'Bold',
+                'weight' => 700,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Bebas Neue Regular',
+                'family' => 'Bebas Neue',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Righteous Regular',
+                'family' => 'Righteous',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Righteous&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Fredoka One Regular',
+                'family' => 'Fredoka One',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap',
+                'is_default' => false,
+            ],
+            [
+                'name' => 'Lobster Regular',
+                'family' => 'Lobster',
+                'style' => 'Regular',
+                'weight' => 400,
+                'license' => 'Open Font License',
+                'source_url' => 'https://fonts.googleapis.com/css2?family=Lobster&display=swap',
+                'is_default' => false,
+            ],
+        ];
+
+        foreach ($displayFonts as $fontData) {
+            Font::create($fontData);
+        }
     }
 }
