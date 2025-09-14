@@ -2,311 +2,268 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Color;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ColorSeeder extends Seeder
 {
     /**
-     * Ejecutar el seeder para colores de KiroLux.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        $this->command->info('Creando paleta de colores para KiroLux...');
-
-        // Crear paleta de colores para KiroLux
-        $kiroluxColors = $this->getKiroLuxColorPalette();
-        $createdCount = 0;
-
-        foreach ($kiroluxColors as $colorData) {
-            $color = Color::firstOrCreate(
-                ['slug' => $colorData['slug']],
-                [
-                    'name' => $colorData['name'],
-                    'slug' => $colorData['slug'],
-                    'hex_code' => $colorData['hex_code'],
-                    'rgb_code' => $colorData['rgb_code'],
-                    'hsl_code' => $colorData['hsl_code'],
-                    'is_primary' => $colorData['is_primary'],
-                    'description' => $colorData['description'],
-                ]
-            );
-            
-            if ($color->wasRecentlyCreated) {
-                $createdCount++;
-            }
-        }
-
-        $this->command->info("✅ Creados {$createdCount} colores de la paleta KiroLux");
-
-        // Crear colores adicionales del sistema
-        $systemColors = $this->getSystemColors();
-        foreach ($systemColors as $colorData) {
-            $color = Color::firstOrCreate(
-                ['slug' => $colorData['slug']],
-                $colorData
-            );
-            
-            if ($color->wasRecentlyCreated) {
-                $createdCount++;
-            }
-        }
-
-        $this->command->info("✅ Total creados: {$createdCount} colores");
-
-        // Mostrar estadísticas
-        $this->showStatistics();
+        // Colores primarios
+        $this->createPrimaryColors();
+        
+        // Colores secundarios
+        $this->createSecondaryColors();
+        
+        // Colores neutros
+        $this->createNeutralColors();
+        
+        // Colores energéticos (verdes, azules)
+        $this->createEnergyColors();
+        
+        // Colores corporativos
+        $this->createCorporateColors();
     }
 
     /**
-     * Paleta de colores oficial de KiroLux.
+     * Crear colores primarios.
      */
-    private function getKiroLuxColorPalette(): array
+    private function createPrimaryColors(): void
     {
-        return [
-            // Colores primarios - Energía y sostenibilidad
+        $primaryColors = [
             [
-                'name' => 'KiroLux Verde Primario',
-                'slug' => 'kirolux-green-primary',
-                'hex_code' => '#22C55E',
-                'rgb_code' => 'rgb(34, 197, 94)',
-                'hsl_code' => 'hsl(142, 71%, 45%)',
+                'name' => 'Rojo Primario',
+                'hex_code' => '#FF0000',
+                'rgb_code' => 'rgb(255, 0, 0)',
+                'hsl_code' => 'hsl(0, 100%, 50%)',
                 'is_primary' => true,
-                'description' => 'Color verde principal de KiroLux, representa energía renovable y sostenibilidad.',
+                'description' => 'Rojo puro, color primario básico para identidades corporativas.',
             ],
             [
-                'name' => 'KiroLux Verde Oscuro',
-                'slug' => 'kirolux-green-dark',
-                'hex_code' => '#16A34A',
-                'rgb_code' => 'rgb(22, 163, 74)',
-                'hsl_code' => 'hsl(142, 76%, 36%)',
-                'is_primary' => false,
-                'description' => 'Verde oscuro para elementos de contraste y texto sobre fondos claros.',
+                'name' => 'Azul Primario',
+                'hex_code' => '#0000FF',
+                'rgb_code' => 'rgb(0, 0, 255)',
+                'hsl_code' => 'hsl(240, 100%, 50%)',
+                'is_primary' => true,
+                'description' => 'Azul puro, color primario básico para identidades corporativas.',
             ],
             [
-                'name' => 'KiroLux Verde Claro',
-                'slug' => 'kirolux-green-light',
-                'hex_code' => '#4ADE80',
-                'rgb_code' => 'rgb(74, 222, 128)',
-                'hsl_code' => 'hsl(142, 69%, 58%)',
-                'is_primary' => false,
-                'description' => 'Verde claro para fondos suaves y elementos secundarios.',
-            ],
-
-            // Colores secundarios - Energía solar
-            [
-                'name' => 'KiroLux Amarillo Solar',
-                'slug' => 'kirolux-solar-yellow',
-                'hex_code' => '#FCD34D',
-                'rgb_code' => 'rgb(252, 211, 77)',
-                'hsl_code' => 'hsl(45, 96%, 65%)',
-                'is_primary' => false,
-                'description' => 'Amarillo que representa la energía solar y la luz del sol.',
-            ],
-            [
-                'name' => 'KiroLux Naranja Energético',
-                'slug' => 'kirolux-energy-orange',
-                'hex_code' => '#FB923C',
-                'rgb_code' => 'rgb(251, 146, 60)',
-                'hsl_code' => 'hsl(27, 96%, 61%)',
-                'is_primary' => false,
-                'description' => 'Naranja vibrante para indicar actividad energética y alertas.',
-            ],
-
-            // Colores de soporte - Cooperativismo
-            [
-                'name' => 'KiroLux Azul Cooperativo',
-                'slug' => 'kirolux-cooperative-blue',
-                'hex_code' => '#3B82F6',
-                'rgb_code' => 'rgb(59, 130, 246)',
-                'hsl_code' => 'hsl(221, 91%, 60%)',
-                'is_primary' => false,
-                'description' => 'Azul que representa confianza, cooperación y tecnología.',
-            ],
-            [
-                'name' => 'KiroLux Azul Marino',
-                'slug' => 'kirolux-navy-blue',
-                'hex_code' => '#1E40AF',
-                'rgb_code' => 'rgb(30, 64, 175)',
-                'hsl_code' => 'hsl(226, 83%, 40%)',
-                'is_primary' => false,
-                'description' => 'Azul marino para elementos de navegación y headers.',
-            ],
-
-            // Colores neutros - Interface
-            [
-                'name' => 'KiroLux Gris Carbón',
-                'slug' => 'kirolux-charcoal-gray',
-                'hex_code' => '#374151',
-                'rgb_code' => 'rgb(55, 65, 81)',
-                'hsl_code' => 'hsl(220, 19%, 27%)',
-                'is_primary' => false,
-                'description' => 'Gris oscuro para textos principales y elementos de contraste.',
-            ],
-            [
-                'name' => 'KiroLux Gris Medio',
-                'slug' => 'kirolux-medium-gray',
-                'hex_code' => '#6B7280',
-                'rgb_code' => 'rgb(107, 114, 128)',
-                'hsl_code' => 'hsl(220, 9%, 46%)',
-                'is_primary' => false,
-                'description' => 'Gris medio para textos secundarios y elementos de soporte.',
-            ],
-            [
-                'name' => 'KiroLux Gris Claro',
-                'slug' => 'kirolux-light-gray',
-                'hex_code' => '#F3F4F6',
-                'rgb_code' => 'rgb(243, 244, 246)',
-                'hsl_code' => 'hsl(220, 14%, 96%)',
-                'is_primary' => false,
-                'description' => 'Gris muy claro para fondos y separadores sutiles.',
-            ],
-
-            // Colores de estado - Alertas y notificaciones
-            [
-                'name' => 'KiroLux Éxito Verde',
-                'slug' => 'kirolux-success-green',
-                'hex_code' => '#10B981',
-                'rgb_code' => 'rgb(16, 185, 129)',
-                'hsl_code' => 'hsl(158, 84%, 39%)',
-                'is_primary' => false,
-                'description' => 'Verde para mensajes de éxito y confirmaciones positivas.',
-            ],
-            [
-                'name' => 'KiroLux Advertencia Amarilla',
-                'slug' => 'kirolux-warning-yellow',
-                'hex_code' => '#F59E0B',
-                'rgb_code' => 'rgb(245, 158, 11)',
-                'hsl_code' => 'hsl(38, 92%, 50%)',
-                'is_primary' => false,
-                'description' => 'Amarillo para advertencias y mensajes informativos.',
-            ],
-            [
-                'name' => 'KiroLux Error Rojo',
-                'slug' => 'kirolux-error-red',
-                'hex_code' => '#EF4444',
-                'rgb_code' => 'rgb(239, 68, 68)',
-                'hsl_code' => 'hsl(0, 84%, 60%)',
-                'is_primary' => false,
-                'description' => 'Rojo para errores y mensajes críticos.',
-            ],
-
-            // Colores especiales - Gamificación
-            [
-                'name' => 'KiroLux Oro Premio',
-                'slug' => 'kirolux-gold-award',
-                'hex_code' => '#D97706',
-                'rgb_code' => 'rgb(217, 119, 6)',
-                'hsl_code' => 'hsl(32, 95%, 44%)',
-                'is_primary' => false,
-                'description' => 'Dorado para logros, premios y elementos premium.',
-            ],
-            [
-                'name' => 'KiroLux Púrpura Innovación',
-                'slug' => 'kirolux-innovation-purple',
-                'hex_code' => '#8B5CF6',
-                'rgb_code' => 'rgb(139, 92, 246)',
-                'hsl_code' => 'hsl(258, 90%, 66%)',
-                'is_primary' => false,
-                'description' => 'Púrpura para elementos de innovación y características avanzadas.',
+                'name' => 'Amarillo Primario',
+                'hex_code' => '#FFFF00',
+                'rgb_code' => 'rgb(255, 255, 0)',
+                'hsl_code' => 'hsl(60, 100%, 50%)',
+                'is_primary' => true,
+                'description' => 'Amarillo puro, color primario básico para identidades corporativas.',
             ],
         ];
+
+        foreach ($primaryColors as $colorData) {
+            $colorData['slug'] = Str::slug($colorData['name']);
+            Color::create($colorData);
+        }
     }
 
     /**
-     * Colores adicionales del sistema.
+     * Crear colores secundarios.
      */
-    private function getSystemColors(): array
+    private function createSecondaryColors(): void
     {
-        return [
-            // Colores básicos del sistema
+        $secondaryColors = [
             [
-                'name' => 'Blanco Puro',
-                'slug' => 'pure-white',
-                'hex_code' => '#FFFFFF',
-                'rgb_code' => 'rgb(255, 255, 255)',
-                'hsl_code' => 'hsl(0, 0%, 100%)',
+                'name' => 'Verde',
+                'hex_code' => '#00FF00',
+                'rgb_code' => 'rgb(0, 255, 0)',
+                'hsl_code' => 'hsl(120, 100%, 50%)',
                 'is_primary' => false,
-                'description' => 'Blanco puro para fondos principales.',
+                'description' => 'Verde puro, ideal para temas ecológicos y energías renovables.',
             ],
             [
-                'name' => 'Negro Absoluto',
-                'slug' => 'absolute-black',
+                'name' => 'Naranja',
+                'hex_code' => '#FF8000',
+                'rgb_code' => 'rgb(255, 128, 0)',
+                'hsl_code' => 'hsl(30, 100%, 50%)',
+                'is_primary' => false,
+                'description' => 'Naranja vibrante, perfecto para llamar la atención.',
+            ],
+            [
+                'name' => 'Púrpura',
+                'hex_code' => '#8000FF',
+                'rgb_code' => 'rgb(128, 0, 255)',
+                'hsl_code' => 'hsl(270, 100%, 50%)',
+                'is_primary' => false,
+                'description' => 'Púrpura intenso, color distintivo para marcas premium.',
+            ],
+        ];
+
+        foreach ($secondaryColors as $colorData) {
+            $colorData['slug'] = Str::slug($colorData['name']);
+            Color::create($colorData);
+        }
+    }
+
+    /**
+     * Crear colores neutros.
+     */
+    private function createNeutralColors(): void
+    {
+        $neutralColors = [
+            [
+                'name' => 'Negro',
                 'hex_code' => '#000000',
                 'rgb_code' => 'rgb(0, 0, 0)',
                 'hsl_code' => 'hsl(0, 0%, 0%)',
                 'is_primary' => false,
-                'description' => 'Negro absoluto para contrastes máximos.',
+                'description' => 'Negro puro, esencial para textos y contrastes.',
             ],
             [
-                'name' => 'Transparente',
-                'slug' => 'transparent',
-                'hex_code' => '#00000000',
-                'rgb_code' => 'rgba(0, 0, 0, 0)',
-                'hsl_code' => 'hsla(0, 0%, 0%, 0)',
+                'name' => 'Blanco',
+                'hex_code' => '#FFFFFF',
+                'rgb_code' => 'rgb(255, 255, 255)',
+                'hsl_code' => 'hsl(0, 0%, 100%)',
                 'is_primary' => false,
-                'description' => 'Color transparente para overlays y efectos.',
+                'description' => 'Blanco puro, perfecto para fondos y espacios.',
+            ],
+            [
+                'name' => 'Gris Oscuro',
+                'hex_code' => '#333333',
+                'rgb_code' => 'rgb(51, 51, 51)',
+                'hsl_code' => 'hsl(0, 0%, 20%)',
+                'is_primary' => false,
+                'description' => 'Gris oscuro, elegante para textos secundarios.',
+            ],
+            [
+                'name' => 'Gris Medio',
+                'hex_code' => '#666666',
+                'rgb_code' => 'rgb(102, 102, 102)',
+                'hsl_code' => 'hsl(0, 0%, 40%)',
+                'is_primary' => false,
+                'description' => 'Gris medio, versátil para elementos secundarios.',
+            ],
+            [
+                'name' => 'Gris Claro',
+                'hex_code' => '#CCCCCC',
+                'rgb_code' => 'rgb(204, 204, 204)',
+                'hsl_code' => 'hsl(0, 0%, 80%)',
+                'is_primary' => false,
+                'description' => 'Gris claro, ideal para fondos sutiles.',
             ],
         ];
+
+        foreach ($neutralColors as $colorData) {
+            $colorData['slug'] = Str::slug($colorData['name']);
+            Color::create($colorData);
+        }
     }
 
     /**
-     * Mostrar estadísticas de los colores creados.
+     * Crear colores energéticos.
      */
-    private function showStatistics(): void
+    private function createEnergyColors(): void
     {
-        $stats = [
-            'Total colores' => Color::count(),
-            'Colores primarios' => Color::where('is_primary', true)->count(),
-            'Colores KiroLux' => Color::where('slug', 'LIKE', 'kirolux-%')->count(),
-            'Colores de estado' => Color::where('slug', 'LIKE', '%-green')
-                                        ->orWhere('slug', 'LIKE', '%-yellow')
-                                        ->orWhere('slug', 'LIKE', '%-red')
-                                        ->count(),
-            'Colores neutros' => Color::where('slug', 'LIKE', '%-gray')->count(),
-            'Colores especiales' => Color::where('slug', 'LIKE', '%-gold')
-                                         ->orWhere('slug', 'LIKE', '%-purple')
-                                         ->count(),
+        $energyColors = [
+            [
+                'name' => 'Verde Energía',
+                'hex_code' => '#00B050',
+                'rgb_code' => 'rgb(0, 176, 80)',
+                'hsl_code' => 'hsl(140, 100%, 35%)',
+                'is_primary' => false,
+                'description' => 'Verde energético, perfecto para energías renovables.',
+            ],
+            [
+                'name' => 'Azul Solar',
+                'hex_code' => '#0070C0',
+                'rgb_code' => 'rgb(0, 112, 192)',
+                'hsl_code' => 'hsl(200, 100%, 38%)',
+                'is_primary' => false,
+                'description' => 'Azul solar, ideal para tecnologías solares.',
+            ],
+            [
+                'name' => 'Verde Sostenible',
+                'hex_code' => '#2E8B57',
+                'rgb_code' => 'rgb(46, 139, 87)',
+                'hsl_code' => 'hsl(146, 50%, 36%)',
+                'is_primary' => false,
+                'description' => 'Verde sostenible, representa ecología y medio ambiente.',
+            ],
+            [
+                'name' => 'Azul Eólico',
+                'hex_code' => '#4169E1',
+                'rgb_code' => 'rgb(65, 105, 225)',
+                'hsl_code' => 'hsl(225, 73%, 57%)',
+                'is_primary' => false,
+                'description' => 'Azul eólico, perfecto para energía eólica.',
+            ],
+            [
+                'name' => 'Amarillo Solar',
+                'hex_code' => '#FFD700',
+                'rgb_code' => 'rgb(255, 215, 0)',
+                'hsl_code' => 'hsl(51, 100%, 50%)',
+                'is_primary' => false,
+                'description' => 'Amarillo solar, representa la energía del sol.',
+            ],
         ];
 
-        $this->command->info("\n📊 Estadísticas de colores:");
-        foreach ($stats as $type => $count) {
-            $this->command->info("   {$type}: {$count}");
+        foreach ($energyColors as $colorData) {
+            $colorData['slug'] = Str::slug($colorData['name']);
+            Color::create($colorData);
         }
+    }
 
-        // Paleta principal
-        $primaryColors = Color::where('is_primary', true)->get();
-        if ($primaryColors->isNotEmpty()) {
-            $this->command->info("\n🎨 Colores primarios:");
-            foreach ($primaryColors as $color) {
-                $this->command->info("   {$color->name}: {$color->hex_code}");
-            }
+    /**
+     * Crear colores corporativos.
+     */
+    private function createCorporateColors(): void
+    {
+        $corporateColors = [
+            [
+                'name' => 'Azul Corporativo',
+                'hex_code' => '#1E3A8A',
+                'rgb_code' => 'rgb(30, 58, 138)',
+                'hsl_code' => 'hsl(220, 64%, 33%)',
+                'is_primary' => false,
+                'description' => 'Azul corporativo profesional, ideal para empresas tecnológicas.',
+            ],
+            [
+                'name' => 'Verde Corporativo',
+                'hex_code' => '#059669',
+                'rgb_code' => 'rgb(5, 150, 105)',
+                'hsl_code' => 'hsl(160, 94%, 30%)',
+                'is_primary' => false,
+                'description' => 'Verde corporativo, perfecto para empresas sostenibles.',
+            ],
+            [
+                'name' => 'Rojo Corporativo',
+                'hex_code' => '#DC2626',
+                'rgb_code' => 'rgb(220, 38, 38)',
+                'hsl_code' => 'hsl(0, 84%, 51%)',
+                'is_primary' => false,
+                'description' => 'Rojo corporativo, ideal para marcas dinámicas.',
+            ],
+            [
+                'name' => 'Púrpura Corporativo',
+                'hex_code' => '#7C3AED',
+                'rgb_code' => 'rgb(124, 58, 237)',
+                'hsl_code' => 'hsl(262, 83%, 58%)',
+                'is_primary' => false,
+                'description' => 'Púrpura corporativo, perfecto para marcas creativas.',
+            ],
+            [
+                'name' => 'Naranja Corporativo',
+                'hex_code' => '#EA580C',
+                'rgb_code' => 'rgb(234, 88, 12)',
+                'hsl_code' => 'hsl(25, 90%, 48%)',
+                'is_primary' => false,
+                'description' => 'Naranja corporativo, ideal para marcas energéticas.',
+            ],
+        ];
+
+        foreach ($corporateColors as $colorData) {
+            $colorData['slug'] = Str::slug($colorData['name']);
+            Color::create($colorData);
         }
-
-        // Colores más representativos de KiroLux
-        $brandColors = Color::where('slug', 'LIKE', 'kirolux-%')
-                           ->whereIn('slug', [
-                               'kirolux-green-primary',
-                               'kirolux-solar-yellow', 
-                               'kirolux-cooperative-blue'
-                           ])
-                           ->get();
-
-        if ($brandColors->isNotEmpty()) {
-            $this->command->info("\n🌟 Colores marca KiroLux:");
-            foreach ($brandColors as $color) {
-                $this->command->info("   {$color->name}: {$color->hex_code}");
-            }
-        }
-
-        // Información para KiroLux
-        $totalKirolux = Color::where('slug', 'LIKE', 'kirolux-%')->count();
-        $this->command->info("\n⚡ Para KiroLux:");
-        $this->command->info("   🎨 Paleta completa: {$totalKirolux} colores de marca");
-        $this->command->info("   💚 Enfoque sostenible: Verde como color principal");
-        $this->command->info("   ☀️ Energía solar: Amarillo y naranja integrados");
-        $this->command->info("   🤝 Cooperativismo: Azul para confianza");
-        $this->command->info("   🎯 Sistema completo: Estados, neutros y especiales");
-        $this->command->info("   📱 Mobile-ready: Paleta optimizada para apps");
     }
 }
