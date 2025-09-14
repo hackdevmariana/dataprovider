@@ -9,11 +9,15 @@ class VisualIdentity extends Model
 
     public function colors()
     {
-        return $this->morphToMany(Color::class, 'colorable');
+        return $this->morphToMany(Color::class, 'colorable')
+                    ->withPivot(['usage', 'is_primary', 'sort_order'])
+                    ->withTimestamps();
     }
 
     public function fonts()
     {
-        return $this->morphToMany(Font::class, 'fontable');
+        return $this->morphToMany(Font::class, 'fontable')
+                    ->withPivot(['usage', 'is_primary', 'sort_order'])
+                    ->withTimestamps();
     }
 }
