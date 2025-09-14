@@ -321,3 +321,4 @@ class CarbonSavingRequestsSeeder extends Seeder
         $this->command->info('Se han creado ' . count($requests) . ' solicitudes de ahorro de carbono.');
     }
 }
+
