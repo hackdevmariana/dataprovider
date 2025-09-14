@@ -2,15 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\SponsoredContent;
 use App\Models\User;
-use App\Models\TopicPost;
+use App\Models\Post;
+use App\Models\Topic;
 use App\Models\Event;
-use App\Models\Cooperative;
-use App\Models\NewsArticle;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class SponsoredContentSeeder extends Seeder
 {
@@ -19,492 +17,396 @@ class SponsoredContentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Verificar si ya existen contenidos patrocinados
-        if (SponsoredContent::count() > 0) {
-            $this->command->info('Ya existen contenidos patrocinados en la base de datos. Creando contenidos adicionales...');
-        }
-
-        // Crear contenidos patrocinados para diferentes tipos
-        $this->createPromotedPosts();
-        $this->createBannerAds();
-        $this->createSponsoredTopics();
-        $this->createProductPlacements();
-        $this->createNativeContent();
-        $this->createEventPromotions();
-        $this->createJobPostings();
-        $this->createServiceHighlights();
-
-        $this->command->info('✅ Se han creado/actualizado los contenidos patrocinados del sistema.');
-    }
-
-    private function createPromotedPosts(): void
-    {
-        $sponsors = User::take(3)->get();
-        $posts = TopicPost::take(5)->get();
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($posts->take(2) as $post) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => TopicPost::class,
-                    'sponsorable_id' => $post->id,
-                    'campaign_name' => 'Promoción Post: ' . Str::limit($post->title, 30),
-                    'campaign_description' => 'Campaña para promocionar contenido relevante sobre ' . Str::limit($post->title, 50),
-                    'content_type' => 'promoted_post',
-                    'target_audience' => ['profesionales_energia', 'interesados_sostenibilidad'],
-                    'target_topics' => ['energia_renovable', 'sostenibilidad'],
-                    'target_locations' => ['España', 'Europa'],
-                    'target_demographics' => ['25-45', 'universitarios'],
-                    'ad_label' => 'Patrocinado',
-                    'call_to_action' => 'Leer más',
-                    'destination_url' => 'https://example.com/posts/' . $post->id,
-                    'creative_assets' => [
-                        'banner' => 'https://example.com/banners/post-' . $post->id . '.jpg',
-                        'thumbnail' => 'https://example.com/thumbnails/post-' . $post->id . '.jpg',
-                    ],
-                    'pricing_model' => 'cpc',
-                    'bid_amount' => rand(50, 200) / 100,
-                    'daily_budget' => rand(50, 200),
-                    'total_budget' => rand(500, 2000),
-                    'spent_amount' => rand(0, 100),
-                    'start_date' => now()->subDays(rand(1, 30)),
-                    'end_date' => now()->addDays(rand(30, 90)),
-                    'schedule_config' => [
-                        'monday' => ['09:00-18:00'],
-                        'tuesday' => ['09:00-18:00'],
-                        'wednesday' => ['09:00-18:00'],
-                        'thursday' => ['09:00-18:00'],
-                        'friday' => ['09:00-18:00'],
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(1000, 10000),
-                    'clicks' => rand(50, 500),
-                    'conversions' => rand(5, 50),
-                    'ctr' => rand(20, 80) / 100,
-                    'conversion_rate' => rand(5, 15) / 100,
-                    'engagement_rate' => rand(10, 30) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Contenido patrocinado por ' . $sponsor->name,
-                        'en' => 'Sponsored content by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createBannerAds(): void
-    {
-        $sponsors = User::take(2)->get();
-        $cooperatives = Cooperative::take(3)->get();
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($cooperatives->take(2) as $cooperative) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => Cooperative::class,
-                    'sponsorable_id' => $cooperative->id,
-                    'campaign_name' => 'Banner Cooperativa: ' . Str::limit($cooperative->name, 30),
-                    'campaign_description' => 'Campaña de banner para promocionar ' . $cooperative->name,
-                    'content_type' => 'banner_ad',
-                    'target_audience' => ['miembros_cooperativas', 'interesados_energia_comunitaria'],
-                    'target_topics' => ['energia_comunitaria', 'cooperativas'],
-                    'target_locations' => [$cooperative->region->name ?? 'España'],
-                    'target_demographics' => ['30-60', 'propietarios_vivienda'],
-                    'ad_label' => 'Anuncio',
-                    'call_to_action' => 'Unirse',
-                    'destination_url' => 'https://example.com/cooperatives/' . $cooperative->id,
-                    'creative_assets' => [
-                        'banner_728x90' => 'https://example.com/banners/728x90-' . $cooperative->id . '.jpg',
-                        'banner_300x250' => 'https://example.com/banners/300x250-' . $cooperative->id . '.jpg',
-                    ],
-                    'pricing_model' => 'cpm',
-                    'bid_amount' => rand(2, 8) / 1000,
-                    'daily_budget' => rand(100, 500),
-                    'total_budget' => rand(2000, 10000),
-                    'spent_amount' => rand(0, 500),
-                    'start_date' => now()->subDays(rand(1, 15)),
-                    'end_date' => now()->addDays(rand(60, 120)),
-                    'schedule_config' => [
-                        'all_days' => ['00:00-23:59'],
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(50000, 200000),
-                    'clicks' => rand(200, 1500),
-                    'conversions' => rand(20, 100),
-                    'ctr' => rand(10, 50) / 1000,
-                    'conversion_rate' => rand(8, 20) / 100,
-                    'engagement_rate' => rand(15, 40) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => false,
-                    'disclosure_text' => [
-                        'es' => 'Anuncio de ' . $cooperative->name,
-                        'en' => 'Ad by ' . $cooperative->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createSponsoredTopics(): void
-    {
-        $sponsors = User::take(2)->get();
-        $topics = ['energia_solar', 'energia_eolica', 'eficiencia_energetica', 'movilidad_electrica'];
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($topics as $topic) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => TopicPost::class,
-                    'sponsorable_id' => TopicPost::inRandomOrder()->first()->id,
-                    'campaign_name' => 'Tema Patrocinado: ' . Str::title(str_replace('_', ' ', $topic)),
-                    'campaign_description' => 'Campaña para destacar contenido sobre ' . str_replace('_', ' ', $topic),
-                    'content_type' => 'sponsored_topic',
-                    'target_audience' => ['profesionales_energia', 'estudiantes', 'inversores'],
-                    'target_topics' => [$topic, 'sostenibilidad'],
-                    'target_locations' => ['España', 'Europa', 'Latinoamérica'],
-                    'target_demographics' => ['18-65', 'universitarios', 'profesionales'],
-                    'ad_label' => 'Tema Patrocinado',
-                    'call_to_action' => 'Explorar',
-                    'destination_url' => 'https://example.com/topics/' . $topic,
-                    'creative_assets' => [
-                        'hero_image' => 'https://example.com/topics/' . $topic . '/hero.jpg',
-                        'icon' => 'https://example.com/topics/' . $topic . '/icon.svg',
-                    ],
-                    'pricing_model' => 'fixed',
-                    'bid_amount' => rand(100, 500) / 100,
-                    'daily_budget' => rand(200, 800),
-                    'total_budget' => rand(5000, 15000),
-                    'spent_amount' => rand(0, 1000),
-                    'start_date' => now()->subDays(rand(1, 10)),
-                    'end_date' => now()->addDays(rand(90, 180)),
-                    'schedule_config' => [
-                        'weekdays' => ['08:00-20:00'],
-                        'weekends' => ['10:00-18:00'],
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(20000, 80000),
-                    'clicks' => rand(500, 2000),
-                    'conversions' => rand(50, 200),
-                    'ctr' => rand(15, 60) / 1000,
-                    'conversion_rate' => rand(10, 25) / 100,
-                    'engagement_rate' => rand(20, 45) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Tema patrocinado por ' . $sponsor->name,
-                        'en' => 'Sponsored topic by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createProductPlacements(): void
-    {
-        $sponsors = User::take(2)->get();
-        $products = ['paneles_solares', 'baterias_litio', 'aerogeneradores', 'cargadores_electricos'];
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($products as $product) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => TopicPost::class,
-                    'sponsorable_id' => TopicPost::inRandomOrder()->first()->id,
-                    'campaign_name' => 'Producto: ' . Str::title(str_replace('_', ' ', $product)),
-                    'campaign_description' => 'Placement de producto para ' . str_replace('_', ' ', $product),
-                    'content_type' => 'product_placement',
-                    'target_audience' => ['instaladores', 'propietarios_vivienda', 'empresas'],
-                    'target_topics' => [$product, 'tecnologia_verde'],
-                    'target_locations' => ['España', 'Portugal', 'Francia'],
-                    'target_demographics' => ['25-55', 'propietarios', 'profesionales'],
-                    'ad_label' => 'Producto Destacado',
-                    'call_to_action' => 'Ver Producto',
-                    'destination_url' => 'https://example.com/products/' . $product,
-                    'creative_assets' => [
-                        'product_image' => 'https://example.com/products/' . $product . '/main.jpg',
-                        'gallery' => 'https://example.com/products/' . $product . '/gallery.json',
-                    ],
-                    'pricing_model' => 'cpa',
-                    'bid_amount' => rand(500, 2000) / 100,
-                    'daily_budget' => rand(300, 1000),
-                    'total_budget' => rand(8000, 25000),
-                    'spent_amount' => rand(0, 2000),
-                    'start_date' => now()->subDays(rand(1, 5)),
-                    'end_date' => now()->addDays(rand(120, 365)),
-                    'schedule_config' => [
-                        'business_hours' => ['09:00-17:00'],
-                        'timezone' => 'Europe/Madrid',
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(15000, 60000),
-                    'clicks' => rand(300, 1200),
-                    'conversions' => rand(30, 150),
-                    'ctr' => rand(20, 70) / 1000,
-                    'conversion_rate' => rand(15, 30) / 100,
-                    'engagement_rate' => rand(25, 50) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Producto destacado por ' . $sponsor->name,
-                        'en' => 'Featured product by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createNativeContent(): void
-    {
-        $sponsors = User::take(2)->get();
-        $articles = NewsArticle::take(3)->get();
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($articles->take(2) as $article) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => NewsArticle::class,
-                    'sponsorable_id' => $article->id,
-                    'campaign_name' => 'Contenido Nativo: ' . Str::limit($article->title, 30),
-                    'campaign_description' => 'Contenido nativo integrado sobre ' . Str::limit($article->title, 50),
-                    'content_type' => 'native_content',
-                    'target_audience' => ['lectores_energia', 'profesionales_sector'],
-                    'target_topics' => ['noticias_energia', 'innovacion'],
-                    'target_locations' => ['España', 'Europa'],
-                    'target_demographics' => ['25-60', 'universitarios', 'profesionales'],
-                    'ad_label' => 'Contenido Patrocinado',
-                    'call_to_action' => 'Leer Artículo',
-                    'destination_url' => 'https://example.com/news/' . $article->id,
-                    'creative_assets' => [
-                        'featured_image' => 'https://example.com/news/' . $article->id . '/featured.jpg',
-                        'inline_content' => 'https://example.com/news/' . $article->id . '/inline.json',
-                    ],
-                    'pricing_model' => 'cpm',
-                    'bid_amount' => rand(3, 12) / 1000,
-                    'daily_budget' => rand(150, 600),
-                    'total_budget' => rand(3000, 12000),
-                    'spent_amount' => rand(0, 800),
-                    'start_date' => now()->subDays(rand(1, 7)),
-                    'end_date' => now()->addDays(rand(45, 90)),
-                    'schedule_config' => [
-                        'content_placement' => ['header', 'sidebar', 'inline'],
-                        'frequency' => 'daily',
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(25000, 100000),
-                    'clicks' => rand(800, 3000),
-                    'conversions' => rand(100, 400),
-                    'ctr' => rand(25, 80) / 1000,
-                    'conversion_rate' => rand(12, 28) / 100,
-                    'engagement_rate' => rand(30, 55) / 100,
-                    'show_sponsor_info' => false,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Contenido patrocinado',
-                        'en' => 'Sponsored content',
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createEventPromotions(): void
-    {
-        $sponsors = User::take(2)->get();
-        $events = Event::take(4)->get();
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($events->take(2) as $event) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => Event::class,
-                    'sponsorable_id' => $event->id,
-                    'campaign_name' => 'Evento: ' . Str::limit($event->name, 30),
-                    'campaign_description' => 'Promoción del evento ' . $event->name,
-                    'content_type' => 'event_promotion',
-                    'target_audience' => ['asistentes_eventos', 'profesionales_energia'],
-                    'target_topics' => ['eventos_energia', 'networking'],
-                    'target_locations' => [$event->venue->city ?? 'España'],
-                    'target_demographics' => ['25-65', 'profesionales', 'empresarios'],
-                    'ad_label' => 'Evento Patrocinado',
-                    'call_to_action' => 'Registrarse',
-                    'destination_url' => 'https://example.com/events/' . $event->id . '/register',
-                    'creative_assets' => [
-                        'event_banner' => 'https://example.com/events/' . $event->id . '/banner.jpg',
-                        'event_logo' => 'https://example.com/events/' . $event->id . '/logo.png',
-                    ],
-                    'pricing_model' => 'cpc',
-                    'bid_amount' => rand(100, 400) / 100,
-                    'daily_budget' => rand(200, 800),
-                    'total_budget' => rand(4000, 15000),
-                    'spent_amount' => rand(0, 1200),
-                    'start_date' => now()->subDays(rand(1, 3)),
-                    'end_date' => $event->start_date ?? now()->addDays(rand(30, 60)),
-                    'schedule_config' => [
-                        'urgency' => 'high',
-                        'reminder_frequency' => 'daily',
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(30000, 120000),
-                    'clicks' => rand(1000, 4000),
-                    'conversions' => rand(150, 600),
-                    'ctr' => rand(30, 90) / 1000,
-                    'conversion_rate' => rand(18, 35) / 100,
-                    'engagement_rate' => rand(35, 60) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => false,
-                    'disclosure_text' => [
-                        'es' => 'Evento patrocinado por ' . $sponsor->name,
-                        'en' => 'Event sponsored by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createJobPostings(): void
-    {
-        $sponsors = User::take(2)->get();
-        $jobTitles = ['Ingeniero Solar', 'Técnico Eólico', 'Consultor Sostenibilidad', 'Instalador Fotovoltaico'];
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($jobTitles as $jobTitle) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => TopicPost::class,
-                    'sponsorable_id' => TopicPost::inRandomOrder()->first()->id,
-                    'campaign_name' => 'Oferta de Trabajo: ' . $jobTitle,
-                    'campaign_description' => 'Oferta de trabajo para ' . $jobTitle,
-                    'content_type' => 'job_posting',
-                    'target_audience' => ['profesionales_energia', 'desempleados', 'cambio_carrera'],
-                    'target_topics' => ['empleo_energia', 'carrera_profesional'],
-                    'target_locations' => ['España', 'Madrid', 'Barcelona', 'Valencia'],
-                    'target_demographics' => ['22-45', 'universitarios', 'profesionales'],
-                    'ad_label' => 'Oferta de Trabajo',
-                    'call_to_action' => 'Aplicar',
-                    'destination_url' => 'https://example.com/jobs/' . Str::slug($jobTitle),
-                    'creative_assets' => [
-                        'job_banner' => 'https://example.com/jobs/' . Str::slug($jobTitle) . '/banner.jpg',
-                        'company_logo' => 'https://example.com/companies/' . $sponsor->id . '/logo.png',
-                    ],
-                    'pricing_model' => 'cpa',
-                    'bid_amount' => rand(800, 3000) / 100,
-                    'daily_budget' => rand(300, 1000),
-                    'total_budget' => rand(6000, 20000),
-                    'spent_amount' => rand(0, 1500),
-                    'start_date' => now()->subDays(rand(1, 2)),
-                    'end_date' => now()->addDays(rand(45, 90)),
-                    'schedule_config' => [
-                        'priority' => 'high',
-                        'targeting' => 'active_job_seekers',
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(20000, 80000),
-                    'clicks' => rand(600, 2500),
-                    'conversions' => rand(80, 300),
-                    'ctr' => rand(25, 75) / 1000,
-                    'conversion_rate' => rand(20, 40) / 100,
-                    'engagement_rate' => rand(40, 65) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Oferta de trabajo de ' . $sponsor->name,
-                        'en' => 'Job posting by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createServiceHighlights(): void
-    {
-        $sponsors = User::take(2)->get();
-        $services = ['auditoria_energetica', 'instalacion_solar', 'mantenimiento_eolico', 'consultoria_sostenibilidad'];
-
-        foreach ($sponsors as $sponsor) {
-            foreach ($services as $service) {
-                $this->createOrUpdateSponsoredContent([
-                    'sponsor_id' => $sponsor->id,
-                    'sponsorable_type' => TopicPost::class,
-                    'sponsorable_id' => TopicPost::inRandomOrder()->first()->id,
-                    'campaign_name' => 'Servicio: ' . Str::title(str_replace('_', ' ', $service)),
-                    'campaign_description' => 'Destacar el servicio de ' . str_replace('_', ' ', $service),
-                    'content_type' => 'service_highlight',
-                    'target_audience' => ['empresas', 'propietarios_vivienda', 'administradores'],
-                    'target_topics' => [$service, 'servicios_energia'],
-                    'target_locations' => ['España', 'Portugal'],
-                    'target_demographics' => ['30-65', 'propietarios', 'empresarios'],
-                    'ad_label' => 'Servicio Destacado',
-                    'call_to_action' => 'Contactar',
-                    'destination_url' => 'https://example.com/services/' . $service,
-                    'creative_assets' => [
-                        'service_image' => 'https://example.com/services/' . $service . '/main.jpg',
-                        'testimonials' => 'https://example.com/services/' . $service . '/testimonials.json',
-                    ],
-                    'pricing_model' => 'fixed',
-                    'bid_amount' => rand(200, 800) / 100,
-                    'daily_budget' => rand(250, 900),
-                    'total_budget' => rand(5000, 18000),
-                    'spent_amount' => rand(0, 1000),
-                    'start_date' => now()->subDays(rand(1, 4)),
-                    'end_date' => now()->addDays(rand(75, 150)),
-                    'schedule_config' => [
-                        'business_hours' => ['08:00-18:00'],
-                        'weekdays_only' => true,
-                    ],
-                    'status' => $this->getRandomStatus(),
-                    'impressions' => rand(18000, 70000),
-                    'clicks' => rand(400, 1800),
-                    'conversions' => rand(60, 250),
-                    'ctr' => rand(22, 68) / 1000,
-                    'conversion_rate' => rand(16, 32) / 100,
-                    'engagement_rate' => rand(28, 52) / 100,
-                    'show_sponsor_info' => true,
-                    'allow_user_feedback' => true,
-                    'disclosure_text' => [
-                        'es' => 'Servicio destacado por ' . $sponsor->name,
-                        'en' => 'Featured service by ' . $sponsor->name,
-                    ],
-                ]);
-            }
-        }
-    }
-
-    private function createOrUpdateSponsoredContent(array $contentData): void
-    {
-        // Buscar contenido existente por campaña y patrocinador
-        $existingContent = SponsoredContent::where('campaign_name', $contentData['campaign_name'])
-                                         ->where('sponsor_id', $contentData['sponsor_id'])
-                                         ->first();
-
-        if ($existingContent) {
-            // Actualizar contenido existente
-            $existingContent->update($contentData);
-            $this->command->info("✅ Contenido patrocinado actualizado: {$contentData['campaign_name']}");
-        } else {
-            // Crear nuevo contenido
-            SponsoredContent::create($contentData);
-            $this->command->info("🆕 Contenido patrocinado creado: {$contentData['campaign_name']}");
-        }
-    }
-
-    private function getRandomStatus(): string
-    {
-        $statuses = ['draft', 'pending_review', 'approved', 'active', 'paused', 'completed'];
-        $weights = [10, 20, 25, 30, 10, 5]; // Probabilidades relativas
+        // Obtener usuarios patrocinadores
+        $sponsors = User::take(10)->get();
         
-        $random = rand(1, 100);
-        $cumulative = 0;
-        
-        foreach ($statuses as $index => $status) {
-            $cumulative += $weights[$index];
-            if ($random <= $cumulative) {
-                return $status;
-            }
+        if ($sponsors->isEmpty()) {
+            $this->command->warn('No hay usuarios disponibles. Ejecuta UserSeeder primero.');
+            return;
         }
-        
-        return 'draft'; // Fallback
+
+        // Crear diferentes tipos de contenido patrocinado
+        $this->createPromotedPosts($sponsors);
+        $this->createBannerAds($sponsors);
+        $this->createSponsoredTopics($sponsors);
+        $this->createEventPromotions($sponsors);
+        $this->createJobPostings($sponsors);
+        $this->createServiceHighlights($sponsors);
+    }
+
+    /**
+     * Crear posts promocionados.
+     */
+    private function createPromotedPosts($sponsors): void
+    {
+        foreach ($sponsors->take(3) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\TopicPost',
+                'sponsorable_id' => fake()->numberBetween(1, 100),
+                'campaign_name' => 'Promoción Post - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'promoted_post',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Patrocinado',
+                'call_to_action' => fake()->randomElement(['Más información', 'Leer más', 'Ver detalles']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpm', 'cpc']),
+                'bid_amount' => fake()->randomFloat(4, 0.50, 5.00),
+                'daily_budget' => fake()->randomFloat(2, 50, 500),
+                'total_budget' => fake()->randomFloat(2, 500, 5000),
+                'spent_amount' => fake()->randomFloat(2, 0, 1000),
+                'start_date' => fake()->dateTimeBetween('-30 days', '+7 days'),
+                'end_date' => fake()->optional(0.8)->dateTimeBetween('+7 days', '+60 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved', 'pending_review']),
+                'reviewed_by' => fake()->optional(0.7)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.7)->dateTimeBetween('-30 days', 'now'),
+                'review_notes' => fake()->optional(0.5)->sentence(),
+                'impressions' => fake()->numberBetween(1000, 50000),
+                'clicks' => fake()->numberBetween(50, 2500),
+                'conversions' => fake()->numberBetween(5, 250),
+                'ctr' => fake()->randomFloat(2, 1.0, 8.0),
+                'conversion_rate' => fake()->randomFloat(2, 2.0, 15.0),
+                'engagement_rate' => fake()->randomFloat(2, 3.0, 12.0),
+                'show_sponsor_info' => fake()->boolean(80),
+                'allow_user_feedback' => fake()->boolean(70),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Crear banners publicitarios.
+     */
+    private function createBannerAds($sponsors): void
+    {
+        foreach ($sponsors->take(3) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\NewsArticle',
+                'sponsorable_id' => fake()->numberBetween(1, 50),
+                'campaign_name' => 'Banner Ad - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'banner_ad',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Publicidad',
+                'call_to_action' => fake()->randomElement(['Comprar ahora', 'Obtener oferta', 'Registrarse']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpm', 'fixed']),
+                'bid_amount' => fake()->randomFloat(4, 1.00, 10.00),
+                'daily_budget' => fake()->randomFloat(2, 100, 1000),
+                'total_budget' => fake()->randomFloat(2, 1000, 10000),
+                'spent_amount' => fake()->randomFloat(2, 0, 2000),
+                'start_date' => fake()->dateTimeBetween('-15 days', '+3 days'),
+                'end_date' => fake()->optional(0.9)->dateTimeBetween('+3 days', '+90 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved', 'paused']),
+                'reviewed_by' => fake()->optional(0.8)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.8)->dateTimeBetween('-15 days', 'now'),
+                'review_notes' => fake()->optional(0.4)->sentence(),
+                'impressions' => fake()->numberBetween(5000, 100000),
+                'clicks' => fake()->numberBetween(100, 5000),
+                'conversions' => fake()->numberBetween(10, 500),
+                'ctr' => fake()->randomFloat(2, 0.5, 5.0),
+                'conversion_rate' => fake()->randomFloat(2, 1.0, 10.0),
+                'engagement_rate' => fake()->randomFloat(2, 2.0, 8.0),
+                'show_sponsor_info' => true,
+                'allow_user_feedback' => fake()->boolean(60),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Crear temas patrocinados.
+     */
+    private function createSponsoredTopics($sponsors): void
+    {
+        foreach ($sponsors->take(2) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\Topic',
+                'sponsorable_id' => fake()->numberBetween(1, 50),
+                'campaign_name' => 'Tema Patrocinado - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'sponsored_topic',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Contenido Patrocinado',
+                'call_to_action' => fake()->randomElement(['Participar', 'Seguir tema', 'Más información']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpm', 'fixed']),
+                'bid_amount' => fake()->randomFloat(4, 2.00, 8.00),
+                'daily_budget' => fake()->randomFloat(2, 75, 750),
+                'total_budget' => fake()->randomFloat(2, 750, 7500),
+                'spent_amount' => fake()->randomFloat(2, 0, 1500),
+                'start_date' => fake()->dateTimeBetween('-20 days', '+5 days'),
+                'end_date' => fake()->optional(0.7)->dateTimeBetween('+5 days', '+45 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved']),
+                'reviewed_by' => fake()->optional(0.9)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.9)->dateTimeBetween('-20 days', 'now'),
+                'review_notes' => fake()->optional(0.3)->sentence(),
+                'impressions' => fake()->numberBetween(2000, 30000),
+                'clicks' => fake()->numberBetween(80, 1500),
+                'conversions' => fake()->numberBetween(8, 150),
+                'ctr' => fake()->randomFloat(2, 2.0, 6.0),
+                'conversion_rate' => fake()->randomFloat(2, 3.0, 12.0),
+                'engagement_rate' => fake()->randomFloat(2, 4.0, 10.0),
+                'show_sponsor_info' => fake()->boolean(90),
+                'allow_user_feedback' => fake()->boolean(80),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Crear promociones de eventos.
+     */
+    private function createEventPromotions($sponsors): void
+    {
+        foreach ($sponsors->take(2) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\Event',
+                'sponsorable_id' => fake()->numberBetween(1, 30),
+                'campaign_name' => 'Promoción Evento - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'event_promotion',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Evento Patrocinado',
+                'call_to_action' => fake()->randomElement(['Registrarse', 'Comprar entrada', 'Más información']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpc', 'cpa', 'fixed']),
+                'bid_amount' => fake()->randomFloat(4, 1.50, 6.00),
+                'daily_budget' => fake()->randomFloat(2, 60, 600),
+                'total_budget' => fake()->randomFloat(2, 600, 6000),
+                'spent_amount' => fake()->randomFloat(2, 0, 1200),
+                'start_date' => fake()->dateTimeBetween('-10 days', '+2 days'),
+                'end_date' => fake()->optional(0.6)->dateTimeBetween('+2 days', '+30 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved', 'completed']),
+                'reviewed_by' => fake()->optional(0.6)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.6)->dateTimeBetween('-10 days', 'now'),
+                'review_notes' => fake()->optional(0.2)->sentence(),
+                'impressions' => fake()->numberBetween(1500, 25000),
+                'clicks' => fake()->numberBetween(60, 1200),
+                'conversions' => fake()->numberBetween(6, 120),
+                'ctr' => fake()->randomFloat(2, 1.5, 5.5),
+                'conversion_rate' => fake()->randomFloat(2, 2.5, 11.0),
+                'engagement_rate' => fake()->randomFloat(2, 3.5, 9.0),
+                'show_sponsor_info' => fake()->boolean(85),
+                'allow_user_feedback' => fake()->boolean(75),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Crear ofertas de trabajo.
+     */
+    private function createJobPostings($sponsors): void
+    {
+        foreach ($sponsors->take(2) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\EnergyService',
+                'sponsorable_id' => fake()->numberBetween(1, 30),
+                'campaign_name' => 'Oferta Trabajo - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'job_posting',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Oferta de Trabajo',
+                'call_to_action' => fake()->randomElement(['Aplicar', 'Ver oferta', 'Enviar CV']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpc', 'cpa', 'fixed']),
+                'bid_amount' => fake()->randomFloat(4, 3.00, 12.00),
+                'daily_budget' => fake()->randomFloat(2, 80, 800),
+                'total_budget' => fake()->randomFloat(2, 800, 8000),
+                'spent_amount' => fake()->randomFloat(2, 0, 1600),
+                'start_date' => fake()->dateTimeBetween('-25 days', '+10 days'),
+                'end_date' => fake()->optional(0.5)->dateTimeBetween('+10 days', '+60 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved', 'paused']),
+                'reviewed_by' => fake()->optional(0.5)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.5)->dateTimeBetween('-25 days', 'now'),
+                'review_notes' => fake()->optional(0.1)->sentence(),
+                'impressions' => fake()->numberBetween(3000, 40000),
+                'clicks' => fake()->numberBetween(120, 2000),
+                'conversions' => fake()->numberBetween(12, 200),
+                'ctr' => fake()->randomFloat(2, 2.5, 6.5),
+                'conversion_rate' => fake()->randomFloat(2, 4.0, 14.0),
+                'engagement_rate' => fake()->randomFloat(2, 5.0, 11.0),
+                'show_sponsor_info' => fake()->boolean(95),
+                'allow_user_feedback' => fake()->boolean(65),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Crear destacados de servicios.
+     */
+    private function createServiceHighlights($sponsors): void
+    {
+        foreach ($sponsors->take(2) as $sponsor) {
+            SponsoredContent::create([
+                'sponsor_id' => $sponsor->id,
+                'sponsorable_type' => 'App\\Models\\ConsultationService',
+                'sponsorable_id' => fake()->numberBetween(1, 40),
+                'campaign_name' => 'Servicio Destacado - ' . fake()->words(2, true),
+                'campaign_description' => fake()->paragraph(),
+                'content_type' => 'service_highlight',
+                'target_audience' => $this->getTargetAudience(),
+                'target_topics' => $this->getTargetTopics(),
+                'target_locations' => $this->getTargetLocations(),
+                'target_demographics' => $this->getTargetDemographics(),
+                'ad_label' => 'Servicio Patrocinado',
+                'call_to_action' => fake()->randomElement(['Contactar', 'Solicitar info', 'Ver servicios']),
+                'destination_url' => fake()->url(),
+                'creative_assets' => $this->getCreativeAssets(),
+                'pricing_model' => fake()->randomElement(['cpm', 'cpc', 'fixed']),
+                'bid_amount' => fake()->randomFloat(4, 2.50, 7.50),
+                'daily_budget' => fake()->randomFloat(2, 70, 700),
+                'total_budget' => fake()->randomFloat(2, 700, 7000),
+                'spent_amount' => fake()->randomFloat(2, 0, 1400),
+                'start_date' => fake()->dateTimeBetween('-18 days', '+8 days'),
+                'end_date' => fake()->optional(0.4)->dateTimeBetween('+8 days', '+50 days'),
+                'schedule_config' => $this->getScheduleConfig(),
+                'status' => fake()->randomElement(['active', 'approved', 'draft']),
+                'reviewed_by' => fake()->optional(0.4)->randomElement($sponsors->pluck('id')->toArray()),
+                'reviewed_at' => fake()->optional(0.4)->dateTimeBetween('-18 days', 'now'),
+                'review_notes' => fake()->optional(0.05)->sentence(),
+                'impressions' => fake()->numberBetween(2500, 35000),
+                'clicks' => fake()->numberBetween(100, 1750),
+                'conversions' => fake()->numberBetween(10, 175),
+                'ctr' => fake()->randomFloat(2, 2.0, 6.0),
+                'conversion_rate' => fake()->randomFloat(2, 3.5, 13.0),
+                'engagement_rate' => fake()->randomFloat(2, 4.5, 10.5),
+                'show_sponsor_info' => fake()->boolean(88),
+                'allow_user_feedback' => fake()->boolean(72),
+                'disclosure_text' => $this->getDisclosureText(),
+            ]);
+        }
+    }
+
+    /**
+     * Obtener audiencia objetivo.
+     */
+    private function getTargetAudience(): array
+    {
+        return fake()->randomElements([
+            'profesionales', 'empresarios', 'estudiantes', 'inversores',
+            'consumidores', 'tecnólogos', 'sostenibilidad', 'energía'
+        ], fake()->numberBetween(1, 3));
+    }
+
+    /**
+     * Obtener temas objetivo.
+     */
+    private function getTargetTopics(): array
+    {
+        return fake()->randomElements([
+            'energía_renovable', 'sostenibilidad', 'tecnología', 'innovación',
+            'medio_ambiente', 'economía_circular', 'eficiencia_energética'
+        ], fake()->numberBetween(1, 2));
+    }
+
+    /**
+     * Obtener ubicaciones objetivo.
+     */
+    private function getTargetLocations(): array
+    {
+        return fake()->randomElements([
+            'Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Bilbao',
+            'Málaga', 'Zaragoza', 'Murcia', 'Palma', 'Las Palmas'
+        ], fake()->numberBetween(1, 3));
+    }
+
+    /**
+     * Obtener demografía objetivo.
+     */
+    private function getTargetDemographics(): array
+    {
+        return [
+            'age_range' => fake()->randomElement(['25-35', '35-45', '45-55', '25-55']),
+            'gender' => fake()->randomElement(['all', 'male', 'female']),
+            'income_level' => fake()->randomElement(['medium', 'high', 'all']),
+            'education' => fake()->randomElement(['university', 'all', 'professional'])
+        ];
+    }
+
+    /**
+     * Obtener activos creativos.
+     */
+    private function getCreativeAssets(): array
+    {
+        return [
+            'images' => [
+                fake()->imageUrl(800, 600),
+                fake()->imageUrl(1200, 400)
+            ],
+            'videos' => fake()->optional(0.3)->randomElements([
+                fake()->url() . '/video1.mp4',
+                fake()->url() . '/video2.mp4'
+            ], 1),
+            'logos' => [fake()->imageUrl(200, 200)]
+        ];
+    }
+
+    /**
+     * Obtener configuración de horarios.
+     */
+    private function getScheduleConfig(): array
+    {
+        return [
+            'days_of_week' => fake()->randomElements(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'], fake()->numberBetween(3, 7)),
+            'hours' => [
+                'start' => fake()->randomElement(['08:00', '09:00', '10:00']),
+                'end' => fake()->randomElement(['18:00', '19:00', '20:00'])
+            ],
+            'timezone' => 'Europe/Madrid'
+        ];
+    }
+
+    /**
+     * Obtener texto de divulgación.
+     */
+    private function getDisclosureText(): array
+    {
+        return [
+            'es' => fake()->randomElement([
+                'Contenido patrocinado',
+                'Publicidad',
+                'Contenido promocional',
+                'Anuncio'
+            ]),
+            'en' => fake()->randomElement([
+                'Sponsored content',
+                'Advertisement',
+                'Promotional content',
+                'Ad'
+            ])
+        ];
     }
 }
-
