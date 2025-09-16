@@ -43,3 +43,5 @@ class CompanyTypeFactory extends Factory
         ]);
     }
 }
+
+
