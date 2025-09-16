@@ -48,3 +48,4 @@ class UserChallengeFactory extends Factory
     }
 }
 
+
