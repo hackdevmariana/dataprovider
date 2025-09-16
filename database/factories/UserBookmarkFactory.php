@@ -45,3 +45,4 @@ class UserBookmarkFactory extends Factory
     }
 }
 
+
