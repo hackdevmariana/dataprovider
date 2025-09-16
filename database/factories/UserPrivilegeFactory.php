@@ -44,3 +44,4 @@ class UserPrivilegeFactory extends Factory
     }
 }
 
+
