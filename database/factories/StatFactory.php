@@ -44,3 +44,4 @@ class StatFactory extends Factory
     }
 }
 
+
