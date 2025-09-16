@@ -40,3 +40,5 @@ class CurrencyFactory extends Factory
         ]);
     }
 }
+
+
