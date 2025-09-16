@@ -53,3 +53,4 @@ class SocialComparisonFactory extends Factory
     }
 }
 
+
