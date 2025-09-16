@@ -47,3 +47,5 @@ class PersonProfessionFactory extends Factory
         ]);
     }
 }
+
+
