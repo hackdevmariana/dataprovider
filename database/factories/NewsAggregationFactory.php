@@ -49,3 +49,5 @@ class NewsAggregationFactory extends Factory
         ]);
     }
 }
+
+
