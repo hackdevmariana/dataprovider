@@ -47,3 +47,4 @@ class QuoteFactory extends Factory
     }
 }
 
+
