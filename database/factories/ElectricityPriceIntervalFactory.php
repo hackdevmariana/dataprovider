@@ -43,3 +43,4 @@ class ElectricityPriceIntervalFactory extends Factory
     }
 }
 
+
