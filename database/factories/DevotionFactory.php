@@ -43,3 +43,5 @@ class DevotionFactory extends Factory
         ]);
     }
 }
+
+
