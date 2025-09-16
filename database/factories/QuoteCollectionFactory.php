@@ -44,3 +44,4 @@ class QuoteCollectionFactory extends Factory
     }
 }
 
+
