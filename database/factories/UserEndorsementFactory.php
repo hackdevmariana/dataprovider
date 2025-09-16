@@ -46,3 +46,4 @@ class UserEndorsementFactory extends Factory
     }
 }
 
+
