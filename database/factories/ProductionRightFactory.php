@@ -55,3 +55,4 @@ class ProductionRightFactory extends Factory
     }
 }
 
+
