@@ -48,3 +48,4 @@ class UserBadgeFactory extends Factory
     }
 }
 
+
