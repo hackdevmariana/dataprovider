@@ -40,3 +40,4 @@ class QuoteCategoryFactory extends Factory
     }
 }
 
+
