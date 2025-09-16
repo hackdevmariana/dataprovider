@@ -48,3 +48,5 @@ class NewsSourceFactory extends Factory
         ]);
     }
 }
+
+
