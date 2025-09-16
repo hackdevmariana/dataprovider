@@ -48,3 +48,4 @@ class TrendingTopicFactory extends Factory
     }
 }
 
+
