@@ -55,3 +55,4 @@ class PointOfInterestFactory extends Factory
     }
 }
 
+
