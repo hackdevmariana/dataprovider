@@ -48,3 +48,4 @@ class ProfessionFactory extends Factory
     }
 }
 
+
