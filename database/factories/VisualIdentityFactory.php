@@ -50,3 +50,4 @@ class VisualIdentityFactory extends Factory
     }
 }
 
+
