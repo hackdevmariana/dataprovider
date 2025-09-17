@@ -48,3 +48,5 @@ class EnergyTransactionFactory extends Factory
 }
 
 
+
+
