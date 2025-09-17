@@ -51,3 +51,5 @@ class NewsAggregationFactory extends Factory
 }
 
 
+
+
