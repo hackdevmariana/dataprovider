@@ -52,3 +52,5 @@ class EnergyCertificateFactory extends Factory
 }
 
 
+
+
