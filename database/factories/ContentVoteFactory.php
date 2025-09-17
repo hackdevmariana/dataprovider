@@ -51,3 +51,5 @@ class ContentVoteFactory extends Factory
 }
 
 
+
+
