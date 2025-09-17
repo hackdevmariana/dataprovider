@@ -46,3 +46,5 @@ class RelationshipTypeFactory extends Factory
 }
 
 
+
+
