@@ -45,3 +45,5 @@ class CompanyTypeFactory extends Factory
 }
 
 
+
+
