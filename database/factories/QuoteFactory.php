@@ -50,3 +50,7 @@ class QuoteFactory extends Factory
 
 
 
+
+
+
+
