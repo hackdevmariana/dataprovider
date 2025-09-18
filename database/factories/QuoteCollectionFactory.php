@@ -47,3 +47,7 @@ class QuoteCollectionFactory extends Factory
 
 
 
+
+
+
+
