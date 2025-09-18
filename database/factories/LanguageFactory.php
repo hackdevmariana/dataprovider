@@ -18,8 +18,8 @@ class LanguageFactory extends Factory
     {
         return [
             'code' => fake()->unique()->languageCode(),
-            'name' => fake()->language(),
-            'native_name' => fake()->language(),
+            'name' => fake()->randomElement(['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Arabic']),
+            'native_name' => fake()->randomElement(['English', 'Español', 'Français', 'Deutsch', 'Italiano', 'Português', 'Русский', '中文', '日本語', 'العربية']),
             'script' => fake()->randomElement(['latin', 'cyrillic', 'arabic', 'chinese', 'devanagari', 'greek']),
             'family' => fake()->randomElement(['indo-european', 'sino-tibetan', 'afro-asiatic', 'austronesian', 'niger-congo']),
             'region' => fake()->country(),
@@ -44,6 +44,10 @@ class LanguageFactory extends Factory
         ]);
     }
 }
+
+
+
+
 
 
 
