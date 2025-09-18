@@ -20,6 +20,7 @@ class MediaContactFactory extends Factory
     {
         $contactData = $this->getRealisticContactData();
         $selectedContact = fake()->randomElement($contactData);
+       
         
         return [
             'contact_name' => $selectedContact['name'],
