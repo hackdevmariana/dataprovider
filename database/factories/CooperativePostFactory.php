@@ -52,3 +52,7 @@ class CooperativePostFactory extends Factory
 
 
 
+
+
+
+
