@@ -18,8 +18,8 @@ class ChallengeResource extends Resource
     protected static ?string $model = Challenge::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
-    protected static ?string $navigationGroup = 'Social System';
-    protected static ?int $navigationSort = 20;
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
