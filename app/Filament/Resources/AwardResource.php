@@ -18,7 +18,7 @@ class AwardResource extends Resource
     protected static ?string $model = Award::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-trophy';
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Sistema y Administración';
 
     public static function getNavigationBadge(): ?string
     {
