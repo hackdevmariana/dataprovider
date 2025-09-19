@@ -23,7 +23,7 @@ class UserDeviceResource extends Resource
     protected static ?string $model = UserDevice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
-    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $navigationLabel = 'User Devices';
 
     public static function getNavigationBadge(): ?string
