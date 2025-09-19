@@ -23,11 +23,11 @@ class OrganizationResource extends Resource
     protected static ?string $model = Organization::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
     protected static ?string $navigationLabel = 'Organizations';
     protected static ?string $pluralModelLabel = 'Organizations';
     protected static ?string $modelLabel = 'Organization';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string
     {
