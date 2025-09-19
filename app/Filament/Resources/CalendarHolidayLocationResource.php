@@ -19,9 +19,9 @@ class CalendarHolidayLocationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
     
-    protected static ?string $navigationGroup = 'Events & Calendar';
+    protected static ?string $navigationGroup = 'Eventos y Cultura';
     
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
     
     protected static ?string $modelLabel = 'Ubicación de Feriado';
     
