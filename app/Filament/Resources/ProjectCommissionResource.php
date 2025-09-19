@@ -18,13 +18,13 @@ class ProjectCommissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
 
     protected static ?string $modelLabel = 'Comisión de Proyecto';
 
     protected static ?string $pluralModelLabel = 'Comisiones de Proyectos';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
