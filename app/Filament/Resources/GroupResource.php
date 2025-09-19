@@ -20,7 +20,7 @@ class GroupResource extends Resource
     protected static ?string $model = Group::class;
 
     protected static ?string $navigationIcon = 'fas-music';
-    protected static ?string $navigationGroup = 'Music & Artists';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
     protected static ?int $navigationSort = 2;
     
     protected static ?string $modelLabel = 'Grupo Musical';
@@ -355,13 +355,13 @@ class GroupResource extends Resource
                 ->label('Destacado')
                 ->boolean()
                 ->trueIcon('fas-star')
-                ->falseIcon('fas-star-o')
+                ->falseIcon('fas-star')
                 ->trueColor('warning')
                 ->falseColor('gray'),
             
             Tables\Columns\TextColumn::make('website')
                 ->label('Web')
-                ->url()
+                ->url(fn ($record) => $record->website)
                 ->openUrlInNewTab()
                 ->toggleable(isToggledHiddenByDefault: true),
             
