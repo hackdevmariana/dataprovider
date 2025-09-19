@@ -16,13 +16,13 @@ class UserBookmarkResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Marcador';
 
     protected static ?string $pluralModelLabel = 'Marcadores';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
