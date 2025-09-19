@@ -31,11 +31,11 @@ use Filament\Tables\Filters\TernaryFilter;
 class ElectricityOfferResource extends Resource
 {
     protected static ?string $model = ElectricityOffer::class;
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
     protected static ?string $modelLabel = 'Oferta Eléctrica';
     protected static ?string $pluralModelLabel = 'Ofertas Eléctricas';
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 3;
 
     
     public static function getNavigationBadge(): ?string
