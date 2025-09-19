@@ -18,13 +18,13 @@ class SubscriptionPlanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
 
     protected static ?string $modelLabel = 'Plan de Suscripción';
 
     protected static ?string $pluralModelLabel = 'Planes de Suscripción';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
