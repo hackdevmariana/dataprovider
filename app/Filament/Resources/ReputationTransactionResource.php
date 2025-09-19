@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReputationTransactionResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Gamification & Reputation';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $model = ReputationTransaction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-star';
@@ -24,7 +24,7 @@ class ReputationTransactionResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Transacciones de Reputación';
     
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
