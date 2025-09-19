@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ActivityFeedResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Sistema y Administración';
     protected static ?string $model = ActivityFeed::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -24,7 +24,7 @@ class ActivityFeedResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Actividades';
 
-    protected static ?int $navigationSort = 9;
+    protected static ?int $navigationSort = 8;
 
     
     public static function getNavigationBadge(): ?string
