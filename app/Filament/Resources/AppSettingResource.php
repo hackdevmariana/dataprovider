@@ -18,7 +18,7 @@ class AppSettingResource extends Resource
     protected static ?string $model = AppSetting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
-    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $navigationGroup = 'Sistema y Administración';
 
     public static function getNavigationBadge(): ?string
     {
