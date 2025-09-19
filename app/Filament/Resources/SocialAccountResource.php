@@ -19,9 +19,9 @@ class SocialAccountResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-share';
     
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
     
     protected static ?string $modelLabel = 'Cuenta Social';
     
