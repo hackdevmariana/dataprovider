@@ -17,7 +17,7 @@ class PriceForecastResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-chart-line';
 
-    protected static ?string $navigationGroup = 'Energía y Precios';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
 
     protected static ?string $navigationLabel = 'Pronósticos de Precios';
 
