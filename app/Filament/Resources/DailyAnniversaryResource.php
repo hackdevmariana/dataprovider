@@ -19,11 +19,11 @@ class DailyAnniversaryResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-calendar-day';
 
-    protected static ?string $navigationGroup = 'Historia y Cultura';
+    protected static ?string $navigationGroup = 'Eventos y Cultura';
 
     protected static ?string $navigationLabel = 'Aniversarios Diarios';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = 'Aniversario Diario';
 
