@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserReviewResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $model = UserReview::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
