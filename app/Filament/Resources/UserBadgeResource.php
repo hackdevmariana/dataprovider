@@ -18,7 +18,7 @@ class UserBadgeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-trophy';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Insignia de Usuario';
 
