@@ -17,7 +17,7 @@ class QuoteCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-tags';
 
-    protected static ?string $navigationGroup = 'Biblioteca y Literatura';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Categorías de Citas';
 
