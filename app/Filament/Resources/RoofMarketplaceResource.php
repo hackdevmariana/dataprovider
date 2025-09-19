@@ -18,10 +18,10 @@ class RoofMarketplaceResource extends Resource
 {
     protected static ?string $model = RoofMarketplace::class;
     protected static ?string $navigationIcon = 'heroicon-o-home';
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
     protected static ?string $modelLabel = 'Mercado de Techos';
     protected static ?string $pluralModelLabel = 'Mercado de Techos';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
