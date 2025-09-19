@@ -17,11 +17,11 @@ class QuoteCollectionResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-bookmark';
 
-    protected static ?string $navigationGroup = 'Biblioteca y Literatura';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Colecciones de Citas';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Colección de Citas';
 
