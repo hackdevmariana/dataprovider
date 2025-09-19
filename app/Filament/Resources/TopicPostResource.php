@@ -16,13 +16,13 @@ class TopicPostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Post del Tema';
 
     protected static ?string $pluralModelLabel = 'Posts de Temas';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
