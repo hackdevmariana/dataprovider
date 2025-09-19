@@ -19,7 +19,7 @@ class CooperativeUserMemberResource extends Resource
     protected static ?string $model = CooperativeUserMember::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     public static function getNavigationBadge(): ?string
     {
