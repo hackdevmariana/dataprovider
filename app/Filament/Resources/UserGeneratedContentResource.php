@@ -20,7 +20,7 @@ class UserGeneratedContentResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-comments';
     
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     
     protected static ?int $navigationSort = 1;
     
