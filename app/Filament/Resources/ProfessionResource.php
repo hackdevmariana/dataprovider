@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProfessionResource extends Resource
 {
     protected static ?string $model = Profession::class;
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     
