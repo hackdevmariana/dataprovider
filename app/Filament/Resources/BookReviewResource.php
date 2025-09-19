@@ -19,11 +19,11 @@ class BookReviewResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-star';
 
-    protected static ?string $navigationGroup = 'Biblioteca y Literatura';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Reseñas de Libros';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Reseña de Libro';
 
@@ -53,8 +53,8 @@ class BookReviewResource extends Resource
                             ->label('Libro')
                             ->placeholder('Selecciona el libro...'),
                         
-                        Forms\Components\Select::make('reviewer_id')
-                            ->relationship('reviewer', 'name')
+                        Forms\Components\Select::make('user_id')
+                            ->relationship('user', 'name')
                             ->searchable()
                             ->preload()
                             ->required()
@@ -239,7 +239,7 @@ class BookReviewResource extends Resource
 
                 Forms\Components\Section::make('Información de Publicación')
                     ->schema([
-                        Forms\Components\DatePicker::make('review_date')
+                        Forms\Components\DatePicker::make('created_at')
                             ->required()
                             ->label('Fecha de la Reseña')
                             ->displayFormat('d/m/Y')
@@ -250,8 +250,9 @@ class BookReviewResource extends Resource
                             ->label('Fuente de Publicación')
                             ->placeholder('Revista, periódico, sitio web...'),
                         
-                        Forms\Components\UrlInput::make('publication_url')
+                        Forms\Components\TextInput::make('publication_url')
                             ->label('URL de Publicación')
+                            ->url()
                             ->placeholder('https://...'),
                         
                         Forms\Components\TextInput::make('issue_number')
@@ -353,7 +354,7 @@ class BookReviewResource extends Resource
                             ->label('Estado'),
                         
                         Forms\Components\Select::make('moderator_id')
-                            ->relationship('moderator', 'name')
+                            ->relationship('user', 'name')
                             ->searchable()
                             ->preload()
                             ->label('Moderador')
@@ -438,7 +439,7 @@ class BookReviewResource extends Resource
                     ->weight('medium')
                     ->wrap(),
                 
-                Tables\Columns\TextColumn::make('reviewer.name')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label('Reseñador')
                     ->searchable()
                     ->limit(25),
@@ -532,7 +533,7 @@ class BookReviewResource extends Resource
                         default => $state,
                     }),
                 
-                Tables\Columns\TextColumn::make('review_date')
+                Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha')
                     ->date('d/m/Y')
                     ->sortable(),
@@ -706,7 +707,7 @@ class BookReviewResource extends Resource
                 
                 Tables\Filters\Filter::make('recent_reviews')
                     ->label('Reseñas Recientes (30 días)')
-                    ->query(fn (Builder $query): Builder => $query->where('review_date', '>=', now()->subDays(30))),
+                    ->query(fn (Builder $query): Builder => $query->where('created_at', '>=', now()->subDays(30))),
                 
                 Tables\Filters\Filter::make('popular_reviews')
                     ->label('Reseñas Populares (100+ vistas)')
@@ -825,7 +826,7 @@ class BookReviewResource extends Resource
                         ->color('warning'),
                 ]),
             ])
-            ->defaultSort('review_date', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->paginated([25, 50, 100]);
     }
 
