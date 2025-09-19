@@ -18,10 +18,10 @@ class ProductionRightResource extends Resource
 {
     protected static ?string $model = ProductionRight::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $modelLabel = 'Derecho de Producción';
     protected static ?string $pluralModelLabel = 'Derechos de Producción';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     
     public static function getNavigationBadge(): ?string
