@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 
 class SponsoredContentResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
     protected static ?string $model = SponsoredContent::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
