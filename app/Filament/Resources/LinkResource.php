@@ -20,7 +20,7 @@ class LinkResource extends Resource
     protected static ?string $model = Link::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
-    protected static ?string $navigationGroup = 'General & Stats';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
     
     public static function getNavigationBadge(): ?string
     {
