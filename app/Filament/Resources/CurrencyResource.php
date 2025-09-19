@@ -19,9 +19,9 @@ class CurrencyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     
-    protected static ?string $navigationGroup = 'General & Stats';
+    protected static ?string $navigationGroup = 'Sistema y Administración';
     
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 8;
     
     protected static ?string $modelLabel = 'Moneda';
     
@@ -31,7 +31,9 @@ class CurrencyResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
-    }public static function form(Form $form): Form
+    }
+
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -121,6 +123,7 @@ class CurrencyResource extends Resource
                     ->native(false),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
