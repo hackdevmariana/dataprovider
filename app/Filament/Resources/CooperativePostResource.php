@@ -16,13 +16,13 @@ class CooperativePostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
 
     protected static ?string $modelLabel = 'Post de Cooperativa';
 
     protected static ?string $pluralModelLabel = 'Posts de Cooperativas';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
