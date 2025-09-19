@@ -21,7 +21,7 @@ class ProvinceResource extends Resource
     protected static ?string $model = Province::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
-    protected static ?string $navigationGroup = 'Locations';
+    protected static ?string $navigationGroup = 'Ubicaciones y Geografía';
 
 
     
