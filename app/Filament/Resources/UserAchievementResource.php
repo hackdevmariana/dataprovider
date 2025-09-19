@@ -18,8 +18,8 @@ class UserAchievementResource extends Resource
     protected static ?string $model = UserAchievement::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
-    protected static ?string $navigationGroup = 'Social System';
-    protected static ?int $navigationSort = 30;
+    protected static ?string $navigationGroup = 'Usuarios y Social';
+    protected static ?int $navigationSort = 1;
     protected static ?string $label = 'Logro de Usuario';
     protected static ?string $pluralLabel = 'Logros de Usuarios';
 
