@@ -18,13 +18,13 @@ class ExpertVerificationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     protected static ?string $modelLabel = 'Verificación de Experto';
 
     protected static ?string $pluralModelLabel = 'Verificaciones de Expertos';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     
     public static function getNavigationBadge(): ?string
