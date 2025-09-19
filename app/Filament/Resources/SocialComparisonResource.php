@@ -16,13 +16,13 @@ class SocialComparisonResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Comparación Social';
 
     protected static ?string $pluralModelLabel = 'Comparaciones Sociales';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
@@ -48,6 +48,11 @@ class SocialComparisonResource extends Resource
                                 'community_participation' => 'Participación Comunitaria',
                                 'project_contributions' => 'Contribuciones a Proyectos',
                                 'knowledge_sharing' => 'Compartir Conocimiento',
+                                'energy_consumption' => 'Consumo Energético',
+                                'carbon_footprint' => 'Huella de Carbono',
+                                'renewable_usage' => 'Uso Renovable',
+                                'efficiency_score' => 'Puntuación Eficiencia',
+                                'savings_amount' => 'Cantidad Ahorros',
                             ])
                             ->required(),
                         
@@ -57,6 +62,7 @@ class SocialComparisonResource extends Resource
                                 'daily' => 'Diario',
                                 'weekly' => 'Semanal',
                                 'monthly' => 'Mensual',
+                                'quarterly' => 'Trimestral',
                                 'yearly' => 'Anual',
                                 'all_time' => 'Histórico',
                             ])
@@ -161,6 +167,11 @@ class SocialComparisonResource extends Resource
                         'orange' => 'energy_efficiency',
                         'blue' => 'sustainability_score',
                         'yellow' => 'peer_engagement',
+                        'green' => 'energy_consumption',
+                        'red' => 'carbon_footprint',
+                        'indigo' => 'renewable_usage',
+                        'pink' => 'efficiency_score',
+                        'teal' => 'savings_amount',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'energy_savings' => 'Ahorro Energía',
@@ -172,6 +183,11 @@ class SocialComparisonResource extends Resource
                         'energy_efficiency' => 'Eficiencia Energética',
                         'sustainability_score' => 'Puntuación Sostenibilidad',
                         'peer_engagement' => 'Compromiso entre Pares',
+                        'energy_consumption' => 'Consumo Energético',
+                        'carbon_footprint' => 'Huella de Carbono',
+                        'renewable_usage' => 'Uso Renovable',
+                        'efficiency_score' => 'Puntuación Eficiencia',
+                        'savings_amount' => 'Cantidad Ahorros',
                         default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
@@ -181,6 +197,7 @@ class SocialComparisonResource extends Resource
                         'gray' => 'daily',
                         'blue' => 'weekly',
                         'green' => 'monthly',
+                        'purple' => 'quarterly',
                         'orange' => 'yearly',
                         'red' => 'all_time',
                     ])
@@ -188,8 +205,10 @@ class SocialComparisonResource extends Resource
                         'daily' => 'Diario',
                         'weekly' => 'Semanal',
                         'monthly' => 'Mensual',
+                        'quarterly' => 'Trimestral',
                         'yearly' => 'Anual',
                         'all_time' => 'Histórico',
+                        default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
                 Tables\Columns\TextColumn::make('user_value')
