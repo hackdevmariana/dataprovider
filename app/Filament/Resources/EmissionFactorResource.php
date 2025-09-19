@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 class EmissionFactorResource extends Resource
 {
     protected static ?string $model = EmissionFactor::class;
-    protected static ?string $navigationGroup = 'Sustainability';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $modelLabel = 'Factor de Emisión';
     protected static ?string $pluralModelLabel = 'Factores de Emisión';
