@@ -20,8 +20,8 @@ class TagGroupResource extends Resource
 {
     protected static ?string $model = TagGroup::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Contenido y Medios';
+    protected static ?int $navigationSort = 4;
 
     public static function getNavigationBadge(): ?string
     {
