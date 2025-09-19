@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 
 class SocialInteractionResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $model = SocialInteraction::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $modelLabel = 'Interacción Social';
