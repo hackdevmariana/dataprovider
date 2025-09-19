@@ -16,12 +16,12 @@ class FestivalActivityResource extends Resource
     protected static ?string $model = FestivalActivity::class;
 
     protected static ?string $navigationIcon = 'fas-theater-masks';
-    protected static ?string $navigationGroup = 'Events & Calendar';
+    protected static ?string $navigationGroup = 'Eventos y Cultura';
  
 
     protected static ?string $navigationLabel = 'Actividades de Festivales';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = 'Actividad de Festival';
 
