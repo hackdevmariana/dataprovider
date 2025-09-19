@@ -18,7 +18,7 @@ class ElectricityPriceResource extends Resource
     protected static ?string $model = ElectricityPrice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
 
     
     public static function getNavigationBadge(): ?string
