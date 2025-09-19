@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QuoteResource\Pages;
 use App\Filament\Resources\QuoteResource\RelationManagers;
 use App\Models\Quote;
+use App\Models\QuoteCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,11 +20,11 @@ class QuoteResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-quote-left';
 
-    protected static ?string $navigationGroup = 'Citas y Refranes';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Citas';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Cita';
 
@@ -83,7 +84,7 @@ class QuoteResource extends Resource
                             ->label('Idioma'),
                         
                         Forms\Components\Select::make('category')
-                            ->relationship('category', 'name')
+                            ->options(QuoteCategory::pluck('name', 'name'))
                             ->searchable()
                             ->preload()
                             ->label('Categoría'),
@@ -219,7 +220,7 @@ class QuoteResource extends Resource
                         default => $state,
                     }),
                 
-                Tables\Columns\TextColumn::make('category.name')
+                Tables\Columns\TextColumn::make('category')
                     ->label('Categoría')
                     ->sortable()
                     ->searchable(),
@@ -315,7 +316,7 @@ class QuoteResource extends Resource
                     ->label('Idioma'),
                 
                 Tables\Filters\SelectFilter::make('category')
-                    ->relationship('category', 'name')
+                    ->options(QuoteCategory::pluck('name', 'name'))
                     ->label('Categoría'),
                 
                 Tables\Filters\SelectFilter::make('mood')
@@ -430,7 +431,6 @@ class QuoteResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->with(['category']);
+        return parent::getEloquentQuery();
     }
 }
