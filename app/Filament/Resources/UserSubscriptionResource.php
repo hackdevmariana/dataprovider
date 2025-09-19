@@ -18,13 +18,13 @@ class UserSubscriptionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Suscripción de Usuario';
 
     protected static ?string $pluralModelLabel = 'Suscripciones de Usuarios';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
@@ -136,14 +136,17 @@ class UserSubscriptionResource extends Resource
                         'primary' => 'trial',
                         'danger' => 'cancelled',
                         'secondary' => 'expired',
-                        'warning' => 'suspended',
+                        'warning' => 'pending',
+                        'gray' => 'suspended',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'active' => 'Activa',
                         'cancelled' => 'Cancelada',
                         'expired' => 'Expirada',
                         'trial' => 'Prueba',
+                        'pending' => 'Pendiente',
                         'suspended' => 'Suspendida',
+                        default => ucwords(str_replace('_', ' ', $state)),
                     }),
                 
                 Tables\Columns\TextColumn::make('amount_paid')
