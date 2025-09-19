@@ -20,11 +20,11 @@ class EnergyServiceResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-bolt';
 
-    protected static ?string $navigationGroup = 'Energía y Precios';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
 
     protected static ?string $navigationLabel = 'Servicios Energéticos';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Servicio Energético';
 
