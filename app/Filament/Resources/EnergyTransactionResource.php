@@ -21,7 +21,7 @@ class EnergyTransactionResource extends Resource
     protected static ?string $model = EnergyTransaction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $label = 'Transacción Energética';
     protected static ?string $pluralLabel = 'Transacciones Energéticas';
     
