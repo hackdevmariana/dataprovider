@@ -18,13 +18,13 @@ class UserPrivilegeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Privilegio de Usuario';
 
     protected static ?string $pluralModelLabel = 'Privilegios de Usuarios';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
