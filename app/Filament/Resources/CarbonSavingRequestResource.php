@@ -30,12 +30,12 @@ use Filament\Notifications\Notification;
 
 class CarbonSavingRequestResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $model = CarbonSavingRequest::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $modelLabel = 'Solicitud de Ahorro de Carbono';
     protected static ?string $pluralModelLabel = 'Solicitudes de Ahorro de Carbono';
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 3;
 
     
     public static function getNavigationBadge(): ?string
