@@ -19,11 +19,11 @@ class PilgrimageSiteResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-mosque';
 
-    protected static ?string $navigationGroup = 'Historia y Cultura';
+    protected static ?string $navigationGroup = 'Religión y Espiritualidad';
 
     protected static ?string $navigationLabel = 'Sitios de Peregrinación';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Sitio de Peregrinación';
 
@@ -723,7 +723,7 @@ class PilgrimageSiteResource extends Resource
                 
                 Tables\Actions\Action::make('toggle_popular')
                     ->label(fn ($record): string => $record->is_popular ? 'Quitar Popular' : 'Marcar Popular')
-                    ->icon(fn ($record): string => $record->is_popular ? 'fas-fire' : 'far-fire')
+                    ->icon(fn ($record): string => $record->is_popular ? 'fas-fire' : 'fas-fire')
                     ->action(function ($record): void {
                         $record->update(['is_popular' => !$record->is_popular]);
                     })
@@ -770,7 +770,7 @@ class PilgrimageSiteResource extends Resource
                     
                     Tables\Actions\BulkAction::make('mark_popular')
                         ->label('Marcar como Populares')
-                        ->icon('fas-fire')
+                        ->icon('fas-star')
                         ->action(function ($records): void {
                             $records->each->update(['is_popular' => true]);
                         })
