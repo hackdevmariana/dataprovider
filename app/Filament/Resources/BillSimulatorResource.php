@@ -27,7 +27,7 @@ class BillSimulatorResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Simuladores de Facturas';
     
-    protected static ?string $navigationGroup = 'Energía';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     
     protected static ?int $navigationSort = 3;
     
