@@ -28,9 +28,9 @@ class NewsAggregationResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Agregaciones de Noticias';
     
-    protected static ?string $navigationGroup = 'Noticias y Tendencias';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
     
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
     
     public static function getNavigationBadge(): ?string
     {
