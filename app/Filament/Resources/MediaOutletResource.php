@@ -17,7 +17,7 @@ class MediaOutletResource extends Resource
 {
     protected static ?string $model = MediaOutlet::class;
 
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     protected static ?string $label = 'Medio de comunicación';
     protected static ?string $pluralLabel = 'Medios de comunicación';
