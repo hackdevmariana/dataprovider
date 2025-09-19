@@ -16,13 +16,13 @@ class LeaderboardResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-trophy';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Tabla de Clasificación';
 
     protected static ?string $pluralModelLabel = 'Tablas de Clasificación';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
