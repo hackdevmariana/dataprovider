@@ -19,11 +19,11 @@ class NewsSourceResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-newspaper';
 
-    protected static ?string $navigationGroup = 'Noticias y Medios';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Fuentes de Noticias';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Fuente de Noticias';
 
