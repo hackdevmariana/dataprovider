@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 
 class UserListResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $model = UserList::class; // Assuming UserList model exists
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
