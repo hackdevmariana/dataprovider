@@ -19,11 +19,11 @@ class BookResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-book';
 
-    protected static ?string $navigationGroup = 'Biblioteca y Literatura';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Libros';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Libro';
 
