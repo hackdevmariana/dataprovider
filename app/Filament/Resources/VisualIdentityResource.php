@@ -18,7 +18,7 @@ class VisualIdentityResource extends Resource
     protected static ?string $model = VisualIdentity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-swatch';
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
     
     public static function getNavigationBadge(): ?string
     {
