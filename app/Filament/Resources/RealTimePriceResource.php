@@ -19,11 +19,11 @@ class RealTimePriceResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-bolt';
 
-    protected static ?string $navigationGroup = 'Energía y Precios';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
 
     protected static ?string $navigationLabel = 'Precios en Tiempo Real';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Precio en Tiempo Real';
 
