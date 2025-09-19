@@ -18,8 +18,8 @@ class UserChallengeResource extends Resource
     protected static ?string $model = UserChallenge::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Social System';
-    protected static ?int $navigationSort = 40;
+    protected static ?string $navigationGroup = 'Usuarios y Social';
+    protected static ?int $navigationSort = 1;
     protected static ?string $label = 'Participación en Reto';
     protected static ?string $pluralLabel = 'Participaciones en Retos';
 
