@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TopicCommentResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $model = TopicComment::class;
 
     protected static ?string $navigationIcon = 'fas-comments';
