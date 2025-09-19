@@ -19,11 +19,11 @@ class DevotionResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-pray';
 
-    protected static ?string $navigationGroup = 'Historia y Cultura';
+    protected static ?string $navigationGroup = 'Religión y Espiritualidad';
 
     protected static ?string $navigationLabel = 'Devociones Religiosas';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = 'Devoción Religiosa';
 
