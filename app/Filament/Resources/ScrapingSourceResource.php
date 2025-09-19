@@ -24,8 +24,8 @@ class ScrapingSourceResource extends Resource
     protected static ?string $model = ScrapingSource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cloud';
-    protected static ?string $navigationGroup = 'General & Stats';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Sistema y Administración';
+    protected static ?int $navigationSort = 8;
 
     
     public static function getNavigationBadge(): ?string
