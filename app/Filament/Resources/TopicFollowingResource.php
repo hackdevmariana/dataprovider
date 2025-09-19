@@ -16,13 +16,13 @@ class TopicFollowingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Seguimiento de Tema';
 
     protected static ?string $pluralModelLabel = 'Seguimientos de Temas';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
