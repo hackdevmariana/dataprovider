@@ -17,11 +17,11 @@ class BookEditionResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-book-open';
 
-    protected static ?string $navigationGroup = 'Biblioteca y Literatura';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $navigationLabel = 'Ediciones de Libros';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = 'Edición de Libro';
 
@@ -886,7 +886,7 @@ class BookEditionResource extends Resource
                 
                 Tables\Actions\Action::make('toggle_popular')
                     ->label(fn ($record): string => $record->is_popular ? 'Quitar Popular' : 'Marcar Popular')
-                    ->icon(fn ($record): string => $record->is_popular ? 'fas-fire' : 'far-fire')
+                    ->icon(fn ($record): string => $record->is_popular ? 'fas-heart' : 'far-heart')
                     ->action(function ($record): void {
                         $record->update(['is_popular' => !$record->is_popular]);
                     })
@@ -945,7 +945,7 @@ class BookEditionResource extends Resource
                     
                     Tables\Actions\BulkAction::make('mark_popular')
                         ->label('Marcar como Populares')
-                        ->icon('fas-fire')
+                        ->icon('fas-heart')
                         ->action(function ($records): void {
                             $records->each->update(['is_popular' => true]);
                         })
