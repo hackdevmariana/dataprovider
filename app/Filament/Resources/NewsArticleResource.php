@@ -29,11 +29,11 @@ class NewsArticleResource extends Resource
     protected static ?string $model = NewsArticle::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
     protected static ?string $label = 'Artículo de Noticias';
     protected static ?string $pluralLabel = 'Artículos de Noticias';
     protected static ?string $navigationLabel = 'Noticias';
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 4;
 
     
     public static function getNavigationBadge(): ?string
