@@ -16,13 +16,13 @@ class TopicMembershipResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Membresía';
 
     protected static ?string $pluralModelLabel = 'Membresías';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
