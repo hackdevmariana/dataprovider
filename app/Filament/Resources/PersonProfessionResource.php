@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PersonProfessionResource extends Resource
 {
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
     protected static ?string $model = PersonProfession::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     protected static ?string $label = 'Relación Persona-Profesión';
     protected static ?string $pluralLabel = 'Relaciones Persona-Profesión';
     protected static ?string $navigationLabel = 'Profesiones de Personas';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     
     public static function getNavigationBadge(): ?string
