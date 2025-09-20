@@ -16,13 +16,13 @@ use Illuminate\Support\Collection;
 
 class CategoryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Content Management';
+    protected static ?string $navigationGroup = 'Sistema y Administración';
     protected static ?string $model = Category::class;
     protected static ?string $navigationLabel = 'Categorías';
     protected static ?string $modelLabel = 'Categoría';
     protected static ?string $pluralModelLabel = 'Categorías';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 8;
 
     
     public static function getNavigationBadge(): ?string
