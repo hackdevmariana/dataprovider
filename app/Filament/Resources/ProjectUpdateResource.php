@@ -16,13 +16,13 @@ class ProjectUpdateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
 
     protected static ?string $modelLabel = 'Actualización';
 
     protected static ?string $pluralModelLabel = 'Actualizaciones';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
