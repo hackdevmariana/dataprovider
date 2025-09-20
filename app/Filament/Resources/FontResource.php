@@ -18,7 +18,7 @@ class FontResource extends Resource
     protected static ?string $model = Font::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-at-symbol';
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     
     public static function getNavigationBadge(): ?string
