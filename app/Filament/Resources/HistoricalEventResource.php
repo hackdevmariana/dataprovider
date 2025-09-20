@@ -19,11 +19,11 @@ class HistoricalEventResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-landmark';
 
-    protected static ?string $navigationGroup = 'Historia y Cultura';
+    protected static ?string $navigationGroup = 'Eventos y Cultura';
 
     protected static ?string $navigationLabel = 'Eventos Históricos';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = 'Evento Histórico';
 
