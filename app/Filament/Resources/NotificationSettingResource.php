@@ -24,8 +24,8 @@ class NotificationSettingResource extends Resource
     protected static ?string $model = NotificationSetting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
-    protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Sistema y Administración';
+    protected static ?int $navigationSort = 8;
 
     public static function getNavigationBadge(): ?string
     {
