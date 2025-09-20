@@ -17,7 +17,7 @@ class AliasResource extends Resource
 {
     protected static ?string $model = Alias::class;
 
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     protected static ?string $navigationIcon = 'heroicon-o-pencil';
     // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
