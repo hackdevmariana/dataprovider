@@ -32,6 +32,7 @@ class CategorySeeder extends Seeder
         $this->createAdditionalEnergyCategories();
 
         $this->command->info('✅ Se han creado/actualizado las categorías del sistema.');
+        $this->showStatistics();
     }
 
     private function createNewsCategories(): void
@@ -607,6 +608,52 @@ class CategorySeeder extends Seeder
             
             Category::create($categoryData);
             $this->command->info("🆕 Categoría creada: {$categoryData['name']} ({$categoryData['type']})");
+        }
+    }
+
+    private function showStatistics(): void
+    {
+        $totalCategories = Category::count();
+        $activeCategories = Category::where('is_active', true)->count();
+        $featuredCategories = Category::where('is_featured', true)->count();
+        
+        $categoriesByType = Category::selectRaw('type, COUNT(*) as count')
+            ->groupBy('type')
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $this->command->info("\n📊 Estadísticas de categorías:");
+        $this->command->info("   Total categorías: {$totalCategories}");
+        $this->command->info("   Categorías activas: {$activeCategories}");
+        $this->command->info("   Categorías destacadas: {$featuredCategories}");
+        
+        $this->command->info("\n📋 Categorías por tipo:");
+        foreach ($categoriesByType as $categoryType) {
+            $typeLabel = match($categoryType->type) {
+                'news' => 'Noticias',
+                'event' => 'Eventos',
+                'profession' => 'Profesiones',
+                'cooperative' => 'Cooperativas',
+                'energy' => 'Energía',
+                'project' => 'Proyectos',
+                'technology' => 'Tecnología',
+                'sustainability' => 'Sostenibilidad',
+                'community' => 'Comunidad',
+                'marketplace' => 'Mercado',
+                default => ucfirst($categoryType->type),
+            };
+            $this->command->info("   {$typeLabel}: {$categoryType->count} categorías");
+        }
+
+        $this->command->info("\n🎯 Categorías destacadas:");
+        $featured = Category::where('is_featured', true)
+            ->select('name', 'type')
+            ->orderBy('type')
+            ->orderBy('name')
+            ->get();
+        
+        foreach ($featured as $category) {
+            $this->command->info("   ⭐ {$category->name} ({$category->type})");
         }
     }
 }
