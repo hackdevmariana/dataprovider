@@ -17,9 +17,9 @@ class PriceAlertResource extends Resource
     protected static ?string $model = PriceAlert::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bell'; // Changed from fas-bell
-    protected static ?string $navigationGroup = 'Energía y Precios';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $navigationLabel = 'Alertas de Precios';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
     protected static ?string $modelLabel = 'Alerta de Precio';
     protected static ?string $pluralModelLabel = 'Alertas de Precios';
 
