@@ -23,9 +23,9 @@ class RelationshipTypeResource extends Resource
     protected static ?string $model = RelationshipType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 2;
     
     public static function getNavigationBadge(): ?string
     {
