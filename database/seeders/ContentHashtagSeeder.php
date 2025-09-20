@@ -34,10 +34,18 @@ class ContentHashtagSeeder extends Seeder
         }
 
         // Tipos de contenido disponibles para hashtags
-        $contentTypes = [
-            'Person' => $people,
-            'Event' => $events,
-        ];
+        $contentTypes = [];
+        if (!$people->isEmpty()) {
+            $contentTypes['Person'] = $people;
+        }
+        if (!$events->isEmpty()) {
+            $contentTypes['Event'] = $events;
+        }
+        
+        if (empty($contentTypes)) {
+            $this->command->warn('No hay personas ni eventos disponibles. Saltando seeder de ContentHashtag.');
+            return;
+        }
 
         // Hashtags temáticos por categoría
         $thematicHashtags = [
