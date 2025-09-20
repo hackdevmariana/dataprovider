@@ -16,13 +16,13 @@ class HashtagResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-hashtag';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Contenido y Medios';
 
     protected static ?string $modelLabel = 'Hashtag';
 
     protected static ?string $pluralModelLabel = 'Hashtags';
 
-    protected static ?int $navigationSort = 9;
+    protected static ?int $navigationSort = 4;
 
     
     public static function getNavigationBadge(): ?string
