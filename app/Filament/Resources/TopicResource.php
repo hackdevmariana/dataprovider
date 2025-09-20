@@ -16,7 +16,7 @@ class TopicResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    protected static ?string $navigationGroup = 'Social System';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
 
     protected static ?string $modelLabel = 'Tema';
 
