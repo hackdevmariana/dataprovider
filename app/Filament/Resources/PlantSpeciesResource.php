@@ -18,10 +18,10 @@ class PlantSpeciesResource extends Resource
 {
     protected static ?string $model = PlantSpecies::class;
     protected static ?string $navigationIcon = 'phosphor-plant-bold';
-    protected static ?string $navigationGroup = 'Sustainability';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $modelLabel = 'Especie Vegetal';
     protected static ?string $pluralModelLabel = 'Especies Vegetales';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     
     public static function getNavigationBadge(): ?string
