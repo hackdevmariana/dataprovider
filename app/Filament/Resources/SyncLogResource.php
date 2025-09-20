@@ -22,8 +22,8 @@ class SyncLogResource extends Resource
     protected static ?string $model = SyncLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationGroup = 'Admin';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Sistema y Administración';
+    protected static ?int $navigationSort = 8;
 
     public static function getNavigationBadge(): ?string
     {
