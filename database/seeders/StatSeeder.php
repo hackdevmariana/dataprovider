@@ -84,7 +84,17 @@ class StatSeeder extends Seeder
         $count = 0;
 
         // Estadísticas de usuarios (si existen)
-        $users = User::limit(3)->get();
+        $users = User::limit(5)->get();
+        if ($users->isEmpty()) {
+            $this->command->warn('No hay usuarios disponibles. Creando usuario de prueba...');
+            $user = User::create([
+                'name' => 'Usuario de Prueba Stats',
+                'email' => 'stats@example.com',
+                'password' => bcrypt('password'),
+            ]);
+            $users = collect([$user]);
+        }
+
         foreach ($users as $user) {
             $userStats = [
                 [
@@ -93,9 +103,10 @@ class StatSeeder extends Seeder
                     'key' => 'daily_energy_consumption',
                     'value' => fake()->randomFloat(2, 10, 50),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[1]->id, // Smart Meter
+                    'data_source_id' => $dataSources[1]->id ?? null, // Smart Meter
                     'unit' => 'kWh',
                     'source_note' => 'Consumo diario promedio de energía',
+                    'confidence_level' => fake()->randomFloat(2, 85, 98),
                 ],
                 [
                     'subject_type' => User::class,
@@ -103,9 +114,10 @@ class StatSeeder extends Seeder
                     'key' => 'solar_production',
                     'value' => fake()->randomFloat(2, 5, 25),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'kWh',
                     'source_note' => 'Producción solar diaria promedio',
+                    'confidence_level' => fake()->randomFloat(2, 90, 99),
                 ],
                 [
                     'subject_type' => User::class,
@@ -113,9 +125,10 @@ class StatSeeder extends Seeder
                     'key' => 'energy_savings',
                     'value' => fake()->randomFloat(2, 5, 30),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'EUR',
                     'source_note' => 'Ahorro mensual en factura eléctrica',
+                    'confidence_level' => fake()->randomFloat(2, 80, 95),
                 ],
                 [
                     'subject_type' => User::class,
@@ -123,20 +136,40 @@ class StatSeeder extends Seeder
                     'key' => 'co2_avoided',
                     'value' => fake()->randomFloat(2, 10, 50),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'kg CO2',
                     'source_note' => 'CO2 evitado mensualmente',
+                    'confidence_level' => fake()->randomFloat(2, 85, 98),
+                ],
+                [
+                    'subject_type' => User::class,
+                    'subject_id' => $user->id,
+                    'key' => 'monthly_bill',
+                    'value' => fake()->randomFloat(2, 40, 120),
+                    'year' => $currentYear,
+                    'data_source_id' => $dataSources[0]->id ?? null,
+                    'unit' => 'EUR',
+                    'source_note' => 'Factura eléctrica mensual',
+                    'confidence_level' => fake()->randomFloat(2, 95, 100),
                 ],
             ];
 
             foreach ($userStats as $statData) {
-                Stat::create($statData);
+                Stat::updateOrCreate(
+                    [
+                        'subject_type' => $statData['subject_type'],
+                        'subject_id' => $statData['subject_id'],
+                        'key' => $statData['key'],
+                        'year' => $statData['year'],
+                    ],
+                    $statData
+                );
                 $count++;
             }
         }
 
         // Estadísticas de cooperativas (si existen)
-        $cooperatives = Cooperative::limit(2)->get();
+        $cooperatives = Cooperative::limit(3)->get();
         foreach ($cooperatives as $cooperative) {
             $cooperativeStats = [
                 [
@@ -145,9 +178,10 @@ class StatSeeder extends Seeder
                     'key' => 'total_members',
                     'value' => fake()->numberBetween(50, 200),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'members',
                     'source_note' => 'Número total de miembros activos',
+                    'confidence_level' => fake()->randomFloat(2, 90, 100),
                 ],
                 [
                     'subject_type' => Cooperative::class,
@@ -155,9 +189,10 @@ class StatSeeder extends Seeder
                     'key' => 'energy_traded',
                     'value' => fake()->randomFloat(2, 1000, 5000),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'kWh',
                     'source_note' => 'Energía intercambiada mensualmente',
+                    'confidence_level' => fake()->randomFloat(2, 85, 98),
                 ],
                 [
                     'subject_type' => Cooperative::class,
@@ -165,20 +200,40 @@ class StatSeeder extends Seeder
                     'key' => 'transaction_volume',
                     'value' => fake()->randomFloat(2, 2000, 10000),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[0]->id, // KiroLux App
+                    'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                     'unit' => 'EUR',
                     'source_note' => 'Volumen de transacciones mensual',
+                    'confidence_level' => fake()->randomFloat(2, 88, 99),
+                ],
+                [
+                    'subject_type' => Cooperative::class,
+                    'subject_id' => $cooperative->id,
+                    'key' => 'average_member_savings',
+                    'value' => fake()->randomFloat(2, 15, 45),
+                    'year' => $currentYear,
+                    'data_source_id' => $dataSources[0]->id ?? null,
+                    'unit' => 'EUR',
+                    'source_note' => 'Ahorro promedio por miembro mensual',
+                    'confidence_level' => fake()->randomFloat(2, 80, 95),
                 ],
             ];
 
             foreach ($cooperativeStats as $statData) {
-                Stat::create($statData);
+                Stat::updateOrCreate(
+                    [
+                        'subject_type' => $statData['subject_type'],
+                        'subject_id' => $statData['subject_id'],
+                        'key' => $statData['key'],
+                        'year' => $statData['year'],
+                    ],
+                    $statData
+                );
                 $count++;
             }
         }
 
         // Estadísticas de instalaciones (si existen)
-        $installations = EnergyInstallation::limit(3)->get();
+        $installations = EnergyInstallation::limit(5)->get();
         foreach ($installations as $installation) {
             $installationStats = [
                 [
@@ -187,9 +242,10 @@ class StatSeeder extends Seeder
                     'key' => 'daily_production',
                     'value' => fake()->randomFloat(2, 20, 100),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[1]->id, // Smart Meter
+                    'data_source_id' => $dataSources[1]->id ?? null, // Smart Meter
                     'unit' => 'kWh',
                     'source_note' => 'Producción diaria promedio',
+                    'confidence_level' => fake()->randomFloat(2, 90, 99),
                 ],
                 [
                     'subject_type' => EnergyInstallation::class,
@@ -197,14 +253,34 @@ class StatSeeder extends Seeder
                     'key' => 'system_efficiency',
                     'value' => fake()->randomFloat(2, 75, 95),
                     'year' => $currentYear,
-                    'data_source_id' => $dataSources[1]->id, // Smart Meter
+                    'data_source_id' => $dataSources[1]->id ?? null, // Smart Meter
                     'unit' => '%',
                     'source_note' => 'Eficiencia del sistema',
+                    'confidence_level' => fake()->randomFloat(2, 85, 98),
+                ],
+                [
+                    'subject_type' => EnergyInstallation::class,
+                    'subject_id' => $installation->id,
+                    'key' => 'monthly_revenue',
+                    'value' => fake()->randomFloat(2, 80, 300),
+                    'year' => $currentYear,
+                    'data_source_id' => $dataSources[0]->id ?? null,
+                    'unit' => 'EUR',
+                    'source_note' => 'Ingresos mensuales por venta de energía',
+                    'confidence_level' => fake()->randomFloat(2, 88, 99),
                 ],
             ];
 
             foreach ($installationStats as $statData) {
-                Stat::create($statData);
+                Stat::updateOrCreate(
+                    [
+                        'subject_type' => $statData['subject_type'],
+                        'subject_id' => $statData['subject_id'],
+                        'key' => $statData['key'],
+                        'year' => $statData['year'],
+                    ],
+                    $statData
+                );
                 $count++;
             }
         }
@@ -217,9 +293,10 @@ class StatSeeder extends Seeder
                 'key' => 'daily_active_users',
                 'value' => fake()->numberBetween(500, 2000),
                 'year' => $currentYear,
-                'data_source_id' => $dataSources[0]->id, // KiroLux App
+                'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                 'unit' => 'users',
                 'source_note' => 'Usuarios activos diarios',
+                'confidence_level' => fake()->randomFloat(2, 95, 100),
             ],
             [
                 'subject_type' => 'App\\Models\\System',
@@ -227,9 +304,10 @@ class StatSeeder extends Seeder
                 'key' => 'total_energy_traded',
                 'value' => fake()->randomFloat(2, 10000, 50000),
                 'year' => $currentYear,
-                'data_source_id' => $dataSources[0]->id, // KiroLux App
+                'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                 'unit' => 'kWh',
                 'source_note' => 'Energía total intercambiada mensualmente',
+                'confidence_level' => fake()->randomFloat(2, 90, 99),
             ],
             [
                 'subject_type' => 'App\\Models\\System',
@@ -237,9 +315,10 @@ class StatSeeder extends Seeder
                 'key' => 'platform_savings',
                 'value' => fake()->randomFloat(2, 50000, 200000),
                 'year' => $currentYear,
-                'data_source_id' => $dataSources[0]->id, // KiroLux App
+                'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                 'unit' => 'EUR',
                 'source_note' => 'Ahorro total generado por la plataforma',
+                'confidence_level' => fake()->randomFloat(2, 85, 98),
             ],
             [
                 'subject_type' => 'App\\Models\\System',
@@ -247,9 +326,10 @@ class StatSeeder extends Seeder
                 'key' => 'co2_avoided_total',
                 'value' => fake()->randomFloat(2, 5000, 20000),
                 'year' => $currentYear,
-                'data_source_id' => $dataSources[0]->id, // KiroLux App
+                'data_source_id' => $dataSources[0]->id ?? null, // KiroLux App
                 'unit' => 'kg CO2',
                 'source_note' => 'CO2 total evitado por la plataforma',
+                'confidence_level' => fake()->randomFloat(2, 88, 99),
             ],
             [
                 'subject_type' => 'App\\Models\\Market',
@@ -257,14 +337,45 @@ class StatSeeder extends Seeder
                 'key' => 'average_price',
                 'value' => fake()->randomFloat(4, 0.10, 0.25),
                 'year' => $currentYear,
-                'data_source_id' => $dataSources[3]->id, // Market API REE
+                'data_source_id' => $dataSources[3]->id ?? null, // Market API REE
                 'unit' => 'EUR/kWh',
                 'source_note' => 'Precio medio de electricidad',
+                'confidence_level' => fake()->randomFloat(2, 95, 100),
+            ],
+            [
+                'subject_type' => 'App\\Models\\System',
+                'subject_id' => 1,
+                'key' => 'total_cooperatives',
+                'value' => fake()->numberBetween(10, 50),
+                'year' => $currentYear,
+                'data_source_id' => $dataSources[0]->id ?? null,
+                'unit' => 'cooperatives',
+                'source_note' => 'Número total de cooperativas activas',
+                'confidence_level' => fake()->randomFloat(2, 90, 100),
+            ],
+            [
+                'subject_type' => 'App\\Models\\System',
+                'subject_id' => 1,
+                'key' => 'total_installations',
+                'value' => fake()->numberBetween(100, 500),
+                'year' => $currentYear,
+                'data_source_id' => $dataSources[0]->id ?? null,
+                'unit' => 'installations',
+                'source_note' => 'Número total de instalaciones energéticas',
+                'confidence_level' => fake()->randomFloat(2, 88, 99),
             ],
         ];
 
         foreach ($globalStats as $statData) {
-            Stat::create($statData);
+            Stat::updateOrCreate(
+                [
+                    'subject_type' => $statData['subject_type'],
+                    'subject_id' => $statData['subject_id'],
+                    'key' => $statData['key'],
+                    'year' => $statData['year'],
+                ],
+                $statData
+            );
             $count++;
         }
 
