@@ -19,7 +19,7 @@ class EnergyInstallationResource extends Resource
     protected static ?string $model = EnergyInstallation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $label = 'Instalación Energética';
     protected static ?string $pluralLabel = 'Instalaciones Energéticas';
     
