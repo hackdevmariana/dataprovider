@@ -138,13 +138,13 @@ class TopicMembershipSeeder extends Seeder
     /**
      * Obtener peso en el feed según el rol
      */
-    private function getFeedWeight(string $role): int
+    private function getFeedWeight(string $role): float
     {
         return match ($role) {
-            'creator' => 200,
-            'moderator' => 150,
-            'contributor' => 120,
-            default => 100,
+            'creator' => 9.99,
+            'moderator' => 8.50,
+            'contributor' => 7.00,
+            default => 5.00,
         };
     }
 
