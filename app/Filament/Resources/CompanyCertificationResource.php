@@ -19,11 +19,11 @@ class CompanyCertificationResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-certificate';
 
-    protected static ?string $navigationGroup = 'Empresas y Certificaciones';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     protected static ?string $navigationLabel = 'Certificaciones Empresariales';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $modelLabel = 'Certificación Empresarial';
 
