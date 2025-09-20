@@ -214,7 +214,13 @@ class NewsAggregationSeeder extends Seeder
         ];
 
         foreach ($aggregations as $aggregation) {
-            NewsAggregation::create($aggregation);
+            NewsAggregation::firstOrCreate(
+                [
+                    'source_id' => $aggregation['source_id'],
+                    'article_id' => $aggregation['article_id'],
+                ],
+                $aggregation
+            );
         }
 
         $this->command->info('✅ Creadas ' . count($aggregations) . ' agregaciones de noticias');
