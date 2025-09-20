@@ -64,14 +64,17 @@ class HashtagSeeder extends Seeder
         $creator = User::first();
 
         foreach ($officialHashtags as $hashtagData) {
-            $hashtag = Hashtag::create(array_merge($hashtagData, [
-                'slug' => \Str::slug($hashtagData['name']),
-                'usage_count' => fake()->numberBetween(500, 2000),
-                'posts_count' => fake()->numberBetween(200, 800),
-                'followers_count' => fake()->numberBetween(100, 500),
-                'trending_score' => fake()->randomFloat(2, 200, 1000),
-                'created_by' => $creator?->id,
-            ]));
+            $hashtag = Hashtag::firstOrCreate(
+                ['name' => $hashtagData['name']], // Condición de búsqueda
+                array_merge($hashtagData, [
+                    'slug' => \Str::slug($hashtagData['name']),
+                    'usage_count' => fake()->numberBetween(500, 2000),
+                    'posts_count' => fake()->numberBetween(200, 800),
+                    'followers_count' => fake()->numberBetween(100, 500),
+                    'trending_score' => fake()->randomFloat(2, 200, 1000),
+                    'created_by' => $creator?->id,
+                ])
+            );
 
             $this->command->info("✅ Creado hashtag oficial: #{$hashtag->name}");
         }
@@ -90,17 +93,22 @@ class HashtagSeeder extends Seeder
         ];
 
         foreach ($categories as $category => $count) {
-            Hashtag::factory()
-                  ->category($category)
-                  ->count($count)
-                  ->create();
+            $this->command->info("   Creando {$count} hashtags para categoría: {$category}");
+            
+            for ($i = 0; $i < $count; $i++) {
+                Hashtag::factory()
+                      ->category($category)
+                      ->create();
+            }
         }
 
         // Hashtags trending adicionales
-        Hashtag::factory()
-              ->trending()
-              ->count(10)
-              ->create();
+        $this->command->info("   Creando 10 hashtags trending adicionales...");
+        for ($i = 0; $i < 10; $i++) {
+            Hashtag::factory()
+                  ->trending()
+                  ->create();
+        }
 
         // Estadísticas finales
         $total = Hashtag::count();
