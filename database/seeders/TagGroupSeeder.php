@@ -125,9 +125,40 @@ class TagGroupSeeder extends Seeder
             );
         }
 
-        // Crear algunos grupos adicionales aleatorios usando el factory
-        TagGroup::factory()
-            ->count(5)
-            ->create();
+        // Crear algunos grupos adicionales únicos
+        $additionalGroups = [
+            [
+                'name' => 'Etiquetas de Temporada',
+                'slug' => 'etiquetas-temporada',
+                'description' => 'Etiquetas para clasificar contenido según las estaciones del año y eventos estacionales.',
+            ],
+            [
+                'name' => 'Clasificación por Audiencia',
+                'slug' => 'clasificacion-audiencia',
+                'description' => 'Etiquetas para categorizar contenido según el tipo de audiencia objetivo.',
+            ],
+            [
+                'name' => 'Estados de Proceso',
+                'slug' => 'estados-proceso',
+                'description' => 'Etiquetas para identificar diferentes estados en procesos de trabajo.',
+            ],
+            [
+                'name' => 'Tipos de Recurso',
+                'slug' => 'tipos-recurso',
+                'description' => 'Clasificación de diferentes tipos de recursos disponibles.',
+            ],
+            [
+                'name' => 'Categorías de Calidad',
+                'slug' => 'categorias-calidad',
+                'description' => 'Etiquetas para clasificar la calidad del contenido o servicio.',
+            ],
+        ];
+
+        foreach ($additionalGroups as $group) {
+            TagGroup::updateOrCreate(
+                ['slug' => $group['slug']],
+                $group
+            );
+        }
     }
 }
