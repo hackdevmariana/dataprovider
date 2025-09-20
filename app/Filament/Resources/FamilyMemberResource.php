@@ -18,7 +18,7 @@ class FamilyMemberResource extends Resource
     protected static ?string $model = FamilyMember::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
 
     
     public static function getNavigationBadge(): ?string
