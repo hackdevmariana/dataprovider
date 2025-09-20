@@ -20,13 +20,13 @@ class CooperativeUserMemberSeeder extends Seeder
         $users = User::limit(50)->get();
         
         if ($cooperatives->isEmpty()) {
-            $this->command->warn('No hay cooperativas disponibles. Creando cooperativas de ejemplo...');
-            $cooperatives = Cooperative::factory()->count(3)->create();
+            $this->command->warn('No hay cooperativas disponibles. Saltando seeder...');
+            return;
         }
         
         if ($users->isEmpty()) {
-            $this->command->warn('No hay usuarios disponibles. Creando usuarios de ejemplo...');
-            $users = User::factory()->count(20)->create();
+            $this->command->warn('No hay usuarios disponibles. Saltando seeder...');
+            return;
         }
 
         // Crear membresías específicas y realistas
@@ -70,9 +70,9 @@ class CooperativeUserMemberSeeder extends Seeder
         }
 
         // Crear algunas membresías adicionales usando el factory
-        CooperativeUserMember::factory()
-            ->count(20)
-            ->create();
+        // CooperativeUserMember::factory()
+        //     ->count(20)
+        //     ->create();
 
         $this->command->info('Membresías de cooperativas creadas exitosamente.');
     }
