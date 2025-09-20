@@ -39,7 +39,7 @@ class CooperativeSeeder extends Seeder
                 'email' => 'info@somenergia.coop',
                 'website' => 'https://www.somenergia.coop',
                 'logo_url' => 'https://www.somenergia.coop/wp-content/uploads/2019/07/logo-som-energia.png',
-                'municipality_id' => $municipalities->random()->id,
+                'municipality_id' => $municipalities->isNotEmpty() ? $municipalities->random()->id : null,
                 'address' => 'Carrer de la Pau, 8, 17002 Girona',
                 'latitude' => 41.9794,
                 'longitude' => 2.8214,
@@ -48,7 +48,7 @@ class CooperativeSeeder extends Seeder
                 'main_activity' => 'Comercialización de energía renovable',
                 'is_open_to_new_members' => true,
                 'source' => 'manual',
-                'data_source_id' => $dataSources->random()->id ?? null,
+                'data_source_id' => $dataSources->isNotEmpty() ? $dataSources->random()->id : null,
                 'has_energy_market_access' => true,
                 'legal_form' => 'Sociedad Cooperativa',
                 'statutes_url' => 'https://www.somenergia.coop/es/estatutos/',
@@ -65,7 +65,7 @@ class CooperativeSeeder extends Seeder
                 'phone' => '943 123 456',
                 'email' => 'info@goiener.com',
                 'website' => 'https://www.goiener.com',
-                'municipality_id' => $municipalities->random()->id,
+                'municipality_id' => $municipalities->isNotEmpty() ? $municipalities->random()->id : null,
                 'address' => 'Calle Mayor, 15, 20001 Donostia-San Sebastián',
                 'latitude' => 43.3183,
                 'longitude' => -1.9812,
@@ -89,7 +89,7 @@ class CooperativeSeeder extends Seeder
                 'phone' => '91 234 5678',
                 'email' => 'contacto@enercoop.es',
                 'website' => 'https://www.enercoop.es',
-                'municipality_id' => $municipalities->random()->id,
+                'municipality_id' => $municipalities->isNotEmpty() ? $municipalities->random()->id : null,
                 'address' => 'Calle de la Energía, 25, 28001 Madrid',
                 'latitude' => 40.4168,
                 'longitude' => -3.7038,
@@ -114,7 +114,7 @@ class CooperativeSeeder extends Seeder
                 'phone' => '93 123 4567',
                 'email' => 'info@sostrecivic.coop',
                 'website' => 'https://www.sostrecivic.coop',
-                'municipality_id' => $municipalities->random()->id,
+                'municipality_id' => $municipalities->isNotEmpty() ? $municipalities->random()->id : null,
                 'address' => 'Carrer de la Pau, 12, 08002 Barcelona',
                 'latitude' => 41.3851,
                 'longitude' => 2.1734,
@@ -139,7 +139,7 @@ class CooperativeSeeder extends Seeder
                 'phone' => '95 678 9012',
                 'email' => 'info@laverde.coop',
                 'website' => 'https://www.laverde.coop',
-                'municipality_id' => $municipalities->random()->id,
+                'municipality_id' => $municipalities->isNotEmpty() ? $municipalities->random()->id : null,
                 'address' => 'Finca La Verde, s/n, 41000 Sevilla',
                 'latitude' => 37.3891,
                 'longitude' => -5.9845,
@@ -163,9 +163,9 @@ class CooperativeSeeder extends Seeder
         }
 
         // Crear cooperativas adicionales usando el factory
-        Cooperative::factory()
-            ->count(15)
-            ->create();
+        // Cooperative::factory()
+        //     ->count(15)
+        //     ->create();
 
         $this->command->info('Cooperativas creadas exitosamente.');
     }
