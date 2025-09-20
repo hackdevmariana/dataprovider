@@ -18,11 +18,11 @@ class CatholicSaintResource extends Resource
     protected static ?string $model = CatholicSaint::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-heart';
-    protected static ?string $navigationGroup = 'Events & Calendar';
+    protected static ?string $navigationGroup = 'Religión y Espiritualidad';
     protected static ?string $label = 'Santo Católico';
     protected static ?string $pluralLabel = 'Santos Católicos';
     protected static ?string $navigationLabel = 'Santoral';
-    protected static ?int $navigationSort = 40;
+    protected static ?int $navigationSort = 4;
 
     
     public static function getNavigationBadge(): ?string
