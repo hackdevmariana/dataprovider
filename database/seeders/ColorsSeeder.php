@@ -303,7 +303,10 @@ class ColorsSeeder extends Seeder
         ];
 
         foreach ($colors as $color) {
-            Color::create($color);
+            Color::firstOrCreate(
+                ['slug' => $color['slug']], // Condición de búsqueda
+                $color // Datos a crear si no existe
+            );
         }
 
         $this->command->info('Se han creado ' . count($colors) . ' colores.');
