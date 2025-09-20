@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ZoneClimateResource extends Resource
 {
     protected static ?string $model = ZoneClimate::class;
-    protected static ?string $navigationGroup = 'Locations';
+    protected static ?string $navigationGroup = 'Ubicaciones y Geografía';
 
     protected static ?string $navigationIcon = 'heroicon-o-sun';
     
