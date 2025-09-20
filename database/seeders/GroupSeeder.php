@@ -21,12 +21,13 @@ class GroupSeeder extends Seeder
         // Buscar idioma español
         $spanish = Language::where('language', 'Spanish')->orWhere('iso_639_1', 'es')->first();
         if (!$spanish) {
-            $spanish = Language::factory()->create([
+            $spanish = Language::create([
                 'language' => 'Spanish',
                 'slug' => 'spanish',
                 'native_name' => 'Español',
                 'iso_639_1' => 'es',
-                'iso_639_2' => 'spa'
+                'iso_639_2' => 'spa',
+                'rtl' => false
             ]);
         }
 
