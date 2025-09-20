@@ -16,7 +16,13 @@ class EnergyServiceSeeder extends Seeder
         // Verificar que existan empresas energéticas
         if (EnergyCompany::count() === 0) {
             $this->command->warn('No hay empresas energéticas. Creando algunas empresas de ejemplo...');
-            EnergyCompany::factory(10)->create();
+            for ($i = 0; $i < 10; $i++) {
+                $companyData = EnergyCompany::factory()->make();
+                EnergyCompany::updateOrCreate(
+                    ['slug' => $companyData['slug']],
+                    $companyData->toArray()
+                );
+            }
         }
 
         $companies = EnergyCompany::all();
