@@ -19,11 +19,11 @@ class TimelineResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-clock';
 
-    protected static ?string $navigationGroup = 'Historia y Cultura';
+    protected static ?string $navigationGroup = 'Eventos y Cultura';
 
     protected static ?string $navigationLabel = 'Líneas de Tiempo';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = 'Línea de Tiempo';
 
