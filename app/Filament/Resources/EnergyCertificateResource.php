@@ -19,9 +19,9 @@ class EnergyCertificateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
     
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
     
     protected static ?string $modelLabel = 'Certificado Energético';
     
