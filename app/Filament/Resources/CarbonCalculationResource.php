@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CarbonCalculationResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Energy & Environment';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
     protected static ?string $model = CarbonCalculation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
     protected static ?string $label = 'Cálculo de Carbono';
     protected static ?string $pluralLabel = 'Cálculos de Carbono';
     protected static ?string $navigationLabel = 'Huella de Carbono';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     
     public static function getNavigationBadge(): ?string
