@@ -18,13 +18,13 @@ class ConsultationServiceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationGroup = 'Projects & Monetization';
+    protected static ?string $navigationGroup = 'Proyectos y Monetización';
 
     protected static ?string $modelLabel = 'Servicio de Consultoría';
 
     protected static ?string $pluralModelLabel = 'Servicios de Consultoría';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     
     public static function getNavigationBadge(): ?string
