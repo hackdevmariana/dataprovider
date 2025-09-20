@@ -20,8 +20,8 @@ class DataSourceResource extends Resource
     protected static ?string $model = DataSource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rss';
-    protected static ?string $navigationGroup = 'General & Stats';
-    protected static ?int $navigationSort = 20;
+    protected static ?string $navigationGroup = 'Sistema y Administración';
+    protected static ?int $navigationSort = 8;
     
     public static function getNavigationBadge(): ?string
     {
