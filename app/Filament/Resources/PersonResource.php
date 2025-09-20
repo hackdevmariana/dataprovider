@@ -17,7 +17,7 @@ class PersonResource extends Resource
 {
     protected static ?string $model = Person::class;
 
-    protected static ?string $navigationGroup = 'People & Organizations';
+    protected static ?string $navigationGroup = 'Organizaciones y Empresas';
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
     public static function getNavigationBadge(): ?string
