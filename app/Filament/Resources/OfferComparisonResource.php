@@ -20,11 +20,11 @@ class OfferComparisonResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-balance-scale';
 
-    protected static ?string $navigationGroup = 'Energía y Precios';
+    protected static ?string $navigationGroup = 'Energía y Sostenibilidad';
 
     protected static ?string $navigationLabel = 'Comparaciones de Ofertas';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Comparación de Ofertas';
 
