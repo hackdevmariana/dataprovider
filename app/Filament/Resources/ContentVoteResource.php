@@ -19,10 +19,10 @@ class ContentVoteResource extends Resource
 {
     protected static ?string $model = ContentVote::class;
     protected static ?string $navigationIcon = 'heroicon-s-pencil-square';
-    protected static ?string $navigationGroup = 'Content & Media';
+    protected static ?string $navigationGroup = 'Usuarios y Social';
     protected static ?string $modelLabel = 'Voto de Contenido';
     protected static ?string $pluralModelLabel = 'Votos de Contenido';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 1;
 
     
     public static function getNavigationBadge(): ?string
