@@ -9,12 +9,19 @@ use App\Http\Requests\StoreUserAchievementRequest;
 use App\Http\Requests\UpdateUserAchievementRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group User Achievements
  *
  * APIs para la gestión de logros de usuarios del sistema.
  * Permite crear, consultar y gestionar logros obtenidos por usuarios.
+ */
+/**
+ * @OA\Tag(
+ *     name="Logros de Usuario",
+ *     description="APIs para la gestión de Logros de Usuario"
+ * )
  */
 class UserAchievementController extends Controller
 {
