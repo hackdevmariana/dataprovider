@@ -9,6 +9,7 @@ use App\Models\Topic;
 use App\Models\TopicMembership;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\Rule;
  * @group Comunidades Temáticas
  * 
  * API endpoints para gestionar comunidades temáticas especializadas en energía.
+ */
+/**
+ * @OA\Tag(
+ *     name="Temas",
+ *     description="APIs para la gestión de Temas"
+ * )
  */
 class TopicController extends Controller
 {
