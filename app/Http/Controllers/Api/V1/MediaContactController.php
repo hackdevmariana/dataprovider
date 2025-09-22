@@ -8,9 +8,16 @@ use App\Http\Resources\V1\MediaContactResource;
 use App\Http\Requests\RecordInteractionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * Controlador para gestión de contactos de medios.
+ */
+/**
+ * @OA\Tag(
+ *     name="Contactos de Medios",
+ *     description="APIs para la gestión de Contactos de Medios"
+ * )
  */
 class MediaContactController extends Controller
 {
