@@ -7,12 +7,19 @@ use App\Models\Person;
 use Illuminate\Http\Request;
 use App\Http\Resources\V1\PersonResource;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Persons
  *
  * APIs para la gestión de personas y perfiles individuales.
  * Permite consultar información de personas, artistas, expertos y otros perfiles.
+ */
+/**
+ * @OA\Tag(
+ *     name="Personas",
+ *     description="APIs para la gestión de Personas"
+ * )
  */
 class PersonController extends Controller
 {
