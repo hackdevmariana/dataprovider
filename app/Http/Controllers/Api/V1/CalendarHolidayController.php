@@ -7,12 +7,19 @@ use App\Models\CalendarHoliday;
 use App\Http\Resources\V1\CalendarHolidayResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Calendar Holidays
  *
  * APIs para la gestión de festivos y días festivos del calendario.
  * Permite consultar información de festivos y días especiales.
+ */
+/**
+ * @OA\Tag(
+ *     name="Fiestas del Calendario",
+ *     description="APIs para la gestión de Fiestas del Calendario"
+ * )
  */
 class CalendarHolidayController extends Controller
 {
