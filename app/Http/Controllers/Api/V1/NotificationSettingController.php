@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\NotificationSetting;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ *     name="Configuración de Notificaciones",
+ *     description="APIs para la gestión de Configuración de Notificaciones"
+ * )
+ */
 class NotificationSettingController extends Controller
 {
     /**
