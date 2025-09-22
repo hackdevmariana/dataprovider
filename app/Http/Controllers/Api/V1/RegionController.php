@@ -10,12 +10,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\RegionResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Regions
  *
  * APIs para la gestión de regiones y divisiones geográficas.
  * Permite consultar información de regiones, provincias y comunidades autónomas.
+ */
+/**
+ * @OA\Tag(
+ *     name="Regiones",
+ *     description="APIs para la gestión de Regiones"
+ * )
  */
 class RegionController extends Controller
 {
