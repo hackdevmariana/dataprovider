@@ -6,8 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsSource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 #[OA\Tag(name: "News Sources")]
+/**
+ * @OA\Tag(
+ *     name="Fuentes de Noticias",
+ *     description="APIs para la gestión de Fuentes de Noticias"
+ * )
+ */
 class NewsSourceController extends Controller
 {
     /**
