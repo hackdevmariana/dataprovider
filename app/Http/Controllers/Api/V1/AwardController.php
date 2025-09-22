@@ -7,12 +7,19 @@ use App\Http\Resources\V1\AwardResource;
 use App\Http\Requests\StoreAwardRequest;
 use App\Services\AwardsService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Awards
  *
  * APIs para la gestión de premios y reconocimientos.
  * Permite crear, consultar y gestionar premios del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Premios",
+ *     description="APIs para la gestión de Premios"
+ * )
  */
 class AwardController extends Controller
 {
