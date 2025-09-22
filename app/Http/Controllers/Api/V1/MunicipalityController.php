@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Municipality;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Municipalities
  *
  * APIs para la gestión de municipios y localidades.
  * Permite consultar información de municipios, provincias y países.
+ */
+/**
+ * @OA\Tag(
+ *     name="Municipios",
+ *     description="APIs para la gestión de Municipios"
+ * )
  */
 class MunicipalityController extends Controller
 {
