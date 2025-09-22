@@ -9,12 +9,19 @@ use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Tags
  *
  * APIs para la gestión de etiquetas del sistema.
  * Permite crear, consultar y gestionar etiquetas para categorizar contenido.
+ */
+/**
+ * @OA\Tag(
+ *     name="Etiquetas",
+ *     description="APIs para la gestión de Etiquetas"
+ * )
  */
 class TagController extends Controller
 {
