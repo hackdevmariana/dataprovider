@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Auth;
  * Registra todos los cambios de reputación (ganancias, pérdidas, transferencias)
  * para mantener un historial completo y transparente.
  */
+/**
+ * @OA\Tag(
+ *     name="Transacciones de Reputación",
+ *     description="APIs para la gestión de Transacciones de Reputación"
+ * )
+ */
 class ReputationTransactionController extends Controller
 {
     /**
