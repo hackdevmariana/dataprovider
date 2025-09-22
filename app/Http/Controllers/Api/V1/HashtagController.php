@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Validator;
  * Permite crear, buscar y gestionar hashtags para categorizar
  * y organizar contenido en la plataforma.
  */
+/**
+ * @OA\Tag(
+ *     name="Hashtags",
+ *     description="APIs para la gestión de Hashtags"
+ * )
+ */
 class HashtagController extends Controller
 {
     /**
