@@ -8,6 +8,7 @@ use App\Models\ProjectProposal;
 use App\Http\Resources\V1\ProjectUpdateResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,6 +18,12 @@ use Illuminate\Support\Facades\Validator;
  * APIs para la gestión de actualizaciones de proyectos.
  * Permite a los usuarios y administradores de proyectos
  * publicar actualizaciones sobre el progreso, hitos y novedades.
+ */
+/**
+ * @OA\Tag(
+ *     name="Actualizaciones de Proyectos",
+ *     description="APIs para la gestión de Actualizaciones de Proyectos"
+ * )
  */
 class ProjectUpdateController extends Controller
 {
