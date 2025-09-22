@@ -5,7 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Lugares de Peregrinación",
+ *     description="APIs para la gestión de Lugares de Peregrinación"
+ * )
+ */
 class PilgrimageSiteController extends Controller
 {
     public function index(Request $request): JsonResponse
