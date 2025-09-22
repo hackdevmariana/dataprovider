@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\AutonomousCommunity;
 use App\Http\Resources\V1\AutonomousCommunityResource;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Autonomous Communities
  *
  * APIs para la gestión de comunidades autónomas.
  * Permite consultar información de comunidades autónomas, provincias y municipios.
+ */
+/**
+ * @OA\Tag(
+ *     name="Comunidades Autónomas",
+ *     description="APIs para la gestión de Comunidades Autónomas"
+ * )
  */
 class AutonomousCommunityController extends Controller
 {
