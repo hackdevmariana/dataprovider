@@ -8,6 +8,7 @@ use App\Models\ElectricityPriceInterval;
 use App\Models\ElectricityPrice;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de intervalos de precios de electricidad.
  * Permite a los usuarios consultar y gestionar los precios
  * de electricidad por intervalos horarios y días.
+ */
+/**
+ * @OA\Tag(
+ *     name="Intervalos de Precios",
+ *     description="APIs para la gestión de Intervalos de Precios"
+ * )
  */
 class ElectricityPriceIntervalController extends Controller
 {
