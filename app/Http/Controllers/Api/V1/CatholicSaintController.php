@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 /**
+ * @OA\Tag(
+ *     name="Catholic Saints",
+ *     description="API endpoints para gestión del santoral católico"
+ * )
+ * 
  * Controlador para la gestión de Santos Católicos
  * 
  * Este controlador proporciona endpoints para gestionar el santoral católico,
@@ -41,6 +46,49 @@ class CatholicSaintController extends \App\Http\Controllers\Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/v1/catholic-saints",
+     *     summary="List Catholic saints",
+     *     tags={"Catholic Saints"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Items per page (max 100)",
+     *         @OA\Schema(type="integer", example=20)
+     *     ),
+     *     @OA\Parameter(
+     *         name="category",
+     *         in="query",
+     *         description="Filter by saint category",
+     *         @OA\Schema(type="string", example="martyr")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of Catholic saints",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="San José"),
+     *                 @OA\Property(property="slug", type="string", example="san-jose"),
+     *                 @OA\Property(property="feast_day", type="string", example="03-19"),
+     *                 @OA\Property(property="category", type="string", example="confessor"),
+     *                 @OA\Property(property="description", type="string", example="Esposo de la Virgen María")
+     *             )),
+     *             @OA\Property(property="meta", type="object",
+     *                 @OA\Property(property="total", type="integer", example=150),
+     *                 @OA\Property(property="per_page", type="integer", example=20),
+     *                 @OA\Property(property="current_page", type="integer", example=1)
+     *             )
+     *         )
+     *     )
+     * )
+     * 
      * Muestra una lista paginada de todos los santos católicos
      * 
      * @param Request $request
