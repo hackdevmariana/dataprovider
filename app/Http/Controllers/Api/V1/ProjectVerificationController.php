@@ -7,6 +7,7 @@ use App\Models\ProjectVerification;
 use App\Models\ProjectProposal;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -15,6 +16,12 @@ use Illuminate\Validation\Rule;
  * @group Sistema de Monetización
  * 
  * API endpoints para gestionar verificaciones de proyectos.
+ */
+/**
+ * @OA\Tag(
+ *     name="Verificaciones de Proyectos",
+ *     description="APIs para la gestión de Verificaciones de Proyectos"
+ * )
  */
 class ProjectVerificationController extends Controller
 {
