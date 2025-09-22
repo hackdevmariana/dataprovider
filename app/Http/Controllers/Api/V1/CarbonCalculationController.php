@@ -8,6 +8,7 @@ use App\Models\CarbonCalculation;
 use App\Models\EmissionFactor;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
  * APIs para el cálculo y seguimiento de la huella de carbono.
  * Permite a los usuarios calcular emisiones de CO2 equivalentes
  * basándose en diferentes actividades y consumos energéticos.
+ */
+/**
+ * @OA\Tag(
+ *     name="Cálculos de Carbono",
+ *     description="APIs para la gestión de Cálculos de Carbono"
+ * )
  */
 class CarbonCalculationController extends Controller
 {
