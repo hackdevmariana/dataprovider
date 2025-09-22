@@ -15,6 +15,7 @@ use App\Models\AutonomousCommunity;
 use App\Http\Resources\V1\EventResource;
 use App\Http\Resources\V1\ArtistResource;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -22,6 +23,12 @@ use Illuminate\Support\Facades\DB;
  *
  * APIs para la gestión de festivales y eventos culturales.
  * Permite crear, consultar y gestionar festivales del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Festivales",
+ *     description="APIs para la gestión de Festivales"
+ * )
  */
 class FestivalController extends Controller
 {
