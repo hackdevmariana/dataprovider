@@ -9,12 +9,19 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Categories
  *
  * APIs para la gestión de categorías del sistema.
  * Permite crear, consultar y gestionar categorías para organizar contenido.
+ */
+/**
+ * @OA\Tag(
+ *     name="Categorías",
+ *     description="APIs para la gestión de Categorías"
+ * )
  */
 class CategoryController extends Controller
 {
