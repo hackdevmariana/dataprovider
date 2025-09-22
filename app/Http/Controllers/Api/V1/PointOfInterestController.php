@@ -8,40 +8,45 @@ use App\Http\Requests\StorePointOfInterestRequest;
 use App\Http\Requests\UpdatePointOfInterestRequest;
 use App\Services\PointsOfInterestService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
- * @group Points of Interest
- *
- * APIs para la gestión de puntos de interés y lugares destacados.
- * Permite crear, consultar y gestionar puntos de interés del sistema.
+ * @OA\Tag(
+ *     name="Points of Interest",
+ *     description="APIs para la gestión de puntos de interés y lugares destacados"
+ * )
  */
 class PointOfInterestController extends Controller
 {
     /**
-     * Display a listing of points of interest
-     *
-     * Obtiene una lista paginada de todos los puntos de interés.
-     *
-     * @queryParam page int Número de página. Example: 1
-     * @queryParam per_page int Cantidad por página (máx 100). Example: 50
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Parque Central",
-     *       "slug": "parque-central",
-     *       "description": "Parque principal de la ciudad",
-     *       "latitude": 40.4168,
-     *       "longitude": -3.7038,
-     *       "type": "park"
-     *     }
-     *   ],
-     *   "meta": {...}
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\PointOfInterestResource
-     * @apiResourceModel App\Models\PointOfInterest
+     * @OA\Get(
+     *     path="/api/v1/points-of-interest",
+     *     summary="Listar puntos de interés",
+     *     description="Obtiene una lista paginada de todos los puntos de interés",
+     *     tags={"Points of Interest"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Cantidad por página (máx 100)",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=50)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de puntos de interés obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
      */
     public function index(PointsOfInterestService $service): JsonResponse
     {
