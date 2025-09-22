@@ -9,12 +9,19 @@ use App\Http\Requests\StoreColorRequest;
 use App\Http\Requests\UpdateColorRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Colors
  *
  * APIs para la gestión de colores del sistema.
  * Permite crear, consultar y gestionar colores para personalización.
+ */
+/**
+ * @OA\Tag(
+ *     name="Colores",
+ *     description="APIs para la gestión de Colores"
+ * )
  */
 class ColorController extends Controller
 {
