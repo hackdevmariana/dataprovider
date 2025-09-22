@@ -8,12 +8,19 @@ use Illuminate\Http\Request;
 use App\Http\Resources\V1\WorkResource;
 use App\Http\Requests\StoreWorkRequest;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Works
  *
  * APIs para gestionar trabajos (libros, películas, etc.) de personas famosas.
  * Permite crear, consultar y gestionar obras y trabajos del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Trabajos",
+ *     description="APIs para la gestión de Trabajos"
+ * )
  */
 class WorkController extends Controller
 {
