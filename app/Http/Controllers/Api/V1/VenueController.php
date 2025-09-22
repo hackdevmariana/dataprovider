@@ -8,12 +8,19 @@ use App\Http\Resources\V1\VenueResource;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreVenueRequest;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Venues
  *
  * APIs para la gestión de lugares y recintos.
  * Permite crear, consultar y gestionar lugares del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Venues",
+ *     description="APIs para la gestión de Venues"
+ * )
  */
 class VenueController extends Controller
 {
