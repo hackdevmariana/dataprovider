@@ -6,8 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 #[OA\Tag(name: "Books")]
+/**
+ * @OA\Tag(
+ *     name="Libros",
+ *     description="APIs para la gestión de Libros"
+ * )
+ */
 class BookController extends Controller
 {
     /**
