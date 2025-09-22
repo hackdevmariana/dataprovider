@@ -7,12 +7,19 @@ use App\Http\Resources\V1\AwardWinnerResource;
 use App\Http\Requests\StoreAwardWinnerRequest;
 use App\Services\AwardWinnersService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Award Winners
  *
  * APIs para la gestión de ganadores de premios.
  * Permite crear, consultar y gestionar ganadores de premios del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Ganadores de Premios",
+ *     description="APIs para la gestión de Ganadores de Premios"
+ * )
  */
 class AwardWinnerController extends Controller
 {
