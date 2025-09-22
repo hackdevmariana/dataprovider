@@ -8,6 +8,7 @@ use App\Models\EnergyTransaction;
 use App\Models\EnergyInstallation;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de transacciones energéticas.
  * Permite a los usuarios registrar y consultar transacciones
  * de compra, venta e intercambio de energía renovable.
+ */
+/**
+ * @OA\Tag(
+ *     name="Transacciones Energéticas",
+ *     description="APIs para la gestión de Transacciones Energéticas"
+ * )
  */
 class EnergyTransactionController extends Controller
 {
