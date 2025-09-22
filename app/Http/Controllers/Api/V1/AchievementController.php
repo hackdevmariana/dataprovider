@@ -7,43 +7,18 @@ use App\Models\Achievement;
 use App\Http\Resources\V1\AchievementResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
- * @group Achievements
- *
- * APIs para la gestión de logros y conquistas.
- * Permite consultar información de logros del sistema.
+ * @OA\Tag(
+ *     name="Logros",
+ *     description="APIs para la gestión de Logros"
+ * )
  */
 class AchievementController extends Controller
 {
     /**
      * Display a listing of achievements
-     *
-     * Obtiene una lista de todos los logros disponibles.
-     *
-     * @queryParam type string Filtrar por tipo de logro (single, progressive, recurring). Example: single
-     * @queryParam difficulty string Filtrar por nivel de dificultad (bronze, silver, gold, legendary). Example: gold
-     * @queryParam is_secret boolean Filtrar por logros secretos. Example: false
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Primer Paso",
-     *       "description": "Completa tu primera actividad",
-     *       "type": "single",
-     *       "difficulty": "bronze",
-     *       "points": 10,
-     *       "is_secret": false
-     *     }
-     *   ],
-     *   "meta": {
-     *     "total": 1
-     *   }
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\AchievementResource
-     * @apiResourceModel App\Models\Achievement
      */
     public function index(Request $request): JsonResponse
     {
@@ -81,24 +56,6 @@ class AchievementController extends Controller
 
     /**
      * Display the specified achievement
-     *
-     * Obtiene los detalles de un logro específico.
-     *
-     * @urlParam achievement integer ID del logro. Example: 1
-     *
-     * @response 200 {
-     *   "data": {
-     *     "id": 1,
-     *       "name": "Primer Paso",
-     *       "description": "Completa tu primera actividad",
-     *       "type": "single",
-     *       "difficulty": "bronze",
-     *       "points": 10,
-     *       "is_secret": false
-     *   }
-     * }
-     *
-     * @apiResourceModel App\Models\Achievement
      */
     public function show(Achievement $achievement): JsonResponse
     {
