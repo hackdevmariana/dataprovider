@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Timezone;
 use App\Http\Resources\V1\TimezoneResource;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Timezones
  *
  * APIs para la gestión de zonas horarias.
  * Permite consultar información de zonas horarias y países donde se aplican.
+ */
+/**
+ * @OA\Tag(
+ *     name="Zonas Horarias",
+ *     description="APIs para la gestión de Zonas Horarias"
+ * )
  */
 class TimezoneController extends Controller
 {
