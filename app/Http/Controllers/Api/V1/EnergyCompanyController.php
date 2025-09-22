@@ -7,12 +7,19 @@ use App\Models\EnergyCompany;
 use App\Http\Resources\V1\EnergyCompanyResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Energy Companies
  *
  * APIs para la gestión de empresas energéticas (comercializadoras, distribuidoras, cooperativas).
  * Permite consultar, filtrar y buscar empresas del sector energético.
+ */
+/**
+ * @OA\Tag(
+ *     name="Empresas Energéticas",
+ *     description="APIs para la gestión de Empresas Energéticas"
+ * )
  */
 class EnergyCompanyController extends Controller
 {
