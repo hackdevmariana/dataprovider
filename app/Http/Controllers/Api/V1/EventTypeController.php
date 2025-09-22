@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\EventType;
 use App\Http\Resources\V1\EventTypeResource;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Event Types
  *
  * APIs para la gestión de tipos de eventos.
  * Permite consultar diferentes categorías y tipos de eventos del sistema.
+ */
+/**
+ * @OA\Tag(
+ *     name="Tipos de Eventos",
+ *     description="APIs para la gestión de Tipos de Eventos"
+ * )
  */
 class EventTypeController extends Controller
 {
