@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 /**
+ * @OA\Tag(
+ *     name="Provinces",
+ *     description="API endpoints para gestión de provincias y divisiones administrativas"
+ * )
+ * 
  * @group Provinces
  *
  * APIs para la gestión de provincias y divisiones administrativas.
@@ -16,6 +21,47 @@ use Illuminate\Http\JsonResponse;
 class ProvinceController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/api/v1/provinces",
+     *     summary="List provinces",
+     *     tags={"Provinces"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Items per page (max 100)",
+     *         @OA\Schema(type="integer", example=20)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of provinces",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Barcelona"),
+     *                 @OA\Property(property="slug", type="string", example="barcelona"),
+     *                 @OA\Property(property="code", type="string", example="08"),
+     *                 @OA\Property(property="area_km2", type="number", example=7726),
+     *                 @OA\Property(property="population", type="integer", example=5662000),
+     *                 @OA\Property(property="autonomous_community", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Cataluña")
+     *                 )
+     *             )),
+     *             @OA\Property(property="meta", type="object",
+     *                 @OA\Property(property="total", type="integer", example=50),
+     *                 @OA\Property(property="per_page", type="integer", example=20),
+     *                 @OA\Property(property="current_page", type="integer", example=1)
+     *             )
+     *         )
+     *     )
+     * )
+     * 
      * Display a listing of provinces
      *
      * Obtiene una lista paginada de provincias con sus relaciones.
