@@ -8,6 +8,7 @@ use App\Models\ElectricityOffer;
 use App\Models\EnergyCompany;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de ofertas de electricidad de las empresas energéticas.
  * Permite a los usuarios consultar y comparar diferentes ofertas
  * de tarifas eléctricas disponibles en su zona.
+ */
+/**
+ * @OA\Tag(
+ *     name="Ofertas de Electricidad",
+ *     description="APIs para la gestión de Ofertas de Electricidad"
+ * )
  */
 class ElectricityOfferController extends Controller
 {
