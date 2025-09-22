@@ -8,11 +8,18 @@ use App\Models\ProjectCommission;
 use App\Models\ProjectProposal;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * @tags Project Commissions
  * @group Sistema de Monetización - Comisiones
+ */
+/**
+ * @OA\Tag(
+ *     name="Comisiones de Proyectos",
+ *     description="APIs para la gestión de Comisiones de Proyectos"
+ * )
  */
 class ProjectCommissionController extends Controller
 {
