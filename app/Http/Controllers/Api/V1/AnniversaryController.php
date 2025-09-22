@@ -7,12 +7,19 @@ use App\Models\Anniversary;
 use App\Http\Resources\V1\AnniversaryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Anniversaries
  *
  * APIs para la gestión de aniversarios y efemérides.
  * Permite consultar información de fechas importantes y conmemoraciones.
+ */
+/**
+ * @OA\Tag(
+ *     name="Aniversarios",
+ *     description="APIs para la gestión de Aniversarios"
+ * )
  */
 class AnniversaryController extends Controller
 {
