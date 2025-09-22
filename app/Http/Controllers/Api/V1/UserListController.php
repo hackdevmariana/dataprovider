@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Validator;
  * Permite crear listas como "Favoritos", "Seguir más tarde", etc.
  * Similar a las listas de Twitter o Discord.
  */
+/**
+ * @OA\Tag(
+ *     name="Listas de Usuario",
+ *     description="APIs para la gestión de Listas de Usuario"
+ * )
+ */
 class UserListController extends Controller
 {
     /**
