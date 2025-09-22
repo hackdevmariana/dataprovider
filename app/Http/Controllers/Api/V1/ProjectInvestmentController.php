@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Validator;
  * APIs para la gestión de inversiones en proyectos colaborativos.
  * Permite a los usuarios invertir en proyectos energéticos de la cooperativa.
  */
+/**
+ * @OA\Tag(
+ *     name="Inversiones en Proyectos",
+ *     description="APIs para la gestión de Inversiones en Proyectos"
+ * )
+ */
 class ProjectInvestmentController extends Controller
 {
     /**
