@@ -8,12 +8,19 @@ use App\Models\CarbonEquivalence;
 use App\Models\CarbonCalculation;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Carbon Equivalences
  *
  * APIs para la calculadora de huella de carbono.
  * Permite consultar equivalencias y calcular impactos ambientales.
+ */
+/**
+ * @OA\Tag(
+ *     name="Equivalencias de Carbono",
+ *     description="APIs para la gestión de Equivalencias de Carbono"
+ * )
  */
 class CarbonEquivalenceController extends Controller
 {
