@@ -9,12 +9,19 @@ use App\Http\Requests\StoreDataSourceRequest;
 use App\Http\Requests\UpdateDataSourceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Data Sources
  *
  * APIs para la gestión de fuentes de datos del sistema.
  * Permite crear, consultar y gestionar fuentes de información.
+ */
+/**
+ * @OA\Tag(
+ *     name="Fuentes de Datos",
+ *     description="APIs para la gestión de Fuentes de Datos"
+ * )
  */
 class DataSourceController extends Controller
 {
