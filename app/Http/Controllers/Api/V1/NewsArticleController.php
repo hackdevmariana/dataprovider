@@ -7,6 +7,7 @@ use App\Models\NewsArticle;
 use App\Http\Resources\V1\NewsArticleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * Controlador para gestión de artículos de noticias.
@@ -16,6 +17,12 @@ use Illuminate\Http\JsonResponse;
  * 
  * @group Medios y Comunicación
  * @subgroup Artículos de Noticias
+ */
+/**
+ * @OA\Tag(
+ *     name="Artículos de Noticias",
+ *     description="APIs para la gestión de Artículos de Noticias"
+ * )
  */
 class NewsArticleController extends Controller
 {
