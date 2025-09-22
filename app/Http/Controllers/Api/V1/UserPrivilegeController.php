@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing user privileges in the social system.
  */
+/**
+ * @OA\Tag(
+ *     name="Privilegios de Usuario",
+ *     description="APIs para la gestión de Privilegios de Usuario"
+ * )
+ */
 class UserPrivilegeController extends Controller
 {
     /**
