@@ -8,12 +8,19 @@ use App\Models\ConsultationService;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 /**
  * @tags Consultation Services
  * @group Sistema de Monetización - Consultorías
+ */
+/**
+ * @OA\Tag(
+ *     name="Servicios de Consultoría",
+ *     description="APIs para la gestión de Servicios de Consultoría"
+ * )
  */
 class ConsultationServiceController extends Controller
 {
