@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing expert verification requests and processes.
  */
+/**
+ * @OA\Tag(
+ *     name="Verificaciones de Expertos",
+ *     description="APIs para la gestión de Verificaciones de Expertos"
+ * )
+ */
 class ExpertVerificationController extends Controller
 {
     /**
