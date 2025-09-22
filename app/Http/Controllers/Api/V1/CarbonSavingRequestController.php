@@ -8,6 +8,7 @@ use App\Models\CarbonSavingRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de solicitudes de ahorro de carbono.
  * Permite a los usuarios solicitar y gestionar proyectos
  * de reducción de emisiones de CO2.
+ */
+/**
+ * @OA\Tag(
+ *     name="Solicitudes de Ahorro de Carbono",
+ *     description="APIs para la gestión de Solicitudes de Ahorro de Carbono"
+ * )
  */
 class CarbonSavingRequestController extends Controller
 {
