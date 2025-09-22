@@ -4,8 +4,15 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Artisan;
 
+/**
+ * @OA\Tag(
+ *     name="Estadísticas Simples de Rutas",
+ *     description="APIs para la gestión de Estadísticas Simples de Rutas"
+ * )
+ */
 class SimpleRouteStatsController extends Controller
 {
     /**
