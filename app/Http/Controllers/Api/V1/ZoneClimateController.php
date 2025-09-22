@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\ZoneClimate;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ *     name="Zonas Climáticas",
+ *     description="APIs para la gestión de Zonas Climáticas"
+ * )
+ */
 class ZoneClimateController extends Controller
 {
     /**
