@@ -9,12 +9,19 @@ use App\Http\Requests\StorePersonProfessionRequest;
 use App\Http\Requests\UpdatePersonProfessionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Person Professions
  *
  * APIs para la gestión de profesiones de personas del sistema.
  * Permite crear, consultar y gestionar la relación entre personas y profesiones.
+ */
+/**
+ * @OA\Tag(
+ *     name="Profesiones de Personas",
+ *     description="APIs para la gestión de Profesiones de Personas"
+ * )
  */
 class PersonProfessionController extends Controller
 {
