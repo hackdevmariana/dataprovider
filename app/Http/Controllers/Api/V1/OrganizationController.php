@@ -9,12 +9,19 @@ use App\Http\Requests\StoreOrganizationRequest;
 use App\Http\Requests\UpdateOrganizationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Organizations
  *
  * APIs para la gestión de organizaciones del sistema.
  * Permite crear, consultar y gestionar organizaciones.
+ */
+/**
+ * @OA\Tag(
+ *     name="Organizaciones",
+ *     description="APIs para la gestión de Organizaciones"
+ * )
  */
 class OrganizationController extends Controller
 {
