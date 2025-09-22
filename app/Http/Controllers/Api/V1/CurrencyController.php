@@ -9,12 +9,19 @@ use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
  * @group Currencies
  *
  * APIs para la gestión de monedas del sistema.
  * Permite crear, consultar y gestionar monedas y tasas de cambio.
+ */
+/**
+ * @OA\Tag(
+ *     name="Monedas",
+ *     description="APIs para la gestión de Monedas"
+ * )
  */
 class CurrencyController extends Controller
 {
