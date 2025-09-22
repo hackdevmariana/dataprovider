@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing leaderboards and rankings.
  */
+/**
+ * @OA\Tag(
+ *     name="Tablas de Clasificación",
+ *     description="APIs para la gestión de Tablas de Clasificación"
+ * )
+ */
 class LeaderboardController extends Controller
 {
     /**
