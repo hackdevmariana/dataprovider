@@ -9,7 +9,6 @@ use App\Http\Requests\StoreCooperativeUserMemberRequest;
 use App\Http\Requests\UpdateCooperativeUserMemberRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Cooperative User Members
  *
