@@ -5,14 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
-/**
- * @OA\Tag(
- *     name="Historial de Ofertas",
- *     description="APIs para la gestión de Historial de Ofertas"
- * )
- */
 class OfferHistoryController extends Controller
 {
     public function index(Request $request): JsonResponse
