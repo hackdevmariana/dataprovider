@@ -14,12 +14,6 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing cooperative posts and announcements.
  */
-/**
- * @OA\Tag(
- *     name="Posts de Cooperativas",
- *     description="APIs para la gestión de Posts de Cooperativas"
- * )
- */
 class CooperativePostController extends Controller
 {
     /**
