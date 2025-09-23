@@ -5,14 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
-/**
- * @OA\Tag(
- *     name="Reseñas de Libros",
- *     description="APIs para la gestión de Reseñas de Libros"
- * )
- */
 class BookReviewController extends Controller
 {
     public function index(Request $request): JsonResponse
