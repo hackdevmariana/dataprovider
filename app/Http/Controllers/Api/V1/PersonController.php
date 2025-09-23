@@ -24,26 +24,19 @@ use OpenApi\Annotations as OA;
 class PersonController extends Controller
 {
     /**
-     * Display a listing of persons
-     *
-     * Obtiene una lista de personas con sus relaciones cargadas.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Juan Pérez",
-     *       "slug": "juan-perez",
-     *       "nationality": {...},
-     *       "language": {...},
-     *       "image": {...},
-     *       "aliases": [...]
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\PersonResource
-     * @apiResourceModel App\Models\Person
+     * @OA\Get(
+     *     path="/api/v1/persons",
+     *     summary="Listar personas",
+     *     description="Obtiene una lista de personas con sus relaciones cargadas",
+     *     tags={"Personas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de personas obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
