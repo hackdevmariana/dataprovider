@@ -15,12 +15,6 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing topic following relationships.
  */
-/**
- * @OA\Tag(
- *     name="Seguimiento de Temas",
- *     description="APIs para la gestión de Seguimiento de Temas"
- * )
- */
 class TopicFollowingController extends Controller
 {
     /**
