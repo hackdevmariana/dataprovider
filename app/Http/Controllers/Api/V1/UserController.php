@@ -9,19 +9,11 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Users
  *
  * APIs para la gestión de usuarios del sistema.
  * Permite crear, consultar, actualizar y eliminar usuarios.
- */
-/**
- * @OA\Tag(
- *     name="Usuarios",
- *     description="APIs para la gestión de Usuarios"
- * )
  */
 class UserController extends Controller
 {
