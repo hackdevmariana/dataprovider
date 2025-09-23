@@ -7,19 +7,11 @@ use App\Http\Resources\V1\PlantSpeciesResource;
 use App\Models\PlantSpecies;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Plant Species
  *
  * APIs para el catálogo de especies vegetales y reforestación.
  * Permite consultar y gestionar especies de plantas para compensación de CO2.
- */
-/**
- * @OA\Tag(
- *     name="Especies Vegetales",
- *     description="APIs para la gestión de Especies Vegetales"
- * )
  */
 class PlantSpeciesController extends Controller
 {
