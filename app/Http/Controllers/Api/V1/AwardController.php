@@ -10,15 +10,9 @@ use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
 
 /**
- * @group Awards
- *
- * APIs para la gestión de premios y reconocimientos.
- * Permite crear, consultar y gestionar premios del sistema.
- */
-/**
  * @OA\Tag(
  *     name="Premios",
- *     description="APIs para la gestión de Premios"
+ *     description="APIs para la gestión de premios y reconocimientos"
  * )
  */
 class AwardController extends Controller
