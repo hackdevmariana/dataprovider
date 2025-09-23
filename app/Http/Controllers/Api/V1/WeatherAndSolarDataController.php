@@ -8,19 +8,11 @@ use App\Models\WeatherAndSolarData;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Weather & Solar Data
  *
  * APIs para datos meteorológicos y optimización solar.
  * Permite consultar información del clima y datos solares para optimización energética.
- */
-/**
- * @OA\Tag(
- *     name="Datos Meteorológicos y Solares",
- *     description="APIs para la gestión de Datos Meteorológicos y Solares"
- * )
  */
 class WeatherAndSolarDataController extends Controller
 {
