@@ -23,27 +23,34 @@ use OpenApi\Annotations as OA;
 class MunicipalityController extends Controller
 {
     /**
-     * Display a listing of municipalities
-     *
-     * Obtiene una lista paginada de municipios con sus relaciones.
-     *
-     * @queryParam page int Número de página. Example: 1
-     * @queryParam per_page int Cantidad por página (máx 100). Example: 50
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Barcelona",
-     *       "slug": "barcelona",
-     *       "ine_code": "08019",
-     *       "province": {...},
-     *       "autonomous_community": {...},
-     *       "country": {...}
-     *     }
-     *   ],
-     *   "meta": {...}
-     * }
+     * @OA\Get(
+     *     path="/api/v1/municipalities",
+     *     summary="Listar municipios",
+     *     description="Obtiene una lista paginada de municipios con sus relaciones",
+     *     tags={"Municipios"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Cantidad por página (máx 100)",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=50)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de municipios obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
      */
     public function index(Request $request): JsonResponse
     {
@@ -142,27 +149,33 @@ class MunicipalityController extends Controller
     }
 
     /**
-     * Display the specified municipality
-     *
-     * Obtiene los detalles de un municipio específico por ID o slug.
-     *
-     * @urlParam idOrSlug integer|string ID o slug del municipio. Example: 1
-     *
-     * @response 200 {
-     *   "data": {
-     *     "id": 1,
-     *     "name": "Barcelona",
-     *     "slug": "barcelona",
-     *     "ine_code": "08019",
-     *     "province": {...},
-     *     "autonomous_community": {...},
-     *     "country": {...}
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Municipio no encontrado"
-     * }
+     * @OA\Get(
+     *     path="/api/v1/municipalities/{idOrSlug}",
+     *     summary="Obtener municipio específico",
+     *     description="Obtiene los detalles de un municipio específico por ID o slug",
+     *     tags={"Municipios"},
+     *     @OA\Parameter(
+     *         name="idOrSlug",
+     *         in="path",
+     *         description="ID o slug del municipio",
+     *         required=true,
+     *         @OA\Schema(type="string", example="barcelona")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Municipio obtenido exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Municipio no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Municipio no encontrado")
+     *         )
+     *     )
+     * )
      */
     public function show($idOrSlug): JsonResponse
     {
