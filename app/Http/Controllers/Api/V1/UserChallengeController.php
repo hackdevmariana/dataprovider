@@ -9,7 +9,6 @@ use App\Http\Requests\StoreUserChallengeRequest;
 use App\Http\Requests\UpdateUserChallengeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group User Challenges
  *
