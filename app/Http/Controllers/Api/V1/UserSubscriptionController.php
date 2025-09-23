@@ -8,19 +8,12 @@ use App\Models\UserSubscription;
 use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 /**
  * @tags User Subscriptions
  * @group Sistema de Monetización - Suscripciones
- */
-/**
- * @OA\Tag(
- *     name="Suscripciones de Usuario",
- *     description="APIs para la gestión de Suscripciones de Usuario"
- * )
  */
 class UserSubscriptionController extends Controller
 {
