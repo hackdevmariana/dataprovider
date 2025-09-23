@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @tags Subscription Plans
  * @group Sistema de Monetización
