@@ -7,19 +7,11 @@ use App\Models\Challenge;
 use App\Http\Resources\V1\ChallengeResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Challenges
  *
  * APIs para la gestión de desafíos y retos del sistema.
  * Permite consultar y gestionar desafíos individuales, comunitarios y cooperativos.
- */
-/**
- * @OA\Tag(
- *     name="Desafíos",
- *     description="APIs para la gestión de Desafíos"
- * )
  */
 class ChallengeController extends Controller
 {
