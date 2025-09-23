@@ -9,7 +9,6 @@ use App\Http\Requests\StoreStatRequest;
 use App\Http\Requests\UpdateStatRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Statistics
  *
