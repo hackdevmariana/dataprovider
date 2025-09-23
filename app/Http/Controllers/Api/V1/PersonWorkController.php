@@ -9,7 +9,6 @@ use App\Http\Requests\StorePersonWorkRequest;
 use App\Http\Requests\UpdatePersonWorkRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Person Works
  *
