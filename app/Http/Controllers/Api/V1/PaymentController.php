@@ -7,18 +7,11 @@ use App\Http\Resources\V1\PaymentResource;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * @tags Payments
  * @group Sistema de Monetización - Pagos
- */
-/**
- * @OA\Tag(
- *     name="Pagos",
- *     description="APIs para la gestión de Pagos"
- * )
  */
 class PaymentController extends Controller
 {
