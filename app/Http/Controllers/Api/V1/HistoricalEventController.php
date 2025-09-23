@@ -6,16 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\HistoricalEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Carbon\Carbon;
 
 #[OA\Tag(name: "Historical Events")]
-/**
- * @OA\Tag(
- *     name="Eventos Históricos",
- *     description="APIs para la gestión de Eventos Históricos"
- * )
- */
 class HistoricalEventController extends Controller
 {
     /**
