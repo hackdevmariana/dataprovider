@@ -16,12 +16,6 @@ use Illuminate\Support\Facades\Validator;
  * APIs para la gestión de membresías en temas/comunidades.
  * Permite a los usuarios unirse, salir y gestionar su participación en temas.
  */
-/**
- * @OA\Tag(
- *     name="Membresías de Temas",
- *     description="APIs para la gestión de Membresías de Temas"
- * )
- */
 class TopicMembershipController extends Controller
 {
     /**
