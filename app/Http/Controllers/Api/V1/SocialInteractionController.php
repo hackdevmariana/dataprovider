@@ -8,7 +8,6 @@ use App\Models\SocialInteraction;
 use App\Models\ActivityFeed;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -18,12 +17,6 @@ use Illuminate\Validation\Rule;
  * @group Interacciones Sociales
  * 
  * API endpoints para gestionar las interacciones sociales (likes, shares, bookmarks, etc.)
- */
-/**
- * @OA\Tag(
- *     name="Interacciones Sociales",
- *     description="APIs para la gestión de Interacciones Sociales"
- * )
  */
 class SocialInteractionController extends Controller
 {
