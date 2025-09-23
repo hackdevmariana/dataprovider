@@ -9,7 +9,6 @@ use App\Http\Requests\StorePlatformRequest;
 use App\Http\Requests\UpdatePlatformRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Platforms
  *
