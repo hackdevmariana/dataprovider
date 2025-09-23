@@ -6,15 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Parish;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 #[OA\Tag(name: "Parishes")]
-/**
- * @OA\Tag(
- *     name="Parroquias",
- *     description="APIs para la gestión de Parroquias"
- * )
- */
 class ParishController extends Controller
 {
     public function index(Request $request): JsonResponse
