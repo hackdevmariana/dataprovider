@@ -14,12 +14,6 @@ use Illuminate\Support\Facades\Validator;
  * 
  * API endpoints for managing social comparisons and user performance metrics.
  */
-/**
- * @OA\Tag(
- *     name="Comparaciones Sociales",
- *     description="APIs para la gestión de Comparaciones Sociales"
- * )
- */
 class SocialComparisonController extends Controller
 {
     /**
