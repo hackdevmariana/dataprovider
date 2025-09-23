@@ -8,22 +8,9 @@ use App\Models\ActivityFeed;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @OA\Tag(
- *     name="Activity Feed",
- *     description="APIs para la gestión de Activity Feed"
- * )
- */
-/**
- * @OA\Tag(
- *     name="Activity Feed",
- *     description="APIs para la gestión de Activity Feed"
- * )
- */
 class ActivityFeedController extends Controller
 {
     /**
