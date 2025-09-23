@@ -9,7 +9,6 @@ use App\Http\Requests\StoreCompanyTypeRequest;
 use App\Http\Requests\UpdateCompanyTypeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Company Types
  *
