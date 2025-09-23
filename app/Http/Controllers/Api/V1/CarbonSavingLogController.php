@@ -9,7 +9,6 @@ use App\Http\Requests\StoreCarbonSavingLogRequest;
 use App\Http\Requests\UpdateCarbonSavingLogRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Carbon Saving Logs
  *
