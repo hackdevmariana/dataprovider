@@ -9,19 +9,11 @@ use App\Http\Requests\StoreSocialAccountRequest;
 use App\Http\Requests\UpdateSocialAccountRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Social Accounts
  *
  * APIs para la gestión de cuentas sociales del sistema.
  * Permite crear, consultar y gestionar cuentas de redes sociales.
- */
-/**
- * @OA\Tag(
- *     name="Cuentas Sociales",
- *     description="APIs para la gestión de Cuentas Sociales"
- * )
  */
 class SocialAccountController extends Controller
 {
