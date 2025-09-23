@@ -7,19 +7,11 @@ use App\Models\Group;
 use App\Http\Resources\V1\GroupResource;
 use App\Http\Requests\StoreGroupRequest;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Groups
  *
  * APIs para la gestión de grupos y organizaciones.
  * Permite crear, consultar y gestionar grupos del sistema.
- */
-/**
- * @OA\Tag(
- *     name="Grupos",
- *     description="APIs para la gestión de Grupos"
- * )
  */
 class GroupController extends Controller
 {
