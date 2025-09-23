@@ -9,7 +9,6 @@ use App\Models\UserFollow;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -19,12 +18,6 @@ use Illuminate\Validation\Rule;
  * @group Seguimiento de Usuarios
  * 
  * API endpoints para gestionar el seguimiento entre usuarios y configurar feeds personalizados.
- */
-/**
- * @OA\Tag(
- *     name="Seguimiento de Usuarios",
- *     description="APIs para la gestión de Seguimiento de Usuarios"
- * )
  */
 class UserFollowController extends Controller
 {
