@@ -7,19 +7,11 @@ use App\Models\Artist;
 use App\Http\Resources\V1\ArtistResource;
 use App\Http\Requests\StoreArtistRequest;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Artists
  *
  * APIs para la gestión de artistas y perfiles artísticos.
  * Permite crear, consultar y gestionar artistas de diferentes disciplinas.
- */
-/**
- * @OA\Tag(
- *     name="Artistas",
- *     description="APIs para la gestión de Artistas"
- * )
  */
 class ArtistController extends Controller
 {
