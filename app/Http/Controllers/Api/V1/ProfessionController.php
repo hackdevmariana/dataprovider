@@ -8,34 +8,30 @@ use App\Http\Requests\StoreProfessionRequest;
 use App\Http\Resources\V1\ProfessionResource;
 use App\Services\ProfessionsService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
- * @group Professions
- *
- * APIs para la gestión de profesiones y oficios.
- * Permite crear, consultar y gestionar profesiones del sistema.
+ * @OA\Tag(
+ *     name="Profesiones",
+ *     description="APIs para la gestión de profesiones y oficios"
+ * )
  */
 class ProfessionController extends Controller
 {
     /**
-     * Display a listing of professions
-     *
-     * Obtiene una lista de todas las profesiones disponibles.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Ingeniero de Software",
-     *       "slug": "ingeniero-de-software",
-     *       "category": "Tecnología",
-     *       "is_public_facing": true
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\ProfessionResource
-     * @apiResourceModel App\Models\Profession
+     * @OA\Get(
+     *     path="/api/v1/professions",
+     *     summary="Listar profesiones",
+     *     description="Obtiene una lista de todas las profesiones disponibles",
+     *     tags={"Profesiones"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de profesiones obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index(ProfessionsService $service): JsonResponse
     {
