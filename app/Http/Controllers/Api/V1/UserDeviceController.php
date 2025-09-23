@@ -9,19 +9,11 @@ use App\Http\Requests\StoreUserDeviceRequest;
 use App\Http\Requests\UpdateUserDeviceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group User Devices
  *
  * APIs para la gestión de dispositivos de usuarios.
  * Permite registrar, consultar y gestionar dispositivos asociados a usuarios.
- */
-/**
- * @OA\Tag(
- *     name="Dispositivos de Usuario",
- *     description="APIs para la gestión de Dispositivos de Usuario"
- * )
  */
 class UserDeviceController extends Controller
 {
