@@ -7,7 +7,6 @@ use App\Models\Event;
 use App\Http\Resources\V1\EventResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -15,12 +14,6 @@ use Illuminate\Support\Facades\DB;
  *
  * APIs para la gestión de eventos y actividades.
  * Permite consultar, filtrar y gestionar eventos de todo tipo.
- */
-/**
- * @OA\Tag(
- *     name="Eventos",
- *     description="APIs para la gestión de Eventos"
- * )
  */
 class EventController extends Controller
 {
