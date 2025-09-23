@@ -8,7 +8,6 @@ use App\Models\ProductionRight;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -18,12 +17,6 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de derechos de producción energética.
  * Permite a los usuarios comprar, vender y gestionar derechos
  * de producción de energía renovable.
- */
-/**
- * @OA\Tag(
- *     name="Derechos de Producción",
- *     description="APIs para la gestión de Derechos de Producción"
- * )
  */
 class ProductionRightController extends Controller
 {
