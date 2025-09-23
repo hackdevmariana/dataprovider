@@ -9,19 +9,11 @@ use App\Http\Requests\StoreOrganizationFeatureRequest;
 use App\Http\Requests\UpdateOrganizationFeatureRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Organization Features
  *
  * APIs para la gestión de características de organizaciones del sistema.
  * Permite crear, consultar y gestionar características específicas de organizaciones.
- */
-/**
- * @OA\Tag(
- *     name="Características de Organizaciones",
- *     description="APIs para la gestión de Características de Organizaciones"
- * )
  */
 class OrganizationFeatureController extends Controller
 {
