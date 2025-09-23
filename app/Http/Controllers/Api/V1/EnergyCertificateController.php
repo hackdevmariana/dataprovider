@@ -8,7 +8,6 @@ use App\Models\EnergyCertificate;
 use App\Models\EnergyInstallation;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -18,12 +17,6 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de certificados de energía renovable.
  * Permite a los usuarios generar, gestionar y verificar
  * certificados de origen de energía renovable (GAR, REC, etc.).
- */
-/**
- * @OA\Tag(
- *     name="Certificados Energéticos",
- *     description="APIs para la gestión de Certificados Energéticos"
- * )
  */
 class EnergyCertificateController extends Controller
 {
