@@ -11,43 +11,27 @@ use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
 
 /**
- * @group Works
- *
- * APIs para gestionar trabajos (libros, películas, etc.) de personas famosas.
- * Permite crear, consultar y gestionar obras y trabajos del sistema.
- */
-/**
  * @OA\Tag(
  *     name="Trabajos",
- *     description="APIs para la gestión de Trabajos"
+ *     description="APIs para gestionar trabajos (libros, películas, etc.) de personas famosas"
  * )
  */
 class WorkController extends Controller
 {
     /**
-     * Display a listing of works
-     *
-     * Obtiene una lista de todos los trabajos disponibles.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "title": "El Padrino",
-     *       "slug": "el-padrino",
-     *       "type": "movie",
-     *       "description": "Película de crimen de 1972.",
-     *       "release_year": 1972,
-     *       "genre": "Crimen, Drama",
-     *       "person": {...},
-     *       "language": {...},
-     *       "link": {...}
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\WorkResource
-     * @apiResourceModel App\Models\Work
+     * @OA\Get(
+     *     path="/api/v1/works",
+     *     summary="Listar trabajos",
+     *     description="Obtiene una lista de todos los trabajos disponibles",
+     *     tags={"Trabajos"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de trabajos obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
