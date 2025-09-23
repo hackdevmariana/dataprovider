@@ -23,24 +23,19 @@ use OpenApi\Annotations as OA;
 class AutonomousCommunityController extends Controller
 {
     /**
-     * Display a listing of autonomous communities
-     *
-     * Obtiene una lista de todas las comunidades autónomas.
-     *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Cataluña",
-     *       "slug": "cataluna",
-     *       "ine_code": "09",
-     *       "capital": "Barcelona"
-     *     }
-     *   ]
-     * }
-     *
-     * @apiResourceCollection App\Http\Resources\V1\AutonomousCommunityResource
-     * @apiResourceModel App\Models\AutonomousCommunity
+     * @OA\Get(
+     *     path="/api/v1/autonomous-communities",
+     *     summary="Listar comunidades autónomas",
+     *     description="Obtiene una lista de todas las comunidades autónomas",
+     *     tags={"Comunidades Autónomas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de comunidades autónomas obtenida exitosamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
