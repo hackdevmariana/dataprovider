@@ -9,19 +9,11 @@ use App\Http\Requests\StoreSyncLogRequest;
 use App\Http\Requests\UpdateSyncLogRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Sync Logs
  *
  * APIs para la gestión de logs de sincronización del sistema.
  * Permite consultar y gestionar el historial de sincronizaciones de datos.
- */
-/**
- * @OA\Tag(
- *     name="Registros de Sincronización",
- *     description="APIs para la gestión de Registros de Sincronización"
- * )
  */
 class SyncLogController extends Controller
 {
