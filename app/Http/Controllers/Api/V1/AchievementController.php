@@ -7,14 +7,6 @@ use App\Models\Achievement;
 use App\Http\Resources\V1\AchievementResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
-/**
- * @OA\Tag(
- *     name="Logros",
- *     description="APIs para la gestión de Logros"
- * )
- */
 class AchievementController extends Controller
 {
     /**
