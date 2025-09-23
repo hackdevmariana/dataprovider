@@ -16,12 +16,6 @@ use Illuminate\Support\Facades\Validator;
  * APIs para la gestión de posts dentro de temas/comunidades.
  * Permite crear discusiones, preguntas, anuncios y otros tipos de contenido.
  */
-/**
- * @OA\Tag(
- *     name="Posts de Temas",
- *     description="APIs para la gestión de Posts de Temas"
- * )
- */
 class TopicPostController extends Controller
 {
     /**
