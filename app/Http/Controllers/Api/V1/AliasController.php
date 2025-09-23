@@ -9,7 +9,6 @@ use App\Http\Requests\StoreAliasRequest;
 use App\Http\Requests\UpdateAliasRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Aliases
  *
