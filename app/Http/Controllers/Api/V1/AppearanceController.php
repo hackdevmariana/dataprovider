@@ -9,7 +9,6 @@ use App\Http\Requests\StoreAppearanceRequest;
 use App\Http\Requests\UpdateAppearanceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Appearances
  *
