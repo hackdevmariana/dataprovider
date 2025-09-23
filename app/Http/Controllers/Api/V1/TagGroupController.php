@@ -9,7 +9,6 @@ use App\Http\Requests\StoreTagGroupRequest;
 use App\Http\Requests\UpdateTagGroupRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Tag Groups
  *
