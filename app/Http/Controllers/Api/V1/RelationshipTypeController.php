@@ -9,7 +9,6 @@ use App\Http\Requests\StoreRelationshipTypeRequest;
 use App\Http\Requests\UpdateRelationshipTypeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
 /**
  * @group Relationship Types
  *
