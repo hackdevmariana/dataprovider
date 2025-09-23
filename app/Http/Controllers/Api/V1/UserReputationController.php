@@ -16,12 +16,6 @@ use Illuminate\Support\Facades\Auth;
  * Similar al karma de Stack Overflow, permite a los usuarios ganar
  * reputación por contribuciones positivas a la comunidad.
  */
-/**
- * @OA\Tag(
- *     name="Reputación de Usuario",
- *     description="APIs para la gestión de Reputación de Usuario"
- * )
- */
 class UserReputationController extends Controller
 {
     /**
