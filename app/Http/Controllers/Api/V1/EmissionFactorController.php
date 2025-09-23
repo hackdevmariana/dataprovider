@@ -7,7 +7,6 @@ use App\Http\Resources\V1\EmissionFactorResource;
 use App\Models\EmissionFactor;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,12 +16,6 @@ use Illuminate\Validation\ValidationException;
  * APIs para la gestión de factores de emisión de CO2.
  * Permite a los usuarios y administradores consultar y gestionar
  * los factores de emisión utilizados para calcular la huella de carbono.
- */
-/**
- * @OA\Tag(
- *     name="Factores de Emisión",
- *     description="APIs para la gestión de Factores de Emisión"
- * )
  */
 class EmissionFactorController extends Controller
 {
