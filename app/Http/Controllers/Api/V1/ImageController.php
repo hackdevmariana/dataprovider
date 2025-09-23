@@ -9,12 +9,13 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Services\ImagesService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Annotations as OA;
 
 /**
- * @group Images
- *
- * APIs para la gestión de imágenes y recursos visuales.
- * Permite crear, consultar y gestionar imágenes del sistema.
+ * @OA\Tag(
+ *     name="Images",
+ *     description="APIs para la gestión de imágenes y recursos visuales"
+ * )
  */
 class ImageController extends Controller
 {
@@ -43,6 +44,21 @@ class ImageController extends Controller
      *
      * @apiResourceCollection App\Http\Resources\V1\ImageResource
      * @apiResourceModel App\Models\Image
+     */
+    /**
+     * @OA\Get(
+     *     path="/api/v1/images",
+     *     summary="Listar imágenes",
+     *     description="Listar imágenes",
+     *     tags={"Images"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
      */
     public function index(ImagesService $service): JsonResponse
     {
@@ -84,7 +100,29 @@ class ImageController extends Controller
      *
      * @apiResourceModel App\Models\Image
      */
-    public function show($id, ImagesService $service): JsonResponse
+    /**
+     * @OA\Get(
+     *     path="/api/v1/images/{id}",
+     *     summary="Obtener imagen específica",
+     *     description="Obtener imagen específica",
+     *     tags={"Images"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID de la imagen",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function show(ImagesService $service, $id): JsonResponse
     {
         $image = $service->findById((int) $id);
         
@@ -123,6 +161,21 @@ class ImageController extends Controller
      * }
      *
      * @apiResourceModel App\Models\Image
+     */
+        /**
+     * @OA\POST(
+     *     path="/api/v1/images",
+     *     summary="Crear nueva imagen",
+     *     description="Crear nueva imagen",
+     *     tags={"Images"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
      */
     public function store(StoreImageRequest $request, ImagesService $service): JsonResponse
     {
@@ -166,7 +219,22 @@ class ImageController extends Controller
      *
      * @apiResourceModel App\Models\Image
      */
-    public function update(UpdateImageRequest $request, $id, ImagesService $service): JsonResponse
+        /**
+     * @OA\PUT(
+     *     path="/api/v1/images/{id}",
+     *     summary="Actualizar imagen",
+     *     description="Actualizar imagen",
+     *     tags={"Images"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function update(UpdateImageRequest $request, ImagesService $service, $id): JsonResponse
     {
         $image = $service->update((int) $id, $request->validated());
         
@@ -190,7 +258,22 @@ class ImageController extends Controller
      *   "message": "Imagen no encontrada"
      * }
      */
-    public function destroy($id, ImagesService $service): JsonResponse
+        /**
+     * @OA\DELETE(
+     *     path="/api/v1/images/{id}",
+     *     summary="Eliminar imagen",
+     *     description="Eliminar imagen",
+     *     tags={"Images"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function destroy(ImagesService $service, $id): JsonResponse
     {
         $service->delete((int) $id);
         
