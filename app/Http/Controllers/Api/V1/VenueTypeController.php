@@ -9,19 +9,11 @@ use App\Http\Requests\StoreVenueTypeRequest;
 use App\Http\Requests\UpdateVenueTypeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use OpenApi\Annotations as OA;
-
 /**
  * @group Venue Types
  *
  * APIs para la gestión de tipos de venues del sistema.
  * Permite crear, consultar y gestionar tipos de lugares y espacios.
- */
-/**
- * @OA\Tag(
- *     name="Tipos de Venue",
- *     description="APIs para la gestión de Tipos de Venue"
- * )
  */
 class VenueTypeController extends Controller
 {
