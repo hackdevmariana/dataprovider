@@ -15,12 +15,6 @@ use Illuminate\Support\Facades\Validator;
  * API endpoints for managing user badges in the social system.
  * Badges are achievements awarded to users for various accomplishments.
  */
-/**
- * @OA\Tag(
- *     name="Insignias de Usuario",
- *     description="APIs para la gestión de Insignias de Usuario"
- * )
- */
 class UserBadgeController extends Controller
 {
     /**
