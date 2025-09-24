@@ -10,9 +10,130 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Activity Feed', description: 'Gestión del feed de actividades y timeline de la comunidad energética')]
 class ActivityFeedController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/activity-feed',
+        summary: 'Feed personalizado del usuario',
+        description: 'Obtiene el feed personalizado de actividades basado en los usuarios seguidos, preferencias de algoritmo y configuración de relevancia.',
+        security: [['sanctum' => []]],
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'limit',
+                description: 'Número de actividades a retornar (máximo 50)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 50, default: 20)
+            ),
+            new OA\Parameter(
+                name: 'offset',
+                description: 'Número de actividades a saltar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 0, default: 0)
+            ),
+            new OA\Parameter(
+                name: 'type',
+                description: 'Filtrar por tipo de actividad',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: ['energy_saved', 'solar_generated', 'achievement_unlocked', 'project_funded', 'installation_completed', 'cooperative_joined', 'roof_published', 'investment_made', 'production_right_sold', 'challenge_completed', 'milestone_reached', 'content_published', 'expert_verified', 'review_published', 'topic_created', 'community_contribution', 'carbon_milestone', 'efficiency_improvement', 'grid_contribution', 'sustainability_goal']
+                )
+            ),
+            new OA\Parameter(
+                name: 'visibility',
+                description: 'Filtrar por visibilidad',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: ['public', 'cooperative', 'followers']
+                )
+            ),
+            new OA\Parameter(
+                name: 'featured',
+                description: 'Solo actividades destacadas',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            ),
+            new OA\Parameter(
+                name: 'milestones',
+                description: 'Solo hitos importantes',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            ),
+            new OA\Parameter(
+                name: 'location',
+                description: 'Coordenadas lat,lng para filtro geográfico',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: '40.4168,-3.7038')
+            ),
+            new OA\Parameter(
+                name: 'radius',
+                description: 'Radio en km para filtro geográfico',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 100, default: 25)
+            ),
+            new OA\Parameter(
+                name: 'date_from',
+                description: 'Fecha desde (YYYY-MM-DD)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date', example: '2025-01-01')
+            ),
+            new OA\Parameter(
+                name: 'date_to',
+                description: 'Fecha hasta (YYYY-MM-DD)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date', example: '2025-01-31')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Feed personalizado obtenido exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ActivityFeed')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', description: 'Total de actividades encontradas'),
+                                new OA\Property(property: 'has_more', type: 'boolean', description: 'Si hay más actividades disponibles'),
+                                new OA\Property(property: 'algorithm_version', type: 'string', description: 'Versión del algoritmo de personalización'),
+                                new OA\Property(property: 'personalization_score', type: 'number', description: 'Score de personalización del usuario')
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'No autenticado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Feed personalizado del usuario autenticado
      * 
@@ -119,6 +240,59 @@ class ActivityFeedController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/public',
+        summary: 'Actividades públicas globales',
+        description: 'Obtiene las actividades públicas más relevantes y recientes de toda la comunidad.',
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'limit',
+                description: 'Número de actividades a retornar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 50, default: 20)
+            ),
+            new OA\Parameter(
+                name: 'featured',
+                description: 'Solo actividades destacadas',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            ),
+            new OA\Parameter(
+                name: 'energy_only',
+                description: 'Solo actividades relacionadas con energía',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Actividades públicas obtenidas exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ActivityFeed')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'count', type: 'integer', description: 'Número de actividades retornadas'),
+                                new OA\Property(property: 'featured_count', type: 'integer', description: 'Total de actividades destacadas'),
+                                new OA\Property(property: 'energy_activities_today', type: 'integer', description: 'Actividades energéticas de hoy')
+                            ]
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Actividades públicas globales
      * 
@@ -175,6 +349,44 @@ class ActivityFeedController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/featured',
+        summary: 'Actividades destacadas',
+        description: 'Obtiene las actividades marcadas como destacadas por la comunidad o moderadores.',
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'limit',
+                description: 'Número de actividades a retornar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 20, default: 10)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Actividades destacadas obtenidas exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ActivityFeed')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'count', type: 'integer', description: 'Número de actividades retornadas'),
+                                new OA\Property(property: 'total_featured', type: 'integer', description: 'Total de actividades destacadas')
+                            ]
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Actividades destacadas
      * 
@@ -216,6 +428,45 @@ class ActivityFeedController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/milestones',
+        summary: 'Hitos de la comunidad',
+        description: 'Obtiene los hitos más importantes alcanzados por la comunidad.',
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'limit',
+                description: 'Número de hitos a retornar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 30, default: 15)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Hitos obtenidos exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ActivityFeed')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'count', type: 'integer', description: 'Número de hitos retornados'),
+                                new OA\Property(property: 'total_milestones', type: 'integer', description: 'Total de hitos en el sistema'),
+                                new OA\Property(property: 'community_co2_saved', type: 'number', description: 'Total de CO2 ahorrado por la comunidad')
+                            ]
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Hitos de la comunidad
      * 
@@ -260,6 +511,92 @@ class ActivityFeedController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/nearby',
+        summary: 'Actividades por ubicación',
+        description: 'Obtiene actividades cercanas a una ubicación específica.',
+        security: [['sanctum' => []]],
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'lat',
+                description: 'Latitud',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(type: 'number', format: 'float', minimum: -90, maximum: 90, example: 40.4168)
+            ),
+            new OA\Parameter(
+                name: 'lng',
+                description: 'Longitud',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(type: 'number', format: 'float', minimum: -180, maximum: 180, example: -3.7038)
+            ),
+            new OA\Parameter(
+                name: 'radius',
+                description: 'Radio en kilómetros (máximo 100)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 100, default: 25)
+            ),
+            new OA\Parameter(
+                name: 'limit',
+                description: 'Número de actividades a retornar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 50, default: 15)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Actividades cercanas obtenidas exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ActivityFeed')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'count', type: 'integer', description: 'Número de actividades encontradas'),
+                                new OA\Property(
+                                    property: 'search_center',
+                                    type: 'object',
+                                    properties: [
+                                        new OA\Property(property: 'lat', type: 'number'),
+                                        new OA\Property(property: 'lng', type: 'number')
+                                    ]
+                                ),
+                                new OA\Property(property: 'search_radius_km', type: 'integer'),
+                                new OA\Property(property: 'avg_distance_km', type: 'number')
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Error de validación en los parámetros',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                            additionalProperties: new OA\AdditionalProperties(
+                                type: 'array',
+                                items: new OA\Items(type: 'string')
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Actividades por ubicación
      * 
@@ -321,6 +658,59 @@ class ActivityFeedController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/stats',
+        summary: 'Estadísticas del feed',
+        description: 'Obtiene estadísticas generales del feed de actividades.',
+        security: [['sanctum' => []]],
+        tags: ['Activity Feed'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Estadísticas obtenidas exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total_activities', type: 'integer', description: 'Total de actividades'),
+                                new OA\Property(property: 'activities_today', type: 'integer', description: 'Actividades de hoy'),
+                                new OA\Property(property: 'activities_this_week', type: 'integer', description: 'Actividades de esta semana'),
+                                new OA\Property(property: 'featured_activities', type: 'integer', description: 'Actividades destacadas'),
+                                new OA\Property(property: 'milestones_count', type: 'integer', description: 'Número de hitos'),
+                                new OA\Property(property: 'total_energy_saved_kwh', type: 'number', description: 'Total de energía ahorrada en kWh'),
+                                new OA\Property(property: 'total_co2_saved_kg', type: 'number', description: 'Total de CO2 ahorrado en kg'),
+                                new OA\Property(property: 'total_cost_savings_eur', type: 'number', description: 'Total de ahorro en euros'),
+                                new OA\Property(property: 'avg_engagement_score', type: 'number', description: 'Score promedio de engagement'),
+                                new OA\Property(
+                                    property: 'top_activity_types',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        type: 'object',
+                                        properties: [
+                                            new OA\Property(property: 'type', type: 'string'),
+                                            new OA\Property(property: 'count', type: 'integer'),
+                                            new OA\Property(property: 'label', type: 'string')
+                                        ]
+                                    )
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'No autenticado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Estadísticas del feed
      * 
@@ -383,6 +773,54 @@ class ActivityFeedController extends Controller
         return response()->json(['data' => $stats]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/activity-feed/{id}',
+        summary: 'Detalle de una actividad específica',
+        description: 'Obtiene los detalles completos de una actividad específica por su ID.',
+        security: [['sanctum' => []]],
+        tags: ['Activity Feed'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'ID único de la actividad',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer', format: 'int64')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Actividad obtenida exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/ActivityFeed'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Sin permisos para ver esta actividad',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'No tienes permisos para ver esta actividad.')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Actividad no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Actividad no encontrada')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Detalle de una actividad específica
      * 
