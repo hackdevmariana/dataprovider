@@ -8,15 +8,116 @@ use App\Models\Cooperative;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Attributes as OA;
 
-/**
- * @group Cooperatives
- *
- * APIs para la gestión de cooperativas energéticas y de otros tipos.
- * Permite crear, consultar y gestionar cooperativas y sus miembros.
- */
+#[OA\Tag(name: 'Cooperatives', description: 'Gestión de cooperativas energéticas y de otros tipos. Permite crear, consultar y gestionar cooperativas y sus miembros.')]
 class CooperativeController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/cooperatives',
+        summary: 'Lista de cooperativas',
+        description: 'Obtiene una lista de cooperativas con opciones de filtrado.',
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'cooperative_type',
+                description: 'Filtrar por tipo de cooperativa',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: ['energy', 'housing', 'agriculture', 'etc']
+                )
+            ),
+            new OA\Parameter(
+                name: 'scope',
+                description: 'Filtrar por alcance',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: ['local', 'regional', 'national']
+                )
+            ),
+            new OA\Parameter(
+                name: 'municipality_id',
+                description: 'ID del municipio para filtrar',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'is_open_to_new_members',
+                description: 'Filtrar por cooperativas que aceptan nuevos miembros',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            ),
+            new OA\Parameter(
+                name: 'has_energy_market_access',
+                description: 'Filtrar por acceso al mercado energético',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Número de página',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, default: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                description: 'Cantidad por página (máx 100)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 100, default: 15)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista de cooperativas obtenida exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Cooperative')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer'),
+                                new OA\Property(property: 'last_page', type: 'integer'),
+                                new OA\Property(property: 'per_page', type: 'integer'),
+                                new OA\Property(property: 'total', type: 'integer')
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Error de validación en los parámetros',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                            additionalProperties: new OA\AdditionalProperties(
+                                type: 'array',
+                                items: new OA\Items(type: 'string')
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Display a listing of cooperatives
      *
@@ -96,6 +197,74 @@ class CooperativeController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/cooperatives',
+        summary: 'Crear nueva cooperativa',
+        description: 'Crea una nueva cooperativa.',
+        tags: ['Cooperatives'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name', 'slug', 'cooperative_type', 'scope', 'phone', 'email', 'website', 'municipality_id', 'address', 'main_activity'],
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'Som Energia', description: 'Nombre de la cooperativa'),
+                    new OA\Property(property: 'slug', type: 'string', example: 'som-energia', description: 'Slug único de la cooperativa'),
+                    new OA\Property(property: 'legal_name', type: 'string', example: 'Som Energia SCCL', description: 'Nombre legal de la cooperativa', nullable: true),
+                    new OA\Property(property: 'cooperative_type', type: 'string', enum: ['energy', 'housing', 'agriculture', 'etc'], example: 'energy', description: 'Tipo de cooperativa'),
+                    new OA\Property(property: 'scope', type: 'string', enum: ['local', 'regional', 'national'], example: 'national', description: 'Alcance'),
+                    new OA\Property(property: 'nif', type: 'string', example: 'F12345678', description: 'NIF/CIF de la cooperativa', nullable: true),
+                    new OA\Property(property: 'founded_at', type: 'string', format: 'date', example: '2010-01-01', description: 'Fecha de fundación', nullable: true),
+                    new OA\Property(property: 'phone', type: 'string', example: '+34 972 123 456', description: 'Teléfono de contacto'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'info@somenergia.coop', description: 'Email de contacto'),
+                    new OA\Property(property: 'website', type: 'string', format: 'url', example: 'https://www.somenergia.coop', description: 'Sitio web'),
+                    new OA\Property(property: 'logo_url', type: 'string', format: 'url', example: 'https://example.com/logo.png', description: 'URL del logo', nullable: true),
+                    new OA\Property(property: 'municipality_id', type: 'integer', example: 1, description: 'ID del municipio'),
+                    new OA\Property(property: 'address', type: 'string', example: 'Carrer de la Pau, 123', description: 'Dirección física'),
+                    new OA\Property(property: 'latitude', type: 'number', example: 41.3851, description: 'Latitud geográfica', nullable: true),
+                    new OA\Property(property: 'longitude', type: 'number', example: 2.1734, description: 'Longitud geográfica', nullable: true),
+                    new OA\Property(property: 'description', type: 'string', example: 'Cooperativa de energía renovable', description: 'Descripción de la cooperativa', nullable: true),
+                    new OA\Property(property: 'number_of_members', type: 'integer', example: 1000, description: 'Número de miembros', nullable: true),
+                    new OA\Property(property: 'main_activity', type: 'string', example: 'Producción y comercialización de energía renovable', description: 'Actividad principal'),
+                    new OA\Property(property: 'is_open_to_new_members', type: 'boolean', example: true, description: 'Abierta a nuevos miembros', nullable: true),
+                    new OA\Property(property: 'has_energy_market_access', type: 'boolean', example: true, description: 'Acceso al mercado energético', nullable: true),
+                    new OA\Property(property: 'legal_form', type: 'string', example: 'SCCL', description: 'Forma legal', nullable: true),
+                    new OA\Property(property: 'statutes_url', type: 'string', format: 'url', example: 'https://example.com/estatutos.pdf', description: 'URL de los estatutos', nullable: true),
+                    new OA\Property(property: 'accepts_new_installations', type: 'boolean', example: true, description: 'Acepta nuevas instalaciones', nullable: true)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Cooperativa creada exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/Cooperative'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Error de validación en los datos',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                            additionalProperties: new OA\AdditionalProperties(
+                                type: 'array',
+                                items: new OA\Items(type: 'string')
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Store a newly created cooperative
      *
@@ -183,6 +352,44 @@ class CooperativeController extends Controller
         ], 201);
     }
 
+    #[OA\Get(
+        path: '/api/v1/cooperatives/{idOrSlug}',
+        summary: 'Detalle de una cooperativa',
+        description: 'Obtiene los detalles de una cooperativa específica por ID o slug.',
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'idOrSlug',
+                description: 'ID o slug de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '1')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cooperativa obtenida exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/Cooperative'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Display the specified cooperative
      *
@@ -222,6 +429,79 @@ class CooperativeController extends Controller
         ]);
     }
 
+    #[OA\Put(
+        path: '/api/v1/cooperatives/{id}',
+        summary: 'Actualizar cooperativa',
+        description: 'Actualiza una cooperativa existente.',
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'ID de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer', format: 'int64')
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'Som Energia', description: 'Nombre de la cooperativa'),
+                    new OA\Property(property: 'slug', type: 'string', example: 'som-energia', description: 'Slug único de la cooperativa'),
+                    new OA\Property(property: 'legal_name', type: 'string', example: 'Som Energia SCCL', description: 'Nombre legal de la cooperativa', nullable: true),
+                    new OA\Property(property: 'cooperative_type', type: 'string', enum: ['energy', 'housing', 'agriculture', 'etc'], example: 'energy', description: 'Tipo de cooperativa'),
+                    new OA\Property(property: 'scope', type: 'string', enum: ['local', 'regional', 'national'], example: 'national', description: 'Alcance'),
+                    new OA\Property(property: 'phone', type: 'string', example: '+34 972 123 456', description: 'Teléfono de contacto'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'info@somenergia.coop', description: 'Email de contacto'),
+                    new OA\Property(property: 'website', type: 'string', format: 'url', example: 'https://www.somenergia.coop', description: 'Sitio web'),
+                    new OA\Property(property: 'municipality_id', type: 'integer', example: 1, description: 'ID del municipio'),
+                    new OA\Property(property: 'address', type: 'string', example: 'Carrer de la Pau, 123', description: 'Dirección física'),
+                    new OA\Property(property: 'main_activity', type: 'string', example: 'Producción y comercialización de energía renovable', description: 'Actividad principal')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cooperativa actualizada exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/Cooperative'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Error de validación en los datos',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                            additionalProperties: new OA\AdditionalProperties(
+                                type: 'array',
+                                items: new OA\Items(type: 'string')
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Update the specified cooperative
      *
@@ -311,6 +591,41 @@ class CooperativeController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: '/api/v1/cooperatives/{id}',
+        summary: 'Eliminar cooperativa',
+        description: 'Elimina una cooperativa.',
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'ID de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer', format: 'int64')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: 'Cooperativa eliminada exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa eliminada exitosamente')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Remove the specified cooperative
      *
@@ -336,6 +651,77 @@ class CooperativeController extends Controller
         ], 204);
     }
 
+    #[OA\Get(
+        path: '/api/v1/cooperatives/{idOrSlug}/members',
+        summary: 'Miembros de la cooperativa',
+        description: 'Obtiene la lista de miembros de una cooperativa.',
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'idOrSlug',
+                description: 'ID o slug de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '1')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Número de página',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, default: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                description: 'Cantidad por página (máx 100)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 100, default: 15)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista de miembros obtenida exitosamente',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(
+                                type: 'object',
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer'),
+                                    new OA\Property(property: 'name', type: 'string'),
+                                    new OA\Property(property: 'email', type: 'string'),
+                                    new OA\Property(property: 'membership_date', type: 'string', format: 'date')
+                                ]
+                            )
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer'),
+                                new OA\Property(property: 'last_page', type: 'integer'),
+                                new OA\Property(property: 'per_page', type: 'integer'),
+                                new OA\Property(property: 'total', type: 'integer')
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Get cooperative members
      *
@@ -377,6 +763,64 @@ class CooperativeController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/cooperatives/{idOrSlug}/join',
+        summary: 'Unirse a una cooperativa',
+        description: 'Permite a un usuario unirse a una cooperativa.',
+        security: [['sanctum' => []]],
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'idOrSlug',
+                description: 'ID o slug de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '1')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Usuario se unió exitosamente a la cooperativa',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Te has unido exitosamente a la cooperativa'),
+                        new OA\Property(
+                            property: 'cooperative',
+                            ref: '#/components/schemas/Cooperative'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Usuario ya es miembro de esta cooperativa',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Ya eres miembro de esta cooperativa')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'No autenticado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Join cooperative
      *
@@ -424,6 +868,60 @@ class CooperativeController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/cooperatives/{idOrSlug}/leave',
+        summary: 'Salir de una cooperativa',
+        description: 'Permite a un usuario salir de una cooperativa.',
+        security: [['sanctum' => []]],
+        tags: ['Cooperatives'],
+        parameters: [
+            new OA\Parameter(
+                name: 'idOrSlug',
+                description: 'ID o slug de la cooperativa',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '1')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Usuario salió exitosamente de la cooperativa',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Has salido exitosamente de la cooperativa')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Usuario no es miembro de esta cooperativa',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'No eres miembro de esta cooperativa')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cooperativa no encontrada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cooperativa no encontrada')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'No autenticado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Leave cooperative
      *
